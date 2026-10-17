@@ -1,0 +1,5 @@
+interface:
+  display_name: "Endfield UI"
+  short_description: "终末地风味的工业风界面：纸与墨、一种黄、切角、宽体标签，覆盖网页、App、小程序"
+  brand_color: "#FFFA00"
+  default_prompt: "Use $endfield-ui to design this screen in the Endfield-flavoured industrial style."
