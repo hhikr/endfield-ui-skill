@@ -6,11 +6,38 @@ An agent skill for building UI with an *Arknights: Endfield*-flavoured industria
 
 ## 安装
 
+这是一个标准的 [Agent Skills](https://agentskills.io) 包（根目录 `SKILL.md`），不绑定某一家的 agent。挑一种装法：
+
+**通用：skills CLI（推荐）**，一条命令装给本机已有的 agent（Claude Code、Codex、Cursor、Gemini CLI、GitHub Copilot 等）：
+
 ```sh
-git clone https://github.com/hhikr/endfield-ui-skill ~/.claude/skills/endfield-ui
+npx skills add hhikr/endfield-ui-skill
+npx skills add hhikr/endfield-ui-skill -a codex   # 只装给某一个 agent，例如 claude-code / codex / cursor
 ```
 
-或者复制到某个项目的 `.claude/skills/endfield-ui/`。入口是 [`SKILL.md`](SKILL.md)。
+**Claude Code**
+
+```sh
+git clone https://github.com/hhikr/endfield-ui-skill ~/.claude/skills/endfield-ui   # 所有项目可用
+# 或放进某个项目：<项目>/.claude/skills/endfield-ui/
+```
+
+**OpenAI Codex**（CLI、IDE 插件、桌面版）
+
+```sh
+git clone https://github.com/hhikr/endfield-ui-skill ~/.agents/skills/endfield-ui   # 所有项目可用
+# 或放进某个项目：<项目>/.agents/skills/endfield-ui/
+```
+
+装好后重启 Codex；可以直接说"做成终末地风格"，也可以用 `$endfield-ui` 点名调用。`agents/openai.yaml` 提供了 Codex 界面里的名字、简介和颜色。
+
+**其他 agent / 不支持 skills 的工具**（只读 `AGENTS.md`、`.cursorrules`、`GEMINI.md` 这类规则文件的）：把仓库放进项目，例如 `vendor/endfield-ui/`，在规则文件里加一行：
+
+```md
+做界面时，先读 vendor/endfield-ui/SKILL.md，按里面的步骤和规则做；需要的文件都在同一目录。
+```
+
+**ChatGPT 网页 / 桌面对话**：没有安装目录。可以把 `SKILL.md` 和要用的平台指南（`references/platforms/*.md`）作为附件上传，让它照着做。
 
 ## 内容
 
