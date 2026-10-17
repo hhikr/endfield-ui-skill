@@ -18,6 +18,7 @@ page {
   --tag-bg: #161616; --tag-fg: #ffffff;
   --signal: #fffa00; --on-signal: #161616;
   --tri-a: #ff00f0; --tri-c: #00ffa2;
+  --hatch: rgba(22, 22, 22, 0.22);
   --mech: cubic-bezier(0.7, 0, 0.2, 1); --snap: cubic-bezier(0.16, 1, 0.3, 1);
   background: var(--paper); color: var(--ink);
   font-family: 'Saira', -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
@@ -27,6 +28,7 @@ page {
     --paper: #191919; --panel: #222222; --ink: #ededed; --ink-2: #a3a3a3;
     --rule: #353535; --chip: #2e2e2e; --trace: #fffa00; --danger: #ff8a7a;
     --tag-bg: #3a3a3a; --tag-fg: #ededed;
+    --hatch: rgba(237, 237, 237, 0.22);
   }
 }
 ```
@@ -72,11 +74,11 @@ wx.loadFontFace({
 .tri view:nth-child(3) { background: var(--tri-c); }
 
 .hatch {
-  background-image: repeating-linear-gradient(-45deg, rgba(22, 22, 22, 0.22) 0 1.5px, transparent 1.5px 7px);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 5px, var(--hatch) 5px 6.5px);
 }
 ```
 
-深色主题里斜线纹的颜色换成 `rgba(237, 237, 237, 0.22)`。等高线：把 `assets/contours/contour-a.svg` 导出成透明 PNG（墨色 9%、深色版一张），放在页面右上角 `position: fixed` 的 `<image>` 里，`pointer-events: none`。
+斜线纹的颜色走 `--hatch` 变量，深色主题里自动换成浅色线。等高线：把 `assets/contours/contour-a.svg` 导出成透明 PNG（墨色 9%、深色版一张），放在页面右上角 `position: fixed` 的 `<image>` 里，`pointer-events: none`。
 
 ## 按钮：用 hover-class 做按下擦入
 
@@ -133,9 +135,10 @@ button.ef-btn::after { border: 0; }               /* 去掉微信按钮的默认
 ```
 
 ```css
-.record { position: relative; padding: 24rpx 8rpx 24rpx 16rpx; border-bottom: 1px solid var(--rule); transition: padding-left 0.2s var(--snap); }
+.record { position: relative; padding: 24rpx 8rpx 24rpx 16rpx; border-bottom: 1px solid var(--rule); }
+.record > view, .record > text { transition: transform 0.2s var(--snap); }   /* 只动 transform，不动 padding */
 .record::before { content: ''; position: absolute; left: 0; top: 0; width: 8rpx; height: 0; background: var(--trace); transition: height 0.2s var(--snap); }
-.record.is-pressed { padding-left: 28rpx; }
+.record.is-pressed > view, .record.is-pressed > text { transform: translateX(12rpx); }
 .record.is-pressed::before { height: 100%; }
 .tag { padding: 4rpx 20rpx 4rpx 14rpx; background: var(--tag-bg); color: var(--tag-fg); font-size: 24rpx; font-weight: 600; }
 .field { color: var(--ink-2); font-size: 26rpx; font-variant-numeric: tabular-nums; }

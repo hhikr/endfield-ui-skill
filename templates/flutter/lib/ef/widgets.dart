@@ -205,7 +205,7 @@ class _EfRecordState extends State<EfRecord> {
             bottom: on ? 0 : null,
             height: on ? null : 0,
             width: Ef.traceBar,
-            child: ColoredBox(color: widget.current ? Ef.signal : c.trace),
+            child: ColoredBox(color: c.trace), // a line: ink on light, yellow on dark. "Current" is the yellow tag.
           ),
           AnimatedPadding(
             duration: dur,
@@ -519,7 +519,7 @@ class EfSegmented extends StatelessWidget {
               child: AnimatedContainer(
                 duration: Ef.d(context, Ef.wipe),
                 curve: Ef.mech,
-                height: 40,
+                height: 44,
                 alignment: Alignment.center,
                 color: i == current ? c.ink : Colors.transparent,
                 child: Text(options[i], style: EfType.ui(14, weight: 600, color: i == current ? c.paper : c.ink)),

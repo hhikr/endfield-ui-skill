@@ -8,7 +8,7 @@
    Read ../SKILL.md first. In short:
      - paper, ink and one yellow; yellow means "here" or "you can act on this"
      - cut corners on whatever can be pressed; hairlines, not boxes
-     - real fields (numbers, dates, counts) in monospace
+     - real fields (numbers, dates, counts) in the wide face, tabular figures
      - motion is short, hard and mechanical, and switches off under
        prefers-reduced-motion
 
@@ -436,10 +436,8 @@ a.ef-kv:hover > :first-child,
   background: var(--wipe);
 }
 .ef-btn::after {
-  inset: 0 auto 0 0;
   z-index: 0;
-  width: 3px;
-  background: var(--ef-on-signal);
+  background: linear-gradient(var(--ef-on-signal), var(--ef-on-signal)) left / 3px 100% no-repeat;
   opacity: 0;
 }
 .ef-btn:is(:hover, :focus-visible):not(:disabled),
@@ -461,9 +459,16 @@ a.ef-kv:hover > :first-child,
 .ef-btn:active:not(:disabled) {
   transform: translateY(1px) scale(0.985);
 }
+/* Off: it cannot be pressed now. */
 .ef-btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Busy: pressed and still working (saving, sending). Hatched, and it waits. */
+.ef-btn[aria-busy='true'] {
+  background: var(--ef-hatch), var(--fill);
   cursor: progress;
+  pointer-events: none;
 }
 /* Touch screens have no pointing, so "act on this" shows at rest: the main
    action is yellow, and pressing does the wipe that hovering does elsewhere. */
@@ -491,14 +496,14 @@ a.ef-kv:hover > :first-child,
 
 @keyframes ef-edge {
   0% {
-    left: 0;
+    transform: none;
     opacity: 1;
   }
   90% {
     opacity: 1;
   }
   100% {
-    left: 100%;
+    transform: translateX(100%);
     opacity: 0;
   }
 }
@@ -688,7 +693,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
   color: var(--ef-ink-2);
 }
 
-/* Reading prose: brush face, generous leading, a link is ink over a yellow block
+/* Reading prose: plain Chinese sans, regular weight, generous leading; a link is ink over a yellow block
    (a yellow line on dark, where the block would swallow light text). */
 .ef-prose {
   max-width: var(--ef-measure);
@@ -709,6 +714,12 @@ a.ef-record:is(:hover, :focus-visible) > * {
 :root[data-theme='dark'] .ef-prose a {
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.25em;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .ef-prose a {
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.25em;
+  }
 }
 .ef-prose strong {
   font-weight: 700;
@@ -1435,9 +1446,6 @@ a.ef-record:is(:hover, :focus-visible) > * {
 }
 .ef-dial .gauge .arc {
   stroke: var(--ef-ink-2);
-}
-.ef-dial .gauge:first-of-type .arc {
-  stroke: var(--ef-trace);
 }
 .ef-dial .gauge text {
   font-size: 10px;

@@ -43,7 +43,7 @@ class EfTriStrip extends StatelessWidget {
 
 /// 45° hatch lines. For empty states, title bands, disabled or "nothing here" areas.
 class EfHatch extends StatelessWidget {
-  const EfHatch({super.key, this.child, this.spacing = 7});
+  const EfHatch({super.key, this.child, this.spacing = Ef.hatchStep});
   final Widget? child;
   final double spacing;
 
@@ -63,7 +63,7 @@ class _HatchPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final p = Paint()
       ..color = color
-      ..strokeWidth = 1;
+      ..strokeWidth = Ef.hatchLine;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
     for (var x = -size.height; x < size.width; x += spacing) {
