@@ -1,0 +1,195 @@
+<!doctype html>
+<!--
+  Reading template: the quiet voice (an article, a list of records, a profile).
+  A white sheet of one reading measure beside a margin of real figures.
+  Serve the folder over HTTP (browsers refuse ES modules from file://).
+  Everything named "示例" is placeholder content.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reading · Endfield UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      /* page-specific layout only */
+      .shell {
+        display: grid;
+        grid-template-columns: 12rem minmax(0, 1fr);
+        min-height: calc(100dvh - 3px);
+      }
+      .rail {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        padding: 1.5rem 0 1rem;
+        border-right: 1px solid var(--ef-rule);
+      }
+      .rail .brand {
+        padding: 0 1.25rem 2rem;
+        font-stretch: var(--ef-wider);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+      .rail a.nav {
+        padding: 0.4rem 1.25rem;
+        color: var(--ef-ink-2);
+      }
+      .rail a.nav:hover {
+        color: var(--ef-ink);
+      }
+      /* the yellow block is "where you are" */
+      .rail a.nav[aria-current] {
+        color: var(--ef-on-signal);
+        background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--ef-signal) var(--ef-cut));
+      }
+      .ids {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0 0 0.75rem;
+      }
+      .title {
+        margin: 1.5rem 0 1rem;
+        font-size: clamp(var(--ef-t-title), 5.5vw, var(--ef-t-h1));
+        font-weight: 700;
+        line-height: 1.25;
+      }
+      .ef-prose {
+        margin-top: 2rem;
+      }
+      .toc {
+        position: sticky;
+        top: 2rem;
+        max-width: 18rem;
+      }
+      .toc ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-left: 1px solid var(--ef-rule);
+      }
+      .toc ol a {
+        display: block;
+        margin-left: -1px;
+        padding: 0.28rem 0 0.28rem 0.9rem;
+        border-left: 3px solid transparent;
+        color: var(--ef-ink-2);
+        font-size: 0.875rem;
+      }
+      /* the section being read: a line in the colour of "here" */
+      .toc ol a[aria-current] {
+        color: var(--ef-ink);
+        border-left-color: var(--ef-trace);
+      }
+      .margin-h {
+        margin: 2.5rem 0 0.5rem;
+      }
+      .margin-h:first-child {
+        margin-top: 0;
+      }
+      @media (max-width: 1099px) {
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .rail {
+          position: static;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: center;
+          height: auto;
+          padding: 0.75rem var(--ef-pad);
+          border-right: 0;
+          border-bottom: 1px solid var(--ef-rule);
+        }
+        .rail .brand {
+          padding: 0 1rem 0 0;
+        }
+        .rail a.nav {
+          padding: 0.3rem 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours">
+    <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="shell">
+      <nav class="rail" aria-label="主导航">
+        <span class="brand">ACME.WORKS</span>
+        <a class="nav" href="#">首页</a>
+        <a class="nav" href="#" aria-current="page">文章</a>
+        <a class="nav" href="#">分类</a>
+        <a class="nav" href="#">合订本</a>
+        <a class="nav" href="#">关于</a>
+      </nav>
+
+      <article class="ef-spread">
+        <div class="ef-sheet">
+          <p class="ef-eyebrow slash">Posts / Records</p>
+          <p class="ef-crumb ef-field"><a href="#">全部文章</a><span>记录</span></p>
+          <p class="ids">
+            <a class="ef-tag is-current" href="#">No.024</a>
+            <a class="ef-kv" href="#"><span>分类</span><span>记录</span></a>
+            <span class="ef-state is-draft">草稿</span>
+          </p>
+          <ul class="ef-facts ef-field">
+            <li><time>2026.10.16</time></li>
+            <li>6,380 字</li>
+            <li>约 16 分钟</li>
+            <li>阅读 128 次</li>
+          </ul>
+          <h1 class="title ef-read">示例：仓储节点的布线记录</h1>
+          <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="ef-lede ef-read">示例摘要：记录一次仓储节点的布线调整：先算吞吐，再排电力，最后留出冗余。</p>
+
+          <div class="ef-prose">
+            <p>示例正文。阅读区只用墨色、次要墨色和纸面，不出现黄色大块。一行大约三十八个汉字，行高 1.85，正文用常规字重的黑体。<a href="#">链接是墨色字压在一条黄色笔划上</a>，深色主题里换成一条黄色细线。</p>
+            <h2>一、吞吐</h2>
+            <p>强调用<strong>粗体</strong>。行内代码 <code>rate = 30/min</code> 用等宽字体，这是唯一用等宽的地方。</p>
+            <blockquote>引用是左边一条墨色竖线，文字退成次要墨色。</blockquote>
+          </div>
+
+          <h2 class="ef-group-head ef-read"><span>相关文章</span><span class="ef-field">3 篇</span></h2>
+          <ol class="ef-records">
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.023</span><time class="ef-field">2026.10.14</time><span class="name ef-read">示例：传送带吞吐量估算</span><span class="ef-field">9,102 字</span></a></li>
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.022</span><time class="ef-field">2026.10.11</time><span class="name ef-read">示例：电力网络的冗余</span><span class="ef-field">4,577 字</span></a></li>
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.021</span><time class="ef-field">2026.10.07</time><span class="name ef-read">示例：外勤日志整理</span><span class="ef-field">7,930 字</span></a></li>
+          </ol>
+          <p class="ef-empty">空状态写成一句完整的话，说明这里会出现什么。</p>
+        </div>
+
+        <aside class="ef-margin" aria-label="目录与统计">
+          <div class="toc">
+            <h2 class="margin-h ef-field">目录</h2>
+            <ol>
+              <li><a href="#" aria-current="true">一、吞吐</a></li>
+              <li><a href="#">二、电力</a></li>
+              <li><a href="#">三、冗余</a></li>
+            </ol>
+            <h2 class="margin-h ef-field">按分类</h2>
+            <ul class="ef-ledger">
+              <li><a href="#">记录</a><span class="ef-field">9 篇</span></li>
+              <li><a href="#">实验</a><span class="ef-field">2 篇</span></li>
+              <li><span>字数合计</span><span class="ef-field">48,210 字</span></li>
+            </ul>
+            <p class="ef-actions" style="margin-top: 1.5rem">
+              <button class="ef-btn small" type="button" data-theme-toggle>切换深浅</button>
+            </p>
+          </div>
+        </aside>
+      </article>
+    </div>
+
+    <script type="module">
+      import { wireTheme } from '../assets/fx.js';
+      wireTheme();
+    </script>
+  </body>
+</html>

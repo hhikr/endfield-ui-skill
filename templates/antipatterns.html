@@ -1,0 +1,337 @@
+<!doctype html>
+<!--
+  ANTI-PATTERNS. Do not copy the left half of any row.
+  Each row shows a mistake (left, "不要") next to the way this kit does it
+  (right, "要"). These are the mistakes that come up again and again when
+  imitating the Endfield look. Serve the folder over HTTP to view.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anti-patterns · Endfield UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      main {
+        max-width: 84rem;
+        margin-inline: auto;
+        padding: 2rem var(--ef-pad) 4rem;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+      }
+      @media (max-width: 760px) {
+        .pair {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      .verdict {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        margin: 0 0 0.75rem;
+        font-weight: 800;
+      }
+      .verdict b {
+        padding: 0 0.5em;
+        font-stretch: var(--ef-wider);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+      }
+      .no .verdict b {
+        background: var(--ef-ink);
+        color: var(--ef-panel);
+      }
+      .yes .verdict b {
+        background: var(--ef-signal);
+        color: var(--ef-on-signal);
+      }
+      .no {
+        background-image: repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--ef-ink) 4%, transparent) 14px 15px);
+      }
+      .why {
+        margin: 0.75rem 0 0;
+        font-size: 0.82rem;
+        color: var(--ef-ink-2);
+      }
+      .stage {
+        min-height: 7.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      /* ---- the wrong ways, drawn on purpose ---- */
+      .bad-yellow-on-black {
+        padding: 1.2rem 1.5rem;
+        background: #000;
+        color: #fffa00;
+        font-size: 2.2rem;
+        font-weight: 900;
+      }
+      .bad-alert {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid #d32f2f;
+        border-radius: 6px;
+        background: #fdecea;
+        color: #b71c1c;
+      }
+      .bad-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        width: 100%;
+      }
+      .bad-cards > div {
+        padding: 0.8rem;
+        border-radius: 14px;
+        background: #fff;
+        color: #333;
+        box-shadow: 0 6px 18px rgb(0 0 0 / 0.16);
+        font-size: 0.85rem;
+      }
+      .bad-pill {
+        padding: 0.6rem 1.6rem;
+        border: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #00e5ff, #7c4dff);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 0 18px #00e5ff;
+      }
+      .bad-dots {
+        width: 100%;
+        height: 7rem;
+        background: radial-gradient(color-mix(in srgb, var(--ef-ink) 35%, transparent) 1.2px, transparent 1.4px) 0 0 / 14px 14px, linear-gradient(color-mix(in srgb, var(--ef-ink) 12%, transparent) 1px, transparent 1px) 0 0 / 42px 42px, linear-gradient(90deg, color-mix(in srgb, var(--ef-ink) 12%, transparent) 1px, transparent 1px) 0 0 / 42px 42px;
+      }
+      .good-contours {
+        position: relative;
+        width: 100%;
+        height: 7rem;
+        overflow: hidden;
+      }
+      .good-contours::before {
+        content: '';
+        position: absolute;
+        inset: -2rem -2rem -2rem 30%;
+        background: color-mix(in srgb, var(--ef-ink) 14%, transparent);
+        -webkit-mask: url('../assets/contours/contour-a.svg') center / cover no-repeat;
+        mask: url('../assets/contours/contour-a.svg') center / cover no-repeat;
+      }
+      .bad-fake {
+        font-family: var(--ef-font-mono);
+        font-size: 0.7rem;
+        line-height: 1.3;
+        color: var(--ef-ink-2);
+      }
+      .bad-fake .bars {
+        display: block;
+        height: 1.6rem;
+        margin-top: 0.4rem;
+        background: repeating-linear-gradient(90deg, var(--ef-ink) 0 2px, transparent 2px 3px, var(--ef-ink) 3px 4px, transparent 4px 7px);
+        width: 12rem;
+      }
+      .bad-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        width: 100%;
+      }
+      .bad-grid > i {
+        height: 2.6rem;
+        background: var(--ef-panel);
+        border: 1px solid var(--ef-rule);
+      }
+      .good-orbit {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 6.5rem 1fr;
+        grid-template-rows: repeat(3, 2.6rem);
+        gap: 6px 10px;
+        width: 100%;
+      }
+      .good-orbit .ring {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        align-self: center;
+        aspect-ratio: 1;
+        border: 9px solid var(--ef-ink);
+        border-radius: 50%;
+      }
+      .good-orbit .p {
+        display: block;
+        position: relative;
+        background: var(--ef-chip);
+      }
+      .good-orbit .p::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 30%;
+        height: 4px;
+        background: var(--ef-ink);
+      }
+      .good-orbit .l1 { grid-area: 1 / 1; margin-right: -14px; background: linear-gradient(-45deg, transparent 12px, var(--ef-chip) 12.5px); }
+      .good-orbit .l2 { grid-area: 2 / 1; margin-right: 16px; }
+      .good-orbit .l3 { grid-area: 3 / 1; margin-right: -14px; background: linear-gradient(-135deg, transparent 12px, var(--ef-chip) 12.5px); }
+      .good-orbit .r1 { grid-area: 1 / 3; margin-left: -14px; background: linear-gradient(45deg, transparent 12px, var(--ef-chip) 12.5px); }
+      .good-orbit .r2 { grid-area: 2 / 3; margin-left: 16px; }
+      .good-orbit .r3 { grid-area: 3 / 3; margin-left: -14px; background: linear-gradient(135deg, transparent 12px, var(--ef-chip) 12.5px); }
+      .good-orbit .l2::after,
+      .good-orbit .r2::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 26px;
+        border-top: 1px solid var(--ef-ink);
+      }
+      .good-orbit .l2::after { left: 100%; }
+      .good-orbit .r2::after { right: 100%; }
+      .bad-thin-yellow {
+        font-size: 1.1rem;
+        color: #fffa00;
+        border-bottom: 1px solid #fffa00;
+      }
+      .bad-serif {
+        font-family: Georgia, 'Songti SC', serif;
+        font-style: italic;
+        font-size: 1.8rem;
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours">
+    <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
+    <main>
+      <header class="ef-head">
+        <h1>反例 <small>Anti-patterns</small></h1>
+        <p>每一行左边是常见的错误，右边是这套 UI 的做法。<b>不要照抄左边。</b><button class="ef-btn small" type="button" data-theme-toggle>切换深浅</button></p>
+      </header>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>黑底配黄色大字</p>
+          <div class="stage"><span class="bad-yellow-on-black">注意 WARNING</span></div>
+          <p class="why">像警示牌，刺眼；黄色变成了底色，就不再表示"这里"。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>黄色只做小块，上面写墨字</p>
+          <div class="stage"><span class="ef-marker">一句话说明这是什么</span><span class="ef-tag is-current">No.024</span><span class="ef-chip is-active">全部 <span class="n">24</span></span></div>
+          <p class="why">黄色只表示"这里 / 可操作 / 注意"。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>用红色表示告警、失败、待审</p>
+          <div class="stage"><span class="bad-alert">⚠ 备份失败！磁盘空间不足</span></div>
+          <p class="why">红色一出现就像出事了；而且红色已经留给"删除"。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>黄旗、黄块和墨线</p>
+          <div class="stage" style="display: grid; align-items: start">
+            <p class="ef-notice" data-flag="需要处理">备份没有成功：磁盘剩余 2.1 GB。</p>
+            <p style="margin: 0"><span class="ef-state is-alert">失败</span> <span class="ef-state is-draft">暂停</span> <button class="ef-btn small danger" type="button">删除</button></p>
+          </div>
+          <p class="why">红色只在指向"删除"按钮时擦入。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>圆角卡片、柔和投影的网格</p>
+          <div class="stage"><div class="bad-cards"><div>文章标题一<br /><small>3 天前</small></div><div>文章标题二<br /><small>5 天前</small></div><div>文章标题三<br /><small>1 周前</small></div></div></div>
+          <p class="why">像通用的后台模板；"3 天前"也不是记录字段。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>整行记录，列是真实字段</p>
+          <ol class="ef-records" style="width: 100%">
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.024</span><span class="ef-field">2026.10.16</span><span class="name ef-read">示例：仓储节点的布线记录</span><span class="ef-field">6,380 字</span></a></li>
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.023</span><span class="ef-field">2026.10.14</span><span class="name ef-read">示例：传送带吞吐量估算</span><span class="ef-field">9,102 字</span></a></li>
+          </ol>
+          <p class="why">编号、点分日期、计数；悬停时左边落下色条。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>胶囊、渐变、发光</p>
+          <div class="stage"><button class="bad-pill" type="button">立即开始</button></div>
+          <p class="why">那是霓虹赛博朋克，不是干净的工业感。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>切掉一个角的块</p>
+          <div class="stage"><button class="ef-btn go" type="button">立即开始</button><button class="ef-btn" type="button">了解更多</button></div>
+          <p class="why">切角 = 可以按；悬停时黄色从左擦入。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>点阵、方格纸背景</p>
+          <div class="stage"><div class="bad-dots"></div></div>
+          <p class="why">太满、太像"科技感素材"。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>两角极淡、不闭合的等高线</p>
+          <div class="stage"><div class="good-contours"></div></div>
+          <p class="why">（这里为了看清加深了；实际只有墨色 9%，并向边缘渐隐。）</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>假技术文字、条形码、坐标</p>
+          <div class="stage"><span class="bad-fake">MISSION-DEPENDENT PAYLOAD INTERFACE<br />0101 1101 0010 1110 · x:2843 y:749<span class="bars"></span></span></div>
+          <p class="why">只有质感，没有信息。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>真实的字段，宽体排开</p>
+          <div class="stage" style="display: grid; align-items: start">
+            <span class="ef-eyebrow slash">Records</span>
+            <ul class="ef-facts ef-field"><li>2026.10.16</li><li>6,380 字</li><li>约 16 分钟</li><li>3 / 24</li></ul>
+          </div>
+          <p class="why">每个结构元素都要能回答"它显示的是哪个字段"。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>四四方方的仪表盘方格</p>
+          <div class="stage"><div class="bad-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <p class="why">像表格，不像控制台。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>围着中心的不对称看板</p>
+          <div class="stage">
+            <div class="good-orbit"><div class="ring"></div><i class="p l1"></i><i class="p l2"></i><i class="p l3"></i><i class="p r1"></i><i class="p r2"></i><i class="p r3"></i></div>
+          </div>
+          <p class="why">上下两块靠向圆盘并切掉朝圆的角；中间一块退开，用引线接到圆盘。</p>
+        </section>
+      </div>
+
+      <div class="pair">
+        <section class="ef-panel no">
+          <p class="verdict"><b>不要</b>浅色主题里用黄色画线、写字；衬线斜体</p>
+          <div class="stage"><span class="bad-thin-yellow">当前所在的分区</span><span class="bad-serif">Endfield</span></div>
+          <p class="why">黄色在白底上只有 1.1:1，看不见；衬线斜体和工业感不搭。</p>
+        </section>
+        <section class="ef-panel yes">
+          <p class="verdict"><b>要</b>"这里"的线用 --ef-trace；宽体大写</p>
+          <div class="stage"><span style="border-left: 4px solid var(--ef-trace); padding-left: 0.6rem">当前所在的分区</span><span class="ef-pair"><span class="ef-eyebrow">Endfield</span><span>工业区</span></span></div>
+          <p class="why">trace 在浅色里是墨，在深色里是黄。</p>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { wireTheme } from '../assets/fx.js';
+      wireTheme();
+    </script>
+  </body>
+</html>

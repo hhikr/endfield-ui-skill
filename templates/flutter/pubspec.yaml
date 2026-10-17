@@ -1,0 +1,26 @@
+name: endfield_example
+description: Endfield-flavoured UI kit and sample screens for Flutter (iOS, Android, web).
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    # Saira variable (wdth 50-125, wght 100-900), SIL Open Font License, see fonts/Saira-OFL.txt.
+    # Chinese falls back to the platform CJK sans (PingFang / Noto Sans CJK); on web
+    # Flutter fetches Noto Sans SC itself. Bundle Noto Sans SC if you need it identical everywhere.
+    - family: Saira
+      fonts:
+        - asset: fonts/Saira.ttf

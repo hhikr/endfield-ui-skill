@@ -1,0 +1,226 @@
+<!doctype html>
+<!--
+  Showcase template: the bold voice (a home page, a landing page, a hero).
+  Serve the folder over HTTP (e.g. `python3 -m http.server` in the skill
+  folder) — browsers refuse ES modules from file://. Fonts come from Google Fonts here for
+  convenience; self-host them in production (references/tokens.md).
+  Everything named "示例" is placeholder content.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Showcase · Endfield UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      /* page-specific layout only; every look comes from endfield.css */
+      .hero {
+        --mx: 0;
+        --my: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 42%);
+        grid-template-rows: auto 1fr auto auto;
+        column-gap: clamp(1.5rem, 4vw, 3.5rem);
+        min-height: min(44rem, calc(100dvh - 3px));
+        padding-top: 1.25rem;
+        border-bottom: 1px solid var(--ef-rule);
+        overflow: hidden;
+      }
+      .hero > .meta {
+        grid-column: 1;
+        margin: 0;
+        padding-inline: var(--ef-pad);
+      }
+      .hero > .meta > * + *::before {
+        content: '/';
+        margin-inline: 0.75em;
+        color: var(--ef-rule);
+      }
+      .hero .ef-wordmark {
+        grid-column: 1;
+        align-self: end;
+        margin-top: 2rem;
+        padding-left: var(--ef-pad);
+      }
+      .hero .copy {
+        grid-column: 1;
+        padding: 1.75rem var(--ef-pad) 2.25rem;
+      }
+      .hero .copy p {
+        margin: 0;
+      }
+      .hero .claim {
+        font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+      }
+      .hero .bio {
+        max-width: 30rem;
+        margin-top: 0.9rem !important;
+        color: var(--ef-ink-2);
+      }
+      .hero .ef-actions {
+        margin-top: 1.5rem;
+      }
+      .hero .ef-frame {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        margin: 0 var(--ef-pad) 2.25rem 0;
+      }
+      .hero .ef-frame::before {
+        transform: translate(calc(var(--mx) * 12px), calc(var(--my) * 10px));
+      }
+      .hero .ef-frame svg {
+        width: 100%;
+        height: 100%;
+        transform: translate(calc(var(--mx) * -14px), calc(var(--my) * -8px));
+        transition: transform 0.4s var(--ef-ease);
+      }
+      .hero .ef-ticker {
+        grid-column: 1 / -1;
+      }
+      .latest {
+        background: var(--ef-panel);
+        border-bottom: 1px solid var(--ef-rule);
+      }
+      .latest > a {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: clamp(1.5rem, 5vw, 4rem);
+        padding: clamp(1.75rem, 4vw, 3rem) var(--ef-pad);
+      }
+      .latest .body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+        max-width: 44rem;
+      }
+      .latest .title {
+        font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .latest .flag {
+        padding: 0.05em 0.6em;
+        background: var(--ef-signal);
+        color: var(--ef-on-signal);
+        font-weight: 700;
+      }
+      .index {
+        padding: clamp(2rem, 4vw, 3rem) var(--ef-pad) 4rem;
+      }
+      @media (max-width: 899px) {
+        .hero {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: none;
+          min-height: 0;
+        }
+        .hero .ef-frame {
+          grid-column: 1;
+          grid-row: auto;
+          height: 18rem;
+          margin: 0 calc(var(--ef-pad) + 1rem) 2.25rem var(--ef-pad);
+        }
+        .latest > a {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours">
+    <div class="ef-tri ef-in-sweep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <section class="hero" data-hero>
+      <p class="meta ef-field">
+        <time>2026.10.17</time>
+        <span>第 <b data-fx-load>214</b> 天</span>
+        <span><b data-fx-load>24</b> 篇</span>
+        <span><b data-fx-load>48,210</b> 字</span>
+      </p>
+
+      <h1 class="ef-wordmark">
+        <span class="solid ef-in-drive">ACME</span>
+        <span class="hollow ef-in-drive" style="animation-delay: 140ms" aria-hidden="true">.WORKS</span>
+      </h1>
+
+      <div class="copy">
+        <p class="claim"><span class="ef-marker ef-in-stroke">示例：一个人的工程记录</span></p>
+        <p class="bio">示例简介。笔记、实验记录与杂谈，按发布顺序编号。</p>
+        <p class="ef-actions">
+          <a class="ef-btn go" href="#">读最新一篇 <span class="sub">No.024</span></a>
+          <a class="ef-btn" href="#">全部文章</a>
+          <a class="ef-btn" href="#">手册</a>
+        </p>
+      </div>
+
+      <figure class="ef-frame">
+        <div class="window">
+          <!-- placeholder art: an isometric line drawing of a crate. Use your own picture. -->
+          <svg viewBox="0 0 400 420" fill="none" stroke="currentColor" stroke-width="1.5" aria-label="示例线稿：一个等轴测的箱子">
+            <g transform="translate(200 250)">
+              <path d="M0 -150 L130 -75 L130 75 L0 150 L-130 75 L-130 -75 Z" />
+              <path d="M-130 -75 L0 0 L130 -75 M0 0 L0 150" />
+              <path d="M-100 -40 L-30 0 L-30 80 L-100 40 Z" stroke-dasharray="4 4" />
+              <path d="M30 0 L100 -40 M30 40 L100 0 M30 80 L100 40" />
+              <path d="M-65 -112 L65 -37 M-30 -132 L100 -57" opacity=".5" />
+            </g>
+            <text x="24" y="400" font-family="Saira, sans-serif" font-stretch="125%" font-size="11" letter-spacing="2" fill="currentColor" stroke="none">CRATE / 01</text>
+          </svg>
+        </div>
+        <figcaption class="ef-plate">示例座右铭，一行就够。</figcaption>
+      </figure>
+
+      <div class="ef-ticker" aria-label="最近的文章">
+        <div class="track">
+          <ul>
+            <li><a href="#"><b>No.024</b>示例：仓储节点的布线记录</a></li>
+            <li><a href="#"><b>No.023</b>示例：传送带吞吐量估算</a></li>
+            <li><a href="#"><b>No.022</b>示例：电力网络的冗余</a></li>
+            <li><a href="#"><b>No.021</b>示例：外勤日志整理</a></li>
+          </ul>
+          <ul aria-hidden="true">
+            <li><a href="#" tabindex="-1"><b>No.024</b>示例：仓储节点的布线记录</a></li>
+            <li><a href="#" tabindex="-1"><b>No.023</b>示例：传送带吞吐量估算</a></li>
+            <li><a href="#" tabindex="-1"><b>No.022</b>示例：电力网络的冗余</a></li>
+            <li><a href="#" tabindex="-1"><b>No.021</b>示例：外勤日志整理</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="latest">
+      <a href="#" data-fx-host>
+        <span class="ef-hollow-no" aria-hidden="true" data-fx>024</span>
+        <span class="body">
+          <span class="ef-field"><span class="flag">最新</span> 2026.10.16 | 6,380 字 | 约 16 分钟</span>
+          <span class="title">示例：仓储节点的布线记录</span>
+          <span class="ef-read" style="color: var(--ef-ink-2); line-height: 1.8">示例摘要。记录一次仓储节点的布线调整：先算吞吐，再排电力，最后留出冗余。</span>
+          <span class="ef-btn go">阅读全文</span>
+        </span>
+      </a>
+    </section>
+
+    <section class="index">
+      <p class="ef-eyebrow slash">Index</p>
+      <h2 class="ef-bar-title">全站索引</h2>
+      <ol class="ef-records">
+        <li><a class="ef-record ef-in-come" style="--i: 0" href="#"><span class="ef-tag">No.024</span><time class="ef-field">2026.10.16</time><span class="name ef-read">示例：仓储节点的布线记录</span><span class="ef-field">6,380 字</span></a></li>
+        <li><a class="ef-record ef-in-come" style="--i: 1" href="#"><span class="ef-tag">No.023</span><time class="ef-field">2026.10.14</time><span class="name ef-read">示例：传送带吞吐量估算</span><span class="ef-field">9,102 字</span></a></li>
+        <li><a class="ef-record ef-in-come" style="--i: 2" href="#"><span class="ef-tag">No.022</span><time class="ef-field">2026.10.11</time><span class="name ef-read">示例：电力网络的冗余</span><span class="ef-field">4,577 字</span></a></li>
+      </ol>
+      <p class="ef-actions" style="margin-top: 1.25rem">
+        <button class="ef-btn small" type="button" data-theme-toggle>切换深浅</button>
+      </p>
+    </section>
+
+    <script type="module">
+      import { wireReadouts, wireTheme, wireParallax } from '../assets/fx.js';
+      wireReadouts();
+      wireTheme();
+      wireParallax(document.querySelector('[data-hero]'));
+    </script>
+  </body>
+</html>

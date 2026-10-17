@@ -1,0 +1,223 @@
+<!doctype html>
+<!--
+  Console template: the bold voice for a dashboard / admin area.
+  No sidebar. A dark command bar across the top; in the middle a dial of
+  sections; three panels a side, mirrored but NOT a grid of equal boxes: the
+  top and bottom pairs lean in and lose the corner facing the dial, the middle
+  pair stands back and runs a lead to it. Below: ordinary working panels.
+  Serve the folder over HTTP (browsers refuse ES modules from file://).
+  Everything named "示例" is placeholder content.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Console · Endfield UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      /* page-specific layout only */
+      main {
+        max-width: 88rem;
+        margin-inline: auto;
+        padding: clamp(1.25rem, 3vw, 2.25rem) var(--ef-pad) 5rem;
+      }
+      .board {
+        container: board / inline-size;
+      }
+      .orbit {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+        gap: 1.25rem;
+      }
+      .hub {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: min(100%, 34rem);
+        margin: 0;
+      }
+      /* stacked, the leads would point at nothing (and stick out past the edge) */
+      @container board (max-width: 61.99rem) {
+        .orbit .ef-panel::after {
+          display: none;
+        }
+      }
+      .l1 .ef-figs b,
+      .r1 .ef-figs b {
+        font-size: 3rem;
+      }
+      .l3 .ef-figs,
+      .r3 .ef-figs {
+        border-top: 0;
+      }
+      @container board (min-width: 62rem) {
+        .orbit {
+          --gap: clamp(1.25rem, 3cqi, 2.5rem);
+          grid-template-columns: minmax(0, 1fr) clamp(27rem, 44cqi, 36rem) minmax(0, 1fr);
+          grid-template-rows: repeat(3, auto);
+          align-items: stretch;
+          gap: 1.25rem var(--gap);
+        }
+        .hub {
+          grid-column: 2;
+          grid-row: 1 / 4;
+          align-self: center;
+          width: 100%;
+        }
+        .l1, .l2, .l3 { grid-column: 1; }
+        .r1, .r2, .r3 { grid-column: 3; }
+        .l1, .r1 { grid-row: 1; }
+        .l2, .r2 { grid-row: 2; }
+        .l3, .r3 { grid-row: 3; }
+        /* top and bottom lean in under and over the dial's shoulders */
+        .l1, .l3 { margin-right: -1rem; }
+        .r1, .r3 { margin-left: -1rem; }
+        /* the middle pair stands back and runs a lead in to the rim */
+        .l2 { margin: 0 1.75rem 0 -0.75rem; --lead: calc(1.75rem + var(--gap) + 0.4rem); }
+        .r2 { margin: 0 -0.75rem 0 1.75rem; --lead: calc(1.75rem + var(--gap) + 0.4rem); }
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        align-items: start;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+      }
+      .form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (max-width: 860px) {
+        .cols {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours">
+    <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
+    <header class="ef-cmdbar">
+      <a class="brand" href="#"><span class="seal" aria-hidden="true">A</span>CONSOLE</a>
+      <nav aria-label="分区">
+        <a href="#" aria-current="page">概览<small>Overview</small></a>
+        <a href="#">文章<small>Posts</small></a>
+        <a href="#">评论<small>Comments</small><span class="count">2</span></a>
+        <a href="#">统计<small>Stats</small></a>
+        <a href="#">备份<small>Backup</small></a>
+      </nav>
+      <div class="util"><a href="#">查看网站</a><button class="ef-btn small" type="button" data-theme-toggle>深浅</button></div>
+    </header>
+
+    <main>
+      <div class="board">
+        <div class="orbit">
+          <figure class="hub"><svg class="ef-dial" data-dial role="group" aria-label="分区"></svg></figure>
+
+          <section class="ef-panel cut-br l1 ef-in-power" style="--i: 0">
+            <h2><span class="ef-pair"><span class="ef-eyebrow">Posts</span><span>文章</span></span> <a href="#">全部</a></h2>
+            <div class="ef-figs">
+              <a href="#"><b data-fx-load>16</b><span>已发布</span></a>
+              <a href="#"><b data-fx-load>0</b><span>隐藏</span></a>
+              <a href="#"><b data-fx-load>7</b><span>草稿</span></a>
+            </div>
+          </section>
+          <section class="ef-panel cut-bl tab-right r1 ef-in-power" style="--i: 0">
+            <h2><span class="ef-pair"><span class="ef-eyebrow">Visits</span><span>访问</span></span> <a href="#">详情</a></h2>
+            <div class="ef-figs">
+              <a href="#"><b data-fx-load>3</b><span>今天</span></a>
+              <a href="#"><b data-fx-load>58</b><span>7 天</span></a>
+              <a href="#"><b data-fx-load>242</b><span>30 天</span></a>
+            </div>
+          </section>
+          <section class="ef-panel lead-right l2 ef-in-power" style="--i: 1">
+            <h2>互动</h2>
+            <div class="ef-figs">
+              <a href="#"><b>10</b><span>评论</span></a>
+              <a href="#" class="is-alert"><b>2</b><span>待审</span></a>
+              <a href="#"><b>4</b><span>用户</span></a>
+            </div>
+          </section>
+          <section class="ef-panel lead-left tab-right r2 ef-in-power" style="--i: 1">
+            <h2>作品 <small>每分钟一次</small></h2>
+            <div class="ef-figs">
+              <a href="#"><b>3</b><span>作品</span></a>
+              <a href="#"><b>0</b><span>下载</span></a>
+              <a href="#"><b>507</b><span>文件</span></a>
+            </div>
+          </section>
+          <section class="ef-panel cut-tr l3 ef-in-power" style="--i: 2">
+            <h2>网站</h2>
+            <ul class="ef-ledger">
+              <li><span>数据库</span><span class="ef-field">2.6 MB</span></li>
+              <li><span>搜索索引</span><span class="ef-field warn">尚未建立</span></li>
+            </ul>
+          </section>
+          <section class="ef-panel cut-tl tab-right r3 ef-in-power" style="--i: 2">
+            <h2>机器</h2>
+            <ul class="ef-ledger">
+              <li><span>内存</span><span class="ef-field">1.5 GB / 15.7 GB</span></li>
+              <li><span>磁盘</span><span class="ef-field warn">剩余 27.0 GB</span></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <div class="cols">
+        <section class="ef-panel">
+          <h2>草稿 <a href="#">全部文章</a></h2>
+          <ul class="ef-rows">
+            <li>
+              <div>
+                <div>示例：节点布线草案 <span class="ef-state is-draft">草稿</span></div>
+                <div class="meta"><span>sample-node-07</span><span>1,204 字</span><span>2026.10.09</span></div>
+              </div>
+              <div class="acts"><a class="ef-btn small" href="#">编辑</a><button class="ef-btn small go" type="button">发布</button></div>
+            </li>
+            <li>
+              <div>
+                <div>示例：一条待审评论 <span class="ef-state is-alert">待审</span></div>
+                <div class="meta"><span>示例读者#0001</span><span>10/13 12:24</span></div>
+              </div>
+              <div class="acts"><button class="ef-btn small" type="button">公开</button><button class="ef-btn small danger" type="button">删除</button></div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="ef-panel">
+          <h2>设置</h2>
+          <form class="ef-form form-grid" onsubmit="return false">
+            <label class="field"><span>名称</span><input value="示例作品" /></label>
+            <label class="field"><span>地址</span><input value="sample-work" /><small>修改后，旧地址会自动跳转。</small></label>
+            <p class="ef-notice" data-flag="出错">这个地址已经被另一个作品使用。</p>
+            <p class="ef-actions"><button class="ef-btn go" type="submit">保存</button><button class="ef-btn" type="button">取消</button></p>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { wireReadouts, wireTheme } from '../assets/fx.js';
+      import { drawDial } from '../assets/dial.js';
+      drawDial(document.querySelector('[data-dial]'), {
+        idle: { label: '系统已运行', big: 16, unit: '小时', sub: '读数 11:36' },
+        gauges: [
+          { label: '处理器', share: 0.12 },
+          { label: '内存', share: 0.64 },
+          { label: '磁盘', share: 0.89 },
+        ],
+        sections: [
+          { zh: '概览', en: 'Overview', big: 16, unit: '小时', here: true },
+          { zh: '文章', en: 'Posts', big: 16, unit: '篇', sub: '草稿 7' },
+          { zh: '评论', en: 'Comments', big: 10, unit: '条', sub: '待审 2', alert: true },
+          { zh: '统计', en: 'Stats', big: 3, unit: '次', sub: '今天' },
+          { zh: '备份', en: 'Backup', big: '正常', sub: '10/17 04:00' },
+          { zh: '用户', en: 'Users', big: 4, unit: '位' },
+        ],
+      });
+      wireReadouts();
+      wireTheme();
+    </script>
+  </body>
+</html>

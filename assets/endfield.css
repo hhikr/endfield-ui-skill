@@ -1,0 +1,1475 @@
+/* ==========================================================================
+   endfield.css: an "Endfield-flavoured" interface kit
+   --------------------------------------------------------------------------
+   Framework-free. Every class starts with ef- so it can sit beside anything.
+   Light by default; dark with <html data-theme="dark">, or follows the system
+   when <html> has no data-theme at all.
+
+   Read ../SKILL.md first. In short:
+     - paper, ink and one yellow; yellow means "here" or "you can act on this"
+     - cut corners on whatever can be pressed; hairlines, not boxes
+     - real fields (numbers, dates, counts) in monospace
+     - motion is short, hard and mechanical, and switches off under
+       prefers-reduced-motion
+
+   Fonts are not loaded here. Self-host them (see references/tokens.md):
+     a wide geometric sans for Latin and figures (Saira, variable width and
+     weight) and a heavy-capable Chinese sans (Noto Sans SC / 思源黑体).
+   ========================================================================== */
+
+/* ---------- 1. tokens ---------- */
+
+:root {
+  --ef-paper: #f4f4f2; /* the page */
+  --ef-panel: #ffffff; /* sheets, plates, inputs */
+  --ef-ink: #161616; /* text and every line that matters */
+  --ef-ink-2: #5c5c5c; /* secondary text, field labels */
+  --ef-rule: #d9d9d6; /* 1px hairlines */
+  --ef-chip: #e4e4e0; /* quiet fills: chips, idle buttons */
+  --ef-signal: #fffa00; /* THE yellow: "here" / "act on this" / "look at this" */
+  --ef-on-signal: #161616; /* text on yellow, in both themes */
+  --ef-trace: var(--ef-ink); /* a line that means "here": ink by day, yellow by night */
+  --ef-tag-bg: var(--ef-ink); /* number tags */
+  --ef-tag-fg: var(--ef-panel);
+  --ef-danger: #b3261e; /* deleting things. Nothing else. */
+  --ef-tri-a: #ff00f0; /* the three-colour strip: magenta, yellow, mint */
+  --ef-tri-b: #fffa00;
+  --ef-tri-c: #00ffa2;
+  --ef-mark: color-mix(in srgb, var(--ef-signal) 55%, transparent); /* highlighter */
+  --ef-contour: color-mix(in srgb, var(--ef-ink) 9%, transparent);
+  --ef-hatch: repeating-linear-gradient(-45deg, transparent 0 5px, color-mix(in srgb, var(--ef-ink) 22%, transparent) 5px 6.5px);
+
+  /* type. Endfield pairs a wide, geometric Latin face (labels, figures, often
+     upper case) with a plain Chinese sans in several weights. Saira stands in
+     for the Latin side: its width axis goes up to 125%. */
+  --ef-font-ui: 'Saira Variable', 'Saira', 'Noto Sans SC Variable', 'Noto Sans SC', sans-serif;
+  /* what people read: the same Chinese sans, lighter and with more leading */
+  --ef-font-text: 'Noto Sans SC Variable', 'Noto Sans SC', sans-serif;
+  /* code only */
+  --ef-font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+  /* how wide the Latin face is set: fields a little wide, labels and the
+     wordmark fully wide, like the official site's wide capitals */
+  --ef-wide: 112%;
+  --ef-wider: 125%;
+
+  --ef-t-h1: 2.5rem;
+  --ef-t-title: 1.875rem;
+  --ef-t-h2: 1.375rem;
+  --ef-t-body: 1.0625rem;
+  --ef-t-ui: 0.9375rem;
+  --ef-t-field: 0.8125rem;
+
+  --ef-measure: 40rem; /* a reading line, about 38 Chinese characters */
+  --ef-pad: clamp(1rem, 4vw, 2.5rem);
+  --ef-cut: 7px; /* the corner cut off small entrances */
+
+  --ef-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ef-snap: cubic-bezier(0.16, 1, 0.3, 1); /* arrives fast, settles */
+  --ef-mech: cubic-bezier(0.7, 0, 0.2, 1); /* starts slow, closes hard, like a shutter */
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --ef-paper: #191919;
+  --ef-panel: #222222;
+  --ef-ink: #ededed;
+  --ef-ink-2: #a3a3a3;
+  --ef-rule: #353535;
+  --ef-chip: #2e2e2e;
+  --ef-trace: var(--ef-signal);
+  --ef-tag-bg: #3a3a3a;
+  --ef-tag-fg: var(--ef-ink);
+  --ef-danger: #ff8a7a;
+  --ef-mark: color-mix(in srgb, var(--ef-signal) 22%, transparent);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --ef-paper: #191919;
+    --ef-panel: #222222;
+    --ef-ink: #ededed;
+    --ef-ink-2: #a3a3a3;
+    --ef-rule: #353535;
+    --ef-chip: #2e2e2e;
+    --ef-trace: var(--ef-signal);
+    --ef-tag-bg: #3a3a3a;
+    --ef-tag-fg: var(--ef-ink);
+    --ef-danger: #ff8a7a;
+    --ef-mark: color-mix(in srgb, var(--ef-signal) 22%, transparent);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- 2. base ---------- */
+
+.ef,
+.ef *,
+.ef *::before,
+.ef *::after {
+  box-sizing: border-box;
+}
+
+.ef {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--ef-paper);
+  color: var(--ef-ink);
+  font-family: var(--ef-font-ui);
+  font-size: var(--ef-t-ui);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+.ef a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ef :is(a, button, summary, label[for]) {
+  cursor: pointer;
+}
+
+.ef ::selection {
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+}
+
+.ef :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ef :is(h1, h2, h3, h4) {
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+/* Reading text: plain sans, regular weight, generous leading. */
+.ef-read {
+  font-family: var(--ef-font-text);
+  font-weight: 400;
+}
+
+/* Two faint patches of open, flowing contour lines: upper right, lower left.
+   Put .ef-contours on <body> and keep the two SVGs next to this file. */
+.ef-contours::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--ef-contour);
+  -webkit-mask:
+    url('./contours/contour-a.svg') right -9rem top -7rem / 52rem auto no-repeat,
+    url('./contours/contour-b.svg') left -6rem bottom -14rem / 40rem auto no-repeat;
+  mask:
+    url('./contours/contour-a.svg') right -9rem top -7rem / 52rem auto no-repeat,
+    url('./contours/contour-b.svg') left -6rem bottom -14rem / 40rem auto no-repeat;
+}
+
+@media (max-width: 719px) {
+  .ef-contours::before {
+    -webkit-mask: url('./contours/contour-a.svg') right -12rem top -4rem / 34rem auto no-repeat;
+    mask: url('./contours/contour-a.svg') right -12rem top -4rem / 34rem auto no-repeat;
+  }
+}
+
+/* ---------- 3. marks that carry meaning ---------- */
+
+/* The three-colour strip: the top edge of a page, or under an article title. Nowhere else. */
+.ef-tri {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 3px;
+}
+.ef-tri > i:nth-child(1) {
+  background: var(--ef-tri-a);
+}
+.ef-tri > i:nth-child(2) {
+  background: var(--ef-tri-b);
+}
+.ef-tri > i:nth-child(3) {
+  background: var(--ef-tri-c);
+}
+
+/* A field of a record: number, date, count, path. Wide, geometric, tabular. */
+.ef-field {
+  font-family: var(--ef-font-ui);
+  font-size: var(--ef-t-field);
+  font-stretch: var(--ef-wide);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ef-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A small, wide, upper-case label above or beside a heading: "// OVERVIEW".
+   Add .slash for the double-slash prefix the game puts on titles. */
+.ef-eyebrow {
+  font-family: var(--ef-font-ui);
+  font-size: 0.7rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--ef-ink-2);
+}
+.ef-eyebrow.slash::before {
+  content: '// ';
+  letter-spacing: 0;
+}
+
+/* English small and wide above, Chinese heavy below: LORE / 世界观资料. */
+.ef-pair {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  line-height: 1.15;
+}
+.ef-pair > :last-child {
+  font-weight: 800;
+}
+
+/* Fields in a row, divided by hairlines; a wrapped line starts clean. */
+.ef-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  clip-path: inset(-6px -100vw -6px 0);
+}
+.ef-facts > * {
+  margin: 0 calc(0.75rem + 1px) 0 calc(-0.75rem - 1px);
+  padding: 0 0.75rem;
+  border-left: 1px solid var(--ef-rule);
+}
+
+/* Small entrances with one corner cut: number tag, key/value block, chip.
+   The cut is painted in the background so the focus ring stays whole. */
+.ef-tag,
+.ef-kv,
+.ef-chip {
+  --fill: var(--ef-chip);
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--ef-font-ui);
+  font-size: var(--ef-t-field);
+  font-stretch: var(--ef-wide);
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--ef-ink);
+  background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--fill) var(--ef-cut));
+  border: 0;
+}
+
+.ef-tag {
+  --fill: var(--ef-tag-bg);
+  padding: 0.1rem 0.8rem 0.1rem 0.5rem;
+  color: var(--ef-tag-fg);
+}
+
+.ef-chip {
+  gap: 0.35em;
+  padding: 0.15rem 0.85rem 0.15rem 0.55rem;
+}
+
+.ef-chip .n {
+  color: var(--ef-ink-2);
+}
+
+.ef-kv > * {
+  padding: 0.1rem 0.5rem;
+}
+.ef-kv > :first-child {
+  color: var(--ef-ink-2);
+  border-right: 1px solid color-mix(in srgb, var(--ef-ink) 16%, transparent);
+}
+.ef-kv > :last-child {
+  padding-right: 0.8rem;
+}
+
+/* "Here", or "this one is on": the yellow fill. */
+.ef-tag.is-current,
+a.ef-tag:hover,
+a.ef-kv:hover,
+a.ef-chip:hover,
+button.ef-chip:hover,
+.ef-chip[aria-pressed='true'],
+.ef-chip.is-active {
+  --fill: var(--ef-signal);
+  color: var(--ef-on-signal);
+}
+a.ef-kv:hover > :first-child,
+.ef-chip.is-active .n,
+.ef-chip[aria-pressed='true'] .n {
+  color: var(--ef-on-signal);
+}
+
+/* A highlighter stroke under one line that says what this is. */
+.ef-marker {
+  padding: 0.1em 0.45em;
+  background: linear-gradient(var(--ef-signal), var(--ef-signal)) left / 100% 100% no-repeat;
+  color: var(--ef-on-signal);
+  font-weight: 800;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* A state: live is solid ink, waiting is dashed, needs-a-look is a yellow block. */
+.ef-state {
+  display: inline-block;
+  padding: 0 0.5em;
+  border: 1px solid currentColor;
+  font-family: var(--ef-font-ui);
+  font-stretch: var(--ef-wide);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: 0.15em;
+}
+.ef-state.is-draft {
+  color: var(--ef-ink-2);
+  border-style: dashed;
+}
+.ef-state.is-hidden {
+  border-style: dashed;
+}
+.ef-state.is-alert {
+  border-color: var(--ef-signal);
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+  font-weight: 700;
+}
+
+/* Something needs reading: a yellow flag before the words. Red is not used. */
+.ef-notice {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--ef-ink);
+  background: var(--ef-panel);
+}
+.ef-notice::before {
+  content: attr(data-flag);
+  flex: none;
+  padding: 0 0.4em;
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.ef-notice:not([data-flag])::before {
+  content: '注意';
+}
+.ef-notice:is([hidden], :empty) {
+  display: none;
+}
+
+/* ---------- 4. buttons ---------- */
+
+/* A block with one corner cut. Pointing at it drives yellow across from the
+   left behind a bright edge. The cut is a mask, so the focus ring sits inside. */
+.ef-btn {
+  --fill: var(--ef-chip);
+  --wipe: var(--ef-signal);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.55rem 1.5rem 0.55rem 1rem;
+  border: 0;
+  background: var(--fill);
+  -webkit-mask: linear-gradient(-45deg, transparent 0.5rem, #000 calc(0.5rem + 0.5px));
+  mask: linear-gradient(-45deg, transparent 0.5rem, #000 calc(0.5rem + 0.5px));
+  color: var(--ef-ink);
+  font-family: var(--ef-font-ui);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.12s 0.06s,
+    transform 0.1s;
+}
+.ef-btn:focus-visible {
+  outline-offset: -4px;
+}
+.ef-btn.go {
+  --fill: var(--ef-ink);
+  color: var(--ef-panel);
+}
+.ef-btn.small {
+  padding: 0.3rem 1.1rem 0.3rem 0.75rem;
+  font-size: 0.8rem;
+}
+.ef-btn.danger {
+  --wipe: var(--ef-danger);
+}
+.ef-btn .sub {
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.ef-btn::before,
+.ef-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-101%);
+  transition: transform 0.28s var(--ef-mech);
+}
+.ef-btn::before {
+  background: var(--wipe);
+}
+.ef-btn::after {
+  inset: 0 auto 0 0;
+  z-index: 0;
+  width: 3px;
+  background: var(--ef-on-signal);
+  opacity: 0;
+}
+.ef-btn:is(:hover, :focus-visible):not(:disabled),
+:is(a, .ef-host):is(:hover, :focus-visible) span.ef-btn {
+  color: var(--ef-on-signal);
+}
+.ef-btn.danger:is(:hover, :focus-visible):not(:disabled) {
+  color: var(--ef-panel);
+}
+.ef-btn:is(:hover, :focus-visible):not(:disabled)::before,
+:is(a, .ef-host):is(:hover, :focus-visible) span.ef-btn::before {
+  transform: none;
+}
+.ef-btn:hover:not(:disabled)::after,
+:is(a, .ef-host):hover span.ef-btn::after {
+  animation: ef-edge 0.3s var(--ef-mech);
+}
+/* (a <span class="ef-btn"> inside a bigger link wipes when the link is pointed at) */
+.ef-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+.ef-btn:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+/* Touch screens have no pointing, so "act on this" shows at rest: the main
+   action is yellow, and pressing does the wipe that hovering does elsewhere. */
+@media (hover: none) {
+  .ef-btn.go {
+    --fill: var(--ef-signal);
+    --wipe: color-mix(in srgb, var(--ef-signal), #000 12%);
+    color: var(--ef-on-signal);
+  }
+  .ef-btn:active:not(:disabled) {
+    color: var(--ef-on-signal);
+  }
+  .ef-btn.danger:active:not(:disabled) {
+    color: var(--ef-panel);
+  }
+  .ef-btn:active:not(:disabled)::before {
+    transform: none;
+    transition-duration: 0.1s;
+  }
+  /* 16px keeps iOS from zooming into a focused field */
+  .ef-form :is(input, select, textarea) {
+    font-size: 1rem;
+  }
+}
+
+@keyframes ef-edge {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.ef-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+/* ---------- 5. lists ---------- */
+
+/* Records: one row each, columns are real fields (tag, date, name, count).
+   Pointing at a row drops a bar down its left edge and steps it in. */
+.ef-records {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-records > li {
+  border-bottom: 1px solid var(--ef-rule);
+}
+.ef-records a.ef-record,
+.ef-records .ef-record {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 0 1rem;
+  align-items: baseline;
+  padding: 0.7rem 0.6rem;
+  transition: background-color 0.15s;
+}
+.ef-record::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--ef-trace);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.2s var(--ef-snap);
+}
+.ef-record > * {
+  transition: transform 0.25s var(--ef-snap);
+}
+a.ef-record:is(:hover, :focus-visible) {
+  background: var(--ef-paper);
+}
+a.ef-record:is(:hover, :focus-visible)::before {
+  transform: none;
+}
+a.ef-record:is(:hover, :focus-visible) > * {
+  transform: translateX(6px);
+}
+.ef-record .name {
+  font-size: var(--ef-t-body);
+  line-height: 1.5;
+}
+@media (max-width: 719px) {
+  .ef-records .ef-record {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 0.25rem;
+  }
+  .ef-record .name {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .ef-record .ef-tag {
+    justify-self: start;
+  }
+}
+
+/* A column of label / figure pairs, for a margin or a panel. */
+.ef-ledger {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-ledger > li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--ef-rule);
+}
+.ef-ledger .warn {
+  padding: 0 0.4em;
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+  font-weight: 700;
+}
+
+/* ---------- 6. the reading page: a white sheet and a margin ---------- */
+
+.ef-spread {
+  display: grid;
+  grid-template-columns: minmax(0, calc(var(--ef-measure) + var(--ef-pad) * 2)) minmax(0, 1fr);
+  min-height: 100%;
+}
+.ef-sheet {
+  min-width: 0;
+  padding: clamp(2rem, 5vw, 3.5rem) var(--ef-pad) 4rem;
+  background: var(--ef-panel);
+  border-right: 1px solid var(--ef-rule);
+}
+.ef-margin {
+  min-width: 0;
+  padding: clamp(2rem, 5vw, 3.5rem) var(--ef-pad) 3rem;
+}
+@media (max-width: 959px) {
+  .ef-spread {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ef-sheet {
+    border-right: 0;
+    border-bottom: 1px solid var(--ef-rule);
+  }
+}
+
+/* A page's name with its count, ruled off in ink. */
+.ef-sheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--ef-ink);
+}
+.ef-sheet-head h1 {
+  margin: 0;
+  font-size: var(--ef-t-h1);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.ef-sheet-head p {
+  margin: 0;
+}
+
+.ef-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.6em;
+  margin: 0 0 0.75rem;
+}
+.ef-crumb a {
+  border-bottom: 1px solid var(--ef-rule);
+}
+.ef-crumb > * + *::before {
+  content: '/';
+  margin-right: 0.6em;
+  color: var(--ef-rule);
+}
+
+.ef-lede {
+  max-width: var(--ef-measure);
+  margin: 1.25rem 0 0;
+  font-size: var(--ef-t-body);
+  line-height: 1.75;
+  color: var(--ef-ink-2);
+}
+
+.ef-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.5rem 0 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ef-ink);
+  font-size: var(--ef-t-h2);
+  font-weight: 700;
+}
+.ef-group-head + .ef-records,
+.ef-sheet-head + .ef-records {
+  border-top: 0;
+}
+
+.ef-empty {
+  max-width: 30rem;
+  margin: 1.5rem 0 0;
+  line-height: 1.75;
+  color: var(--ef-ink-2);
+}
+
+/* Reading prose: brush face, generous leading, a link is ink over a yellow block
+   (a yellow line on dark, where the block would swallow light text). */
+.ef-prose {
+  max-width: var(--ef-measure);
+  font-family: var(--ef-font-text);
+  font-size: var(--ef-t-body);
+  line-height: 1.85;
+}
+.ef-prose :is(h2, h3) {
+  font-family: var(--ef-font-ui);
+}
+.ef-prose a {
+  text-decoration: underline;
+  text-decoration-color: var(--ef-signal);
+  text-decoration-thickness: 0.4em;
+  text-underline-offset: -0.18em;
+  text-decoration-skip-ink: none;
+}
+:root[data-theme='dark'] .ef-prose a {
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.25em;
+}
+.ef-prose strong {
+  font-weight: 700;
+}
+.ef-prose h2 {
+  font-size: var(--ef-t-h2);
+  font-weight: 700;
+  margin: 2.4em 0 0.8em;
+  padding-top: 0.9em;
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-prose blockquote {
+  margin: 1.2em 0;
+  padding-left: 1.2em;
+  border-left: 3px solid var(--ef-ink);
+  color: var(--ef-ink-2);
+}
+.ef-prose code {
+  font-family: var(--ef-font-mono);
+  font-size: 0.86em;
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--ef-rule);
+  background: var(--ef-paper);
+}
+
+/* ---------- 7. the showcase voice ---------- */
+
+/* The name, as heavy and wide as the column takes: solid, then hollow. */
+.ef-wordmark {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--ef-font-ui);
+  font-stretch: var(--ef-wider);
+  font-weight: 800;
+  line-height: 0.84;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.ef-wordmark > * {
+  line-height: 0.84;
+}
+.ef-wordmark .solid {
+  font-size: var(--ef-wordmark, clamp(3rem, 10vw, 11rem));
+}
+.ef-wordmark .hollow {
+  margin-top: 0.12em;
+  font-size: calc(var(--ef-wordmark, clamp(3rem, 10vw, 11rem)) * 0.48);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ef-ink);
+}
+
+/* A big hollow number that ink pours into, left to right, when pointed at. */
+.ef-hollow-no {
+  font-family: var(--ef-font-ui);
+  font-stretch: var(--ef-wide);
+  font-size: clamp(5rem, 14vw, 14rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ef-ink);
+  background: linear-gradient(var(--ef-ink), var(--ef-ink)) left / 0% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: background-size 0.45s var(--ef-mech);
+}
+:is(a, .ef-host):is(:hover, :focus-visible) .ef-hollow-no {
+  background-size: 100% 100%;
+}
+
+/* A title with a hatched band running off beside it. */
+.ef-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.ef-bar-title::after {
+  content: '';
+  flex: 1;
+  height: 0.8rem;
+  background: var(--ef-hatch);
+  border-left: 0.8rem solid var(--ef-ink);
+}
+
+/* A picture in a frame with two corners cut, a hatched shadow set off behind
+   it, and an ink plate carrying one line. */
+.ef-frame {
+  position: relative;
+  margin: 0 1rem 1rem 0;
+  min-height: 16rem;
+}
+.ef-frame::before {
+  content: '';
+  position: absolute;
+  inset: 1.5rem -1rem -1rem 1.5rem;
+  background: var(--ef-hatch);
+}
+.ef-frame .window {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(3.25rem 0, 100% 0, 100% calc(100% - 3.25rem), calc(100% - 3.25rem) 100%, 0 100%, 0 3.25rem);
+  background: var(--ef-panel);
+  overflow: hidden;
+}
+.ef-frame .window > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+.ef-plate {
+  position: absolute;
+  left: -1.25rem;
+  bottom: 1.75rem;
+  max-width: 78%;
+  margin: 0;
+  padding: 0.55rem 1.4rem 0.6rem 0.9rem;
+  background: linear-gradient(-45deg, transparent 0.6rem, var(--ef-ink) calc(0.6rem + 0.5px));
+  color: var(--ef-panel);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* A band of recent items passing by; pointing at it stops it. */
+.ef-ticker {
+  background: var(--ef-ink);
+  color: var(--ef-panel);
+  overflow: hidden;
+}
+.ef-ticker .track {
+  display: flex;
+  width: max-content;
+}
+.ef-ticker ul {
+  display: flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ef-ticker a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.ef-ticker b {
+  padding: 0 0.45em;
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+}
+.ef-ticker a:hover {
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+}
+
+/* ---------- 8. the console voice ---------- */
+
+/* The command bar: dark in both themes, so the yellow block of "where you are"
+   reads the same everywhere. */
+.ef-cmdbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0 1.5rem;
+  padding-inline: var(--ef-pad);
+  background: #161616;
+  color: #ededed;
+}
+.ef-cmdbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding-block: 0.6rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ef-cmdbar .seal {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: linear-gradient(-45deg, transparent 0.45rem, var(--ef-signal) calc(0.45rem + 0.5px));
+  color: var(--ef-on-signal);
+  font-size: 1.3rem;
+  letter-spacing: 0;
+}
+.ef-cmdbar nav {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: auto;
+}
+.ef-cmdbar nav a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 3.4rem;
+  padding: 0.3rem 1.15rem 0.3rem 0.8rem;
+  color: #b8b8b8;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.ef-cmdbar nav a small {
+  font-size: 0.6rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.ef-cmdbar nav a::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--ef-signal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ef-mech);
+}
+.ef-cmdbar nav a:hover {
+  color: #fff;
+  background: #232323;
+}
+.ef-cmdbar nav a:not([aria-current]):hover::after {
+  transform: none;
+}
+.ef-cmdbar nav a[aria-current] {
+  color: var(--ef-on-signal);
+  background: linear-gradient(-45deg, transparent calc(var(--ef-cut) + 2px), var(--ef-signal) calc(var(--ef-cut) + 2.5px));
+}
+.ef-cmdbar .count {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.3rem;
+  min-width: 1.4em;
+  padding: 0 0.3em;
+  background: var(--ef-signal);
+  color: var(--ef-on-signal);
+  outline: 2px solid #161616;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-align: center;
+}
+.ef-cmdbar .util {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  font-size: 0.78rem;
+  color: #b8b8b8;
+}
+
+/* A console page's name: heavy, with a hatched band beside it. */
+.ef-head {
+  display: grid;
+  grid-template-columns: auto minmax(2rem, 1fr);
+  align-items: center;
+  gap: 0.4rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.ef-head::after {
+  content: '';
+  grid-column: 2;
+  grid-row: 1;
+  height: 0.9rem;
+  background: var(--ef-hatch);
+  border-left: 0.9rem solid var(--ef-ink);
+}
+.ef-head h1 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+.ef-head h1 small {
+  font-size: 0.7rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ef-ink-2);
+}
+.ef-head p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ef-ink-2);
+}
+
+/* A panel: a plate on the paper with a heavy ink tab on its top edge, which
+   runs out along the whole edge when the panel is pointed at.
+   Add one of .cut-tl / .cut-tr / .cut-bl / .cut-br to cut away the corner that
+   faces a central dial, so panels follow its curve instead of forming a grid. */
+.ef-panel {
+  --cutaway: 1.6rem;
+  position: relative;
+  min-width: 0;
+  padding: 1rem 1.15rem 1.15rem;
+  background: var(--ef-panel);
+  border: 1px solid var(--ef-rule);
+}
+.ef-panel::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 5px;
+  background: var(--ef-ink);
+  transform: scaleX(0.14);
+  transform-origin: left;
+  transition: transform 0.4s var(--ef-mech);
+  pointer-events: none;
+}
+.ef-panel.tab-right::before {
+  transform-origin: right;
+}
+.ef-panel:is(:hover, :focus-within)::before {
+  transform: none;
+}
+.ef-panel:is(.cut-tl, .cut-tr, .cut-bl, .cut-br) {
+  border: 0;
+}
+.ef-panel.cut-br {
+  background: linear-gradient(-45deg, transparent var(--cutaway), var(--ef-panel) calc(var(--cutaway) + 0.5px));
+}
+.ef-panel.cut-bl {
+  background: linear-gradient(45deg, transparent var(--cutaway), var(--ef-panel) calc(var(--cutaway) + 0.5px));
+}
+.ef-panel.cut-tr {
+  background: linear-gradient(-135deg, transparent var(--cutaway), var(--ef-panel) calc(var(--cutaway) + 0.5px));
+}
+.ef-panel.cut-tl {
+  background: linear-gradient(135deg, transparent var(--cutaway), var(--ef-panel) calc(var(--cutaway) + 0.5px));
+}
+.ef-panel > h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.ef-panel > h2 > :is(a, small) {
+  margin-left: auto;
+  color: var(--ef-ink-2);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* A lead from a panel to whatever it describes: a hairline ending in a square.
+   Put .lead-right (or .lead-left) on a panel; set --lead to its length. */
+.ef-panel:is(.lead-right, .lead-left)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: var(--lead, 3rem);
+  height: 7px;
+  margin-top: -3.5px;
+  pointer-events: none;
+}
+.ef-panel.lead-right::after {
+  left: 100%;
+  background:
+    linear-gradient(var(--ef-ink), var(--ef-ink)) center / 100% 1px no-repeat,
+    linear-gradient(var(--ef-ink), var(--ef-ink)) right center / 7px 7px no-repeat;
+}
+.ef-panel.lead-left::after {
+  right: 100%;
+  background:
+    linear-gradient(var(--ef-ink), var(--ef-ink)) center / 100% 1px no-repeat,
+    linear-gradient(var(--ef-ink), var(--ef-ink)) left center / 7px 7px no-repeat;
+}
+
+/* Big figures, three to a panel. Pointing at one drives yellow under it. */
+.ef-figs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-figs > * {
+  display: grid;
+  gap: 0.1rem;
+  align-content: start;
+  justify-items: start;
+}
+.ef-figs b {
+  font-size: 2.4rem;
+  font-stretch: var(--ef-wide);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(var(--ef-signal), var(--ef-signal)) left / 0% 100% no-repeat;
+  transition: background-size 0.22s var(--ef-mech);
+}
+.ef-figs span {
+  font-size: 0.85rem;
+  color: var(--ef-ink-2);
+}
+.ef-figs > :is(a:hover, a:focus-visible) b,
+.ef-figs .is-alert b {
+  background-size: 100% 100%;
+  color: var(--ef-on-signal);
+}
+
+/* Rows of work inside a panel, edge to edge. */
+.ef-rows {
+  margin: 0 -1.15rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-rows > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  padding: 0.8rem 1.15rem;
+  border-bottom: 1px solid var(--ef-rule);
+  transition: background-color 0.15s;
+}
+.ef-rows > li::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--ef-trace);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.2s var(--ef-snap);
+}
+.ef-rows > li:hover {
+  background: var(--ef-paper);
+}
+.ef-rows > li:is(:hover, :focus-within)::before {
+  transform: none;
+}
+.ef-rows > li:last-child {
+  border-bottom: 0;
+}
+.ef-rows .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  font-family: var(--ef-font-ui);
+  font-stretch: var(--ef-wide);
+  font-size: 0.75rem;
+  color: var(--ef-ink-2);
+}
+.ef-rows .acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+/* ---------- 9. forms ---------- */
+
+.ef-form .field {
+  display: grid;
+  gap: 0.35rem;
+}
+.ef-form .field > span {
+  font-size: var(--ef-t-field);
+  font-weight: 600;
+}
+.ef-form .field small {
+  color: var(--ef-ink-2);
+  font-size: 0.82rem;
+}
+.ef-form :is(input:not([type='checkbox'], [type='radio'], [type='range']), select, textarea) {
+  width: 100%;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--ef-rule);
+  border-radius: 0;
+  background: var(--ef-panel);
+  color: var(--ef-ink);
+  font: inherit;
+  transition: border-color 0.15s;
+}
+.ef-form :is(input, select, textarea):hover {
+  border-color: var(--ef-ink-2);
+}
+.ef-form :is(input, select, textarea):focus-visible {
+  border-color: var(--ef-ink);
+  outline: 2px solid var(--ef-trace);
+  outline-offset: -1px;
+}
+.ef-form :is(input[type='checkbox'], input[type='radio']) {
+  accent-color: var(--ef-ink);
+}
+
+/* ---------- 10. motion ---------- */
+
+/* Things that open a page: driven in behind a shutter, uncovered from a cut
+   corner, switched on from the top down. All of it is under a second. */
+@media (prefers-reduced-motion: no-preference) {
+  .ef-in-drive {
+    animation: ef-drive 620ms var(--ef-mech) both;
+  }
+  .ef-in-stroke {
+    animation: ef-stroke 420ms var(--ef-mech) 420ms both;
+  }
+  .ef-in-power {
+    animation: ef-power 520ms var(--ef-mech) backwards;
+    animation-delay: calc(var(--i, 0) * 100ms + 120ms);
+  }
+  .ef-in-come {
+    animation: ef-come 320ms var(--ef-snap) both;
+    animation-delay: calc(var(--i, 0) * 38ms);
+  }
+  .ef-tri.ef-in-sweep {
+    transform-origin: left;
+    animation: ef-sweep 600ms var(--ef-ease) both;
+  }
+  .ef-ticker .track {
+    animation: ef-pass 60s linear infinite;
+  }
+  .ef-ticker:is(:hover, :focus-within) .track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes ef-drive {
+  from {
+    clip-path: inset(0 100% 0 0);
+    transform: translateX(-0.12em);
+  }
+  to {
+    clip-path: inset(0 -5% 0 0);
+    transform: none;
+  }
+}
+@keyframes ef-stroke {
+  from {
+    background-size: 0% 100%;
+  }
+}
+@keyframes ef-power {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(-6px);
+  }
+}
+@keyframes ef-come {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 -2% 0 0);
+  }
+}
+@keyframes ef-sweep {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes ef-pass {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Going from page to page (same-origin navigations): the new page is drawn
+   across the old one by a slanted shutter. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root) {
+    animation: none;
+  }
+  ::view-transition-new(root) {
+    animation: ef-shutter 360ms var(--ef-mech) both;
+  }
+}
+@keyframes ef-shutter {
+  from {
+    clip-path: polygon(0 0, 0 0, -14% 100%, -14% 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 114% 0, 100% 100%, -14% 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* the ticker stops and becomes a strip you can scroll */
+  .ef-ticker {
+    overflow-x: auto;
+  }
+  .ef-ticker ul[aria-hidden] {
+    display: none;
+  }
+  .ef *,
+  .ef *::before,
+  .ef *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- 11. the dial (built by dial.js) ---------- */
+
+.ef-dial {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--ef-font-ui);
+}
+.ef-dial .orbit {
+  fill: none;
+  stroke: var(--ef-ink-2);
+  stroke-dasharray: 2 10;
+}
+.ef-dial .plate {
+  fill: var(--ef-panel);
+  stroke: var(--ef-ink);
+  stroke-width: 1.5;
+  transition: fill 0.15s;
+}
+.ef-dial .zh {
+  font-size: 19px;
+  font-weight: 800;
+  fill: var(--ef-ink);
+}
+.ef-dial .en {
+  font-size: 8px;
+  font-stretch: var(--ef-wider);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--ef-ink-2);
+}
+.ef-dial .seg.is-here .plate {
+  fill: var(--ef-ink);
+}
+.ef-dial .seg.is-here :is(.zh, .en) {
+  fill: var(--ef-panel);
+}
+.ef-dial .seg.is-alert .plate {
+  stroke-width: 3;
+}
+.ef-dial .flag {
+  fill: var(--ef-signal);
+  stroke: var(--ef-on-signal);
+}
+.ef-dial .lock,
+.ef-dial .beam {
+  fill: none;
+  stroke: var(--ef-trace);
+  stroke-width: 3;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.3s var(--ef-mech);
+}
+.ef-dial .beam {
+  stroke-width: 1.5;
+}
+.ef-dial .seg:is(:hover, :focus-visible) .plate {
+  fill: var(--ef-signal);
+}
+.ef-dial .seg:is(:hover, :focus-visible) :is(.zh, .en) {
+  fill: var(--ef-on-signal);
+}
+.ef-dial .seg:is(:hover, :focus-visible) :is(.lock, .beam) {
+  stroke-dashoffset: 0;
+}
+.ef-dial .seg:focus-visible {
+  outline: none;
+}
+.ef-dial .core-tag {
+  fill: var(--ef-signal);
+}
+.ef-dial .core-label {
+  font-size: 10px;
+  fill: var(--ef-ink-2);
+}
+.ef-dial .core-label.on-tag {
+  font-weight: 700;
+  fill: var(--ef-on-signal);
+}
+.ef-dial .core {
+  font-size: 46px;
+  font-stretch: var(--ef-wide);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  fill: var(--ef-ink);
+}
+.ef-dial .core .unit {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.ef-dial .gauge circle {
+  fill: none;
+  stroke-width: 11;
+}
+.ef-dial .gauge .track {
+  stroke: var(--ef-chip);
+}
+.ef-dial .gauge .arc {
+  stroke: var(--ef-ink-2);
+}
+.ef-dial .gauge:first-of-type .arc {
+  stroke: var(--ef-trace);
+}
+.ef-dial .gauge text {
+  font-size: 10px;
+  fill: var(--ef-ink-2);
+}
+/* a reading that is nearly full: the arc goes to the colour of "here", with a yellow label */
+.ef-dial .gauge.is-alert .arc {
+  stroke: var(--ef-trace);
+}
+.ef-dial .gauge.is-alert text {
+  font-weight: 700;
+  fill: var(--ef-on-signal);
+}
+.ef-dial .gauge .flag {
+  fill: var(--ef-signal);
+  stroke: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ef-dial .orbit {
+    transform-box: view-box;
+    transform-origin: 300px 300px;
+  }
+  .ef-dial .seg {
+    animation: ef-assemble 360ms var(--ef-snap) backwards;
+    animation-delay: calc(var(--i) * 45ms + 80ms);
+    transform-box: view-box;
+    transform-origin: 300px 300px;
+  }
+}
+@keyframes ef-assemble {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}

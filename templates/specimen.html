@@ -1,0 +1,230 @@
+<!doctype html>
+<!--
+  Specimen sheet: every token and small component of endfield.css on one page,
+  each with its class name and what it MEANS. Items marked "hover" are shown in
+  their pointed-at state (forced with .is-demo-hover) so a screenshot carries it.
+  Serve the folder over HTTP (browsers refuse ES modules from file://).
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Specimen · Endfield UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      main {
+        max-width: 84rem;
+        margin-inline: auto;
+        padding: 2rem var(--ef-pad) 4rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+      }
+      .cell > h2 small {
+        font-stretch: var(--ef-wide);
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 0.4rem 0;
+      }
+      .note {
+        margin: 0.6rem 0 0;
+        font-size: 0.8rem;
+        color: var(--ef-ink-2);
+      }
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+        gap: 2px;
+      }
+      .sw {
+        display: grid;
+        align-content: end;
+        min-height: 5.5rem;
+        padding: 0.5rem;
+        font-stretch: var(--ef-wide);
+        font-size: 0.7rem;
+        line-height: 1.4;
+        border: 1px solid var(--ef-rule);
+      }
+      .type p {
+        margin: 0.3rem 0;
+      }
+      /* force the pointed-at state for the screenshot */
+      .is-demo-hover.ef-btn {
+        color: var(--ef-on-signal);
+      }
+      .is-demo-hover.ef-btn::before {
+        transform: none;
+      }
+      .is-demo-hover.ef-panel::before {
+        transform: none;
+      }
+      .is-demo-hover.ef-chip {
+        --fill: var(--ef-signal);
+        color: var(--ef-on-signal);
+      }
+      .is-demo-hover.ef-record {
+        background: var(--ef-paper);
+      }
+      .is-demo-hover.ef-record::before {
+        transform: none;
+      }
+      .is-demo-hover.ef-record > * {
+        transform: translateX(6px);
+      }
+      .hollow-demo {
+        display: flex;
+        gap: 1.5rem;
+        align-items: end;
+      }
+      .hollow-demo .ef-hollow-no {
+        font-size: clamp(3.5rem, 12vw, 5.5rem);
+      }
+      .hollow-demo .full {
+        background-size: 100% 100%;
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours">
+    <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
+    <main>
+      <header class="ef-head">
+        <h1>样张 <small>Specimen</small></h1>
+        <p>endfield.css 的全部部件。每格写着类名和它的意思。<button class="ef-btn small" type="button" data-theme-toggle>切换深浅</button></p>
+      </header>
+
+      <section class="ef-panel is-demo-hover">
+        <h2>颜色 <small>tokens</small></h2>
+        <div class="swatches">
+          <div class="sw" style="background: var(--ef-paper)">--ef-paper<br />页面</div>
+          <div class="sw" style="background: var(--ef-panel)">--ef-panel<br />纸、板、输入框</div>
+          <div class="sw" style="background: var(--ef-ink); color: var(--ef-panel)">--ef-ink<br />字和重要的线</div>
+          <div class="sw" style="background: var(--ef-ink-2); color: var(--ef-panel)">--ef-ink-2<br />次要文字</div>
+          <div class="sw" style="background: var(--ef-rule)">--ef-rule<br />1px 细线</div>
+          <div class="sw" style="background: var(--ef-chip)">--ef-chip<br />安静的填充</div>
+          <div class="sw" style="background: var(--ef-signal); color: var(--ef-on-signal)">--ef-signal<br />这里 / 可操作 / 注意</div>
+          <div class="sw" style="background: var(--ef-trace); color: var(--ef-paper)">--ef-trace<br />"这里"的线</div>
+          <div class="sw" style="background: var(--ef-danger); color: var(--ef-panel)">--ef-danger<br />只用于删除</div>
+          <div class="sw" style="background: var(--ef-hatch)">--ef-hatch<br />斜线纹</div>
+          <div class="sw" style="background: linear-gradient(90deg, var(--ef-tri-a) 33.3%, var(--ef-tri-b) 0 66.6%, var(--ef-tri-c) 0)">--ef-tri-*<br />三色条</div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="ef-panel cell">
+          <h2>字体 <small>界面 / 阅读 / 代码</small></h2>
+          <div class="type">
+            <p style="font-weight: 800; font-size: 1.6rem; font-stretch: var(--ef-wider)">ENDFIELD 界面 800</p>
+            <p>--ef-font-ui：宽体几何英文（Saira）+ 思源黑体。导航、按钮、标签、标题。</p>
+            <p class="ef-read" style="font-size: 1.3rem; font-weight: 700">阅读 --ef-font-text</p>
+            <p class="ef-read">思源黑体常规字重，行高放宽，用于正文。</p>
+            <p class="ef-field">字段 .ef-field｜No.024｜2026.10.17｜6,380 字</p>
+            <p class="ef-eyebrow slash">Section title prefix</p>
+            <p><span class="ef-pair"><span class="ef-eyebrow">Lore</span><span>世界观资料</span></span>　英文小字在上，中文粗体在下</p>
+          </div>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>入口 <small>.ef-tag .ef-kv .ef-chip</small></h2>
+          <div class="row">
+            <span class="ef-tag">No.024</span>
+            <span class="ef-tag is-current">No.017</span>
+            <a class="ef-kv" href="#"><span>分类</span><span>记录</span></a>
+            <span class="ef-chip">实验 <span class="n">2</span></span>
+            <span class="ef-chip is-active">全部 <span class="n">16</span></span>
+            <span class="ef-chip is-demo-hover">hover</span>
+          </div>
+          <p class="note">切掉一个角 = 可以点进去。黄色 = 当前所在。</p>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>按钮 <small>.ef-btn</small></h2>
+          <div class="row">
+            <button class="ef-btn go" type="button">主要 .go</button>
+            <button class="ef-btn" type="button">次要</button>
+            <button class="ef-btn is-demo-hover" type="button">hover：黄色擦入</button>
+          </div>
+          <div class="row">
+            <button class="ef-btn small" type="button">.small</button>
+            <button class="ef-btn small danger" type="button">删除 .danger</button>
+            <button class="ef-btn small" type="button" disabled>disabled</button>
+          </div>
+          <p class="note">红色只在删除按钮被指向时擦入。</p>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>状态与提示 <small>.ef-state .ef-notice</small></h2>
+          <div class="row">
+            <span class="ef-state">已发布</span>
+            <span class="ef-state is-hidden">隐藏</span>
+            <span class="ef-state is-draft">草稿</span>
+            <span class="ef-state is-alert">待审</span>
+          </div>
+          <p class="ef-notice" style="margin-top: 0.8rem">需要注意的事，前面插一面黄旗。</p>
+          <p class="note">实线 = 生效；虚线 = 还在后台；黄块 = 要看一眼。没有红色。</p>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>记录字段 <small>.ef-field .ef-facts .ef-marker</small></h2>
+          <ul class="ef-facts ef-field">
+            <li>2026.10.17</li>
+            <li>6,380 字</li>
+            <li>约 16 分钟</li>
+            <li>阅读 128 次</li>
+          </ul>
+          <p style="margin: 1rem 0 0"><span class="ef-marker">一句话说明这是什么</span></p>
+          <p class="note">每个字段都是真实数据。用竖线分隔，不用中间点。</p>
+        </section>
+
+        <section class="ef-panel cell is-demo-hover">
+          <h2>看板 <small>.ef-panel（hover：页签伸开）</small></h2>
+          <div class="ef-figs">
+            <a href="#"><b>16</b><span>已发布</span></a>
+            <a href="#" class="is-alert"><b>2</b><span>待审</span></a>
+            <a href="#"><b>7</b><span>草稿</span></a>
+          </div>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>列表行 <small>.ef-records</small></h2>
+          <ol class="ef-records">
+            <li><a class="ef-record" href="#"><span class="ef-tag">No.023</span><span class="ef-field">10.10</span><span class="name ef-read">普通一行</span><span class="ef-field">9,102 字</span></a></li>
+            <li><a class="ef-record is-demo-hover" href="#"><span class="ef-tag">No.022</span><span class="ef-field">10.08</span><span class="name ef-read">hover：色条落下、右移</span><span class="ef-field">4,577 字</span></a></li>
+          </ol>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>表单 <small>.ef-form</small></h2>
+          <form class="ef-form" onsubmit="return false" style="display: grid; gap: 0.8rem">
+            <label class="field"><span>名字</span><input placeholder="示例名字#0001" /><small>说明写在输入框下面。</small></label>
+            <label><input type="checkbox" checked /> 公开</label>
+          </form>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>展示 <small>.ef-hollow-no .ef-bar-title</small></h2>
+          <div class="hollow-demo">
+            <span class="ef-hollow-no">024</span>
+            <span class="ef-hollow-no full">017</span>
+          </div>
+          <h3 class="ef-bar-title" style="margin-top: 1rem">斜线纹带标题</h3>
+          <p class="note">空心大编号被指向时，墨色从左灌满（右边是灌满后）。</p>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { wireTheme } from '../assets/fx.js';
+      wireTheme();
+    </script>
+  </body>
+</html>
