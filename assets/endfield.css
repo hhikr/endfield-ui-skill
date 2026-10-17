@@ -1792,7 +1792,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
    wireDialogs() runs the open and close motion and handles Esc.
    Sheet: top-left corner cut, a hatch band with a grabber, eyebrow + title.
    Dialog: a panel with the heavy tab, bottom-right corner cut. */
-.ef-sheet,
+.ef-drawer,
 .ef-dialog {
   padding: 0;
   border: 0;
@@ -1801,40 +1801,40 @@ a.ef-record:is(:hover, :focus-visible) > * {
   color: var(--ef-ink);
   font-family: var(--ef-font-ui);
 }
-.ef-sheet::backdrop,
+.ef-drawer::backdrop,
 .ef-dialog::backdrop {
   background: rgb(22 22 22 / 0.5);
 }
-:root[data-theme='dark'] :is(.ef-sheet, .ef-dialog)::backdrop {
+:root[data-theme='dark'] :is(.ef-drawer, .ef-dialog)::backdrop {
   background: rgb(0 0 0 / 0.63);
 }
-.ef-sheet {
+.ef-drawer {
   inset: auto 0 0;
   width: 100%;
   max-height: 85dvh;
   margin: 0;
 }
-.ef-sheet > .body {
+.ef-drawer > .body {
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(135deg, transparent 1.6rem, var(--ef-panel) calc(1.6rem + 0.5px));
 }
-.ef-sheet .grab {
+.ef-drawer .grab {
   display: grid;
   place-items: center;
   height: 18px;
   margin-left: 1.6rem;
   background: var(--ef-hatch);
 }
-.ef-sheet .grab::after {
+.ef-drawer .grab::after {
   content: '';
   width: 40px;
   height: 4px;
   background: var(--ef-ink);
 }
-.ef-sheet header {
+.ef-drawer header {
   padding: 0.75rem var(--ef-pad) 0.5rem;
 }
-.ef-sheet .ef-pair > :last-child {
+.ef-drawer .ef-pair > :last-child {
   font-size: 1.25rem;
 }
 /* one action per row inside a sheet; danger text is red */
@@ -1865,10 +1865,10 @@ a.ef-record:is(:hover, :focus-visible) > * {
 .ef-act:active {
   background: var(--ef-paper);
 }
-.ef-sheet .ef-actions {
+.ef-drawer .ef-actions {
   padding: 0.75rem var(--ef-pad) 0;
 }
-.ef-sheet .ef-actions > .ef-btn {
+.ef-drawer .ef-actions > .ef-btn {
   flex: 1;
   justify-content: center;
 }
@@ -2004,23 +2004,23 @@ a.ef-record:is(:hover, :focus-visible) > * {
   .ef-out-wipe {
     animation: ef-wipe-out 200ms var(--ef-mech) both;
   }
-  .ef-sheet[open] > .body {
+  .ef-drawer[open] > .body {
     animation: ef-sheet-in 360ms var(--ef-mech) both;
   }
-  .ef-sheet[open]::backdrop,
+  .ef-drawer[open]::backdrop,
   .ef-dialog[open]::backdrop {
     animation: ef-fade 200ms linear both;
   }
   .ef-dialog[open] > * {
     animation: ef-power 280ms var(--ef-mech) both;
   }
-  .ef-sheet.is-closing > .body {
+  .ef-drawer.is-closing > .body {
     animation: ef-sheet-out 240ms var(--ef-mech) both;
   }
   .ef-dialog.is-closing > * {
     animation: ef-shut 180ms var(--ef-mech) both;
   }
-  :is(.ef-sheet, .ef-dialog).is-closing::backdrop {
+  :is(.ef-drawer, .ef-dialog).is-closing::backdrop {
     animation: ef-fade 160ms linear reverse both;
   }
   .ef-toast {
@@ -2114,7 +2114,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(.ef-sheet, .ef-dialog)::backdrop {
+  :is(.ef-drawer, .ef-dialog)::backdrop {
     animation: none !important;
   }
 }
