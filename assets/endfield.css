@@ -417,6 +417,7 @@ a.ef-kv:hover > :first-child,
 }
 .ef-btn.danger {
   --wipe: var(--ef-danger);
+  color: var(--ef-danger);
 }
 .ef-btn .sub {
   font-weight: 400;
@@ -575,6 +576,12 @@ a.ef-record:is(:hover, :focus-visible) > * {
   }
   .ef-record .ef-tag {
     justify-self: start;
+  }
+  /* the count stays on the first line, at the right */
+  .ef-record > .ef-field:last-child {
+    grid-column: -2;
+    grid-row: 1;
+    justify-self: end;
   }
 }
 
@@ -1479,5 +1486,635 @@ a.ef-record:is(:hover, :focus-visible) > * {
   from {
     opacity: 0;
     transform: scale(0.94);
+  }
+}
+
+/* ---------- 12. app parts: phone screens, H5, PWA ----------
+   The same parts as the Flutter kit (templates/flutter), for the web. */
+
+/* Top bar: no fill, not centred, no shadow. Eyebrow + bold Chinese, a hairline
+   below, at most one or two text buttons on the right. */
+.ef-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: calc(0.75rem + env(safe-area-inset-top, 0px)) var(--ef-pad) 0.75rem;
+  border-bottom: 1px solid var(--ef-rule);
+  background: var(--ef-paper);
+}
+.ef-topbar > .ef-pair {
+  margin-right: auto;
+}
+.ef-topbar .ef-pair > :last-child {
+  font-size: 1.25rem;
+}
+/* the back key: a small cut square, not a round icon button */
+.ef-back {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border: 0;
+  background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--ef-chip) var(--ef-cut));
+  color: var(--ef-ink);
+  font: 700 1.25rem/1 var(--ef-font-ui);
+}
+
+/* Bottom tab bar: 3 to 5 items, words not just icons; the current one is a
+   whole yellow block with a cut corner. */
+.ef-tabbar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  background: var(--ef-panel);
+  border-top: 1px solid var(--ef-rule);
+}
+.ef-tabbar a {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  min-height: 52px;
+  color: var(--ef-ink);
+  font: 500 0.875rem/1.3 var(--ef-font-ui);
+  transition: background-color 0.28s var(--ef-mech);
+}
+.ef-tabbar small {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  font-stretch: var(--ef-wider);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ef-ink-2);
+}
+.ef-tabbar [aria-current='page'] {
+  background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--ef-signal) var(--ef-cut));
+  color: var(--ef-on-signal);
+  font-weight: 700;
+}
+.ef-tabbar [aria-current='page'] small {
+  color: var(--ef-on-signal);
+}
+/* keep content clear of a fixed tab bar */
+.ef-has-tabbar {
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 600px) {
+  /* tablets: the tab bar stands up along the left edge */
+  .ef-tabbar.can-rail {
+    inset: 0 auto 0 0;
+    width: 6.5rem;
+    grid-auto-flow: row;
+    grid-auto-rows: 64px;
+    align-content: start;
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) 8px 1rem;
+    border-top: 0;
+    border-right: 1px solid var(--ef-rule);
+  }
+  .ef-has-tabbar:has(.ef-tabbar.can-rail) {
+    padding-bottom: 0;
+    padding-left: 6.5rem;
+  }
+}
+
+/* Side rail for the reading page: stacked nav, "// EN" over Chinese, the
+   current item a whole yellow block. Below 1100px it lies down as a top bar. */
+.ef-rail {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0 1rem;
+  border-right: 1px solid var(--ef-rule);
+}
+.ef-rail .brand {
+  padding: 0 1.25rem 2rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.ef-rail a:not(.brand) {
+  padding: 0.4rem 1.25rem;
+  color: var(--ef-ink-2);
+}
+.ef-rail a:not(.brand):hover {
+  color: var(--ef-ink);
+}
+.ef-rail a[aria-current] {
+  color: var(--ef-on-signal);
+  font-weight: 700;
+  background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--ef-signal) var(--ef-cut));
+}
+@media (max-width: 1099px) {
+  .ef-rail {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.75rem var(--ef-pad);
+    border-right: 0;
+    border-bottom: 1px solid var(--ef-rule);
+  }
+  .ef-rail .brand {
+    padding: 0 1rem 0 0;
+  }
+  .ef-rail a:not(.brand) {
+    padding: 0.3rem 0.8rem;
+  }
+}
+
+/* Search: white field, "//" prefix, a 2px trace line at the bottom on focus. */
+.ef-search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--ef-rule);
+  background: var(--ef-panel);
+}
+.ef-search::before {
+  content: '//';
+  color: var(--ef-ink-2);
+  font-weight: 700;
+}
+.ef-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 0;
+  background: none;
+  color: var(--ef-ink);
+  font: inherit;
+  font-size: max(1rem, 16px);
+  outline: none;
+}
+.ef-search:focus-within {
+  border-bottom-color: var(--ef-trace);
+  box-shadow: inset 0 -1px 0 var(--ef-trace);
+}
+
+/* Square switch: on is a yellow track with an ink block. Use on a checkbox:
+   <input type="checkbox" role="switch" class="ef-switch"> */
+.ef-switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 48px;
+  height: 26px;
+  margin: 0;
+  background: var(--ef-chip);
+  cursor: pointer;
+  transition: background-color 0.28s var(--ef-mech);
+}
+.ef-switch::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--ef-panel);
+  transition: transform 0.28s var(--ef-mech);
+}
+.ef-switch:checked {
+  background: var(--ef-signal);
+}
+.ef-switch:checked::before {
+  background: var(--ef-on-signal);
+  transform: translateX(22px);
+}
+.ef-switch:focus-visible {
+  outline: 2px solid var(--ef-ink);
+  outline-offset: 2px;
+}
+
+/* Segmented choice: an ink frame; the current segment is ink with paper text.
+   Not yellow: yellow is kept for navigation and the main action.
+   Radios inside labels: <div class="ef-seg" role="radiogroup"><label><input type="radio" name="d"><span>标准</span></label>… */
+.ef-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border: 1px solid var(--ef-ink);
+}
+.ef-seg label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 0 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.28s var(--ef-mech),
+    color 0.28s var(--ef-mech);
+}
+.ef-seg input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.ef-seg label:has(:checked) {
+  background: var(--ef-ink);
+  color: var(--ef-paper);
+}
+.ef-seg label:has(:focus-visible) {
+  outline: 2px solid var(--ef-trace);
+  outline-offset: -4px;
+}
+
+/* Settings row: name and a line of help on the left, the control on the right. */
+.ef-setting {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ef-rule);
+}
+.ef-setting > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+.ef-setting b {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.ef-setting small {
+  color: var(--ef-ink-2);
+  font-size: 0.75rem;
+}
+
+/* Mechanical progress: 24 cells, lit cells yellow, a padded readout.
+   <div class="ef-progress" role="progressbar" aria-valuenow="63" style="--p: 0.63">
+     <span class="ef-eyebrow">Syncing / 同步中</span><span class="ef-field">063%</span><i></i>
+   </div>
+   Add .is-unknown when there is no figure: a run of yellow cells walks left to right. */
+.ef-progress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+.ef-progress > i {
+  --cells: 24;
+  grid-column: 1 / -1;
+  height: 10px;
+  background:
+    linear-gradient(90deg, var(--ef-signal) calc(var(--p, 0) * 100%), transparent 0),
+    var(--ef-chip);
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 calc(100% / var(--cells) - 2px), transparent 0 calc(100% / var(--cells)));
+  mask: repeating-linear-gradient(90deg, #000 0 calc(100% / var(--cells) - 2px), transparent 0 calc(100% / var(--cells)));
+}
+.ef-progress > .ef-field {
+  color: var(--ef-ink);
+}
+.ef-progress.is-unknown > i {
+  background:
+    linear-gradient(90deg, transparent 0 var(--run-at, 0%), var(--ef-signal) var(--run-at, 0%) calc(var(--run-at, 0%) + 25%), transparent 0),
+    var(--ef-chip);
+}
+
+/* Skeleton: plain chip blocks while something loads. No shimmer. */
+.ef-skeleton {
+  display: block;
+  height: 1em;
+  background: var(--ef-chip);
+}
+.ef-skeleton.line {
+  height: 0.8rem;
+  margin: 0.45rem 0;
+}
+
+/* Bottom sheet and dialog, on <dialog>. Open with showModal(); fx.js
+   wireDialogs() runs the open and close motion and handles Esc.
+   Sheet: top-left corner cut, a hatch band with a grabber, eyebrow + title.
+   Dialog: a panel with the heavy tab, bottom-right corner cut. */
+.ef-sheet,
+.ef-dialog {
+  padding: 0;
+  border: 0;
+  max-width: none;
+  background: transparent;
+  color: var(--ef-ink);
+  font-family: var(--ef-font-ui);
+}
+.ef-sheet::backdrop,
+.ef-dialog::backdrop {
+  background: rgb(22 22 22 / 0.5);
+}
+:root[data-theme='dark'] :is(.ef-sheet, .ef-dialog)::backdrop {
+  background: rgb(0 0 0 / 0.63);
+}
+.ef-sheet {
+  inset: auto 0 0;
+  width: 100%;
+  max-height: 85dvh;
+  margin: 0;
+}
+.ef-sheet > .body {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(135deg, transparent 1.6rem, var(--ef-panel) calc(1.6rem + 0.5px));
+}
+.ef-sheet .grab {
+  display: grid;
+  place-items: center;
+  height: 18px;
+  margin-left: 1.6rem;
+  background: var(--ef-hatch);
+}
+.ef-sheet .grab::after {
+  content: '';
+  width: 40px;
+  height: 4px;
+  background: var(--ef-ink);
+}
+.ef-sheet header {
+  padding: 0.75rem var(--ef-pad) 0.5rem;
+}
+.ef-sheet .ef-pair > :last-child {
+  font-size: 1.25rem;
+}
+/* one action per row inside a sheet; danger text is red */
+.ef-act {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--ef-pad);
+  border: 0;
+  border-top: 1px solid var(--ef-rule);
+  background: none;
+  color: var(--ef-ink);
+  font: 600 1rem var(--ef-font-ui);
+  text-align: left;
+}
+.ef-act > :first-child {
+  flex: 1;
+}
+.ef-act::after {
+  content: '›';
+  color: var(--ef-ink-2);
+}
+.ef-act.danger {
+  color: var(--ef-danger);
+}
+.ef-act:active {
+  background: var(--ef-paper);
+}
+.ef-sheet .ef-actions {
+  padding: 0.75rem var(--ef-pad) 0;
+}
+.ef-sheet .ef-actions > .ef-btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.ef-dialog {
+  width: min(24rem, calc(100% - 2 * var(--ef-pad)));
+}
+.ef-dialog > .ef-panel {
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+.ef-dialog h2 {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.ef-dialog p {
+  margin: 0 0 1rem;
+  color: var(--ef-ink-2);
+}
+.ef-dialog .ef-actions {
+  justify-content: flex-end;
+}
+
+/* Toast: a dark bar with a yellow flag down the left, one line, then gone.
+   fx.js toast('已保存。') makes one. */
+.ef-toast {
+  position: fixed;
+  left: var(--ef-pad);
+  right: var(--ef-pad);
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 0.75rem 0.9rem 0.75rem calc(6px + 0.9rem);
+  background:
+    linear-gradient(var(--ef-signal), var(--ef-signal)) left / 6px 100% no-repeat,
+    #161616;
+  color: #ededed;
+  font-weight: 600;
+}
+
+/* A data table: eyebrow head, hairlines between rows, figures right-aligned
+   in tabular figures, no zebra stripes. */
+.ef-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.ef-table th {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--ef-ink);
+  color: var(--ef-ink-2);
+  font-size: 0.7rem;
+  font-stretch: var(--ef-wider);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.ef-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--ef-rule);
+}
+.ef-table :is(th, td).num {
+  text-align: right;
+  font-stretch: var(--ef-wide);
+}
+.ef-table tbody tr:hover {
+  background: var(--ef-paper);
+  box-shadow: inset 4px 0 0 var(--ef-trace);
+}
+.ef-table-wrap {
+  overflow-x: auto;
+}
+
+/* Bars: grey columns; the one pointed at, or marked .is-here, turns to the
+   colour of "here"; a reading over its limit gets a yellow square on top.
+   <ol class="ef-bars"><li style="--v: 0.62"><span>10.12</span></li>… */
+.ef-bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: end;
+  gap: 4px;
+  height: 8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--ef-ink);
+}
+.ef-bars > li {
+  position: relative;
+  height: calc(var(--v, 0) * 100%);
+  min-height: 2px;
+  background: color-mix(in srgb, var(--ef-ink-2) 45%, transparent);
+  transition: background-color 0.15s;
+}
+.ef-bars > li:is(:hover, .is-here) {
+  background: var(--ef-trace);
+}
+.ef-bars > li.is-over::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  background: var(--ef-signal);
+  outline: 1px solid var(--ef-on-signal);
+}
+.ef-bars > li > span {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 0.3rem;
+  color: var(--ef-ink-2);
+  font-size: 0.65rem;
+  font-stretch: var(--ef-wide);
+  white-space: nowrap;
+}
+
+/* ---------- 13. leaving, and changes of state ----------
+   Every entrance has a way out. Exits run at about two-thirds of the entrance
+   and always use mech: they start slow and shut hard, like a gate. */
+@media (prefers-reduced-motion: no-preference) {
+  /* a block appears wiped in from the left: a notice, a toast, a new row */
+  .ef-in-wipe {
+    animation: ef-wipe-in 280ms var(--ef-mech) both;
+  }
+  /* a block leaves wiped out to the right (fx.js removeRow() uses it) */
+  .ef-out-wipe {
+    animation: ef-wipe-out 200ms var(--ef-mech) both;
+  }
+  .ef-sheet[open] > .body {
+    animation: ef-sheet-in 360ms var(--ef-mech) both;
+  }
+  .ef-sheet[open]::backdrop,
+  .ef-dialog[open]::backdrop {
+    animation: ef-fade 200ms linear both;
+  }
+  .ef-dialog[open] > * {
+    animation: ef-power 280ms var(--ef-mech) both;
+  }
+  .ef-sheet.is-closing > .body {
+    animation: ef-sheet-out 240ms var(--ef-mech) both;
+  }
+  .ef-dialog.is-closing > * {
+    animation: ef-shut 180ms var(--ef-mech) both;
+  }
+  :is(.ef-sheet, .ef-dialog).is-closing::backdrop {
+    animation: ef-fade 160ms linear reverse both;
+  }
+  .ef-toast {
+    animation: ef-wipe-in 280ms var(--ef-mech) both;
+  }
+  .ef-toast.is-closing {
+    animation: ef-wipe-out 160ms var(--ef-mech) both;
+  }
+  /* unknown progress: a run of yellow cells walks across, and stops when done */
+  .ef-progress.is-unknown > i {
+    animation: ef-run 1.2s steps(24) infinite;
+  }
+  /* "done": after a save, yellow passes once through the button and out */
+  .ef-btn.is-done {
+    color: var(--ef-on-signal);
+  }
+  .ef-btn.is-done::before {
+    animation: ef-done 600ms var(--ef-mech);
+  }
+}
+
+@keyframes ef-wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes ef-wipe-out {
+  from {
+    clip-path: inset(0);
+  }
+  to {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+@keyframes ef-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes ef-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes ef-shut {
+  to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+@keyframes ef-fade {
+  from {
+    opacity: 0;
+  }
+}
+@property --run-at {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@keyframes ef-run {
+  from {
+    --run-at: -25%;
+  }
+  to {
+    --run-at: 100%;
+  }
+}
+@keyframes ef-done {
+  0% {
+    transform: translateX(-101%);
+  }
+  45%,
+  60% {
+    transform: none;
+  }
+  100% {
+    transform: translateX(101%);
+  }
+}
+
+/* Switching themes: fx.js wireTheme() may uncover the new theme in a circle
+   from the toggle. The page shutter must not run at the same time. */
+:root.ef-theming::view-transition-old(root),
+:root.ef-theming::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.ef-sheet, .ef-dialog)::backdrop {
+    animation: none !important;
   }
 }

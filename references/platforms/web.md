@@ -39,7 +39,7 @@
 
    如果内容安全策略不允许内联脚本，把这两段放进外部文件。
 
-4. 从最接近的模板复制结构：阅读 `templates/reading.html`、展示 `templates/showcase.html`、控制台 `templates/console.html`。页面自己的 `<style>` 只写布局（grid、间距），颜色、字、部件全部用 `ef-` 类和 `--ef-*` 变量。
+4. 从最接近的模板复制结构：阅读 `templates/reading.html`、展示 `templates/showcase.html`、控制台 `templates/console.html`、手机屏幕 `templates/app.html`。动效对照 `templates/motion.html`。页面自己的 `<style>` 只写布局（grid、间距），颜色、字、部件全部用 `ef-` 类和 `--ef-*` 变量。
 
 模板要用静态服务器打开（浏览器不允许从 `file://` 加载 ES 模块）：在 skill 目录运行 `python3 -m http.server`，打开 `http://localhost:8000/templates/showcase.html`。
 
@@ -74,8 +74,8 @@
 - **焦点**：`.ef` 下所有可聚焦元素有 2px、颜色跟随文字（`currentColor`）的焦点框，所以在深色命令栏、墨色滚动条上也看得见；输入框聚焦用 `--ef-trace`。切角按钮的焦点框向内缩 4px，不会被切掉。
 - **换页快门**：`endfield.css` 自带同源 `@view-transition`，新页面被一扇斜切快门推入。不想要就删掉那一段。
 - **链接**：正文链接墨字压黄色下划块；深色里改成细黄线。
-- **表格**：用 `.ef-records` 或 `.ef-rows`；真正的数据表用 `<table>`，表头是眉标样式，行间细线，数字右对齐用等宽数字，没有斑马纹。
-- **图表**：灰色柱和线，指向的那一项变成 `--ef-trace`；超阈值的点用黄色方块标记。不用红绿、不用渐变填充。
+- **表格**：列表用 `.ef-records` 或 `.ef-rows`；真正的数据表用 `<table class="ef-table">`：表头是眉标样式，行间细线，数字右对齐用等宽数字，没有斑马纹。
+- **图表**：灰色柱和线，指向的那一项变成 `--ef-trace`；超阈值的点用黄色方块标记。不用红绿、不用渐变填充。简单柱图用 `.ef-bars`；用图表库时照这几条改它的配色。
 - **滚动条**：可以把 `scrollbar-color` 设成 `var(--ef-rule) transparent`，细而直角。
 
 ## 验收
