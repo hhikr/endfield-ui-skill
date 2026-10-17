@@ -34,7 +34,10 @@ val LocalEf = staticCompositionLocalOf { EfLight }
 fun EfTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val c = if (dark) EfDark else EfLight
     val scheme = (if (dark) darkColorScheme() else lightColorScheme()).copy(
-        primary = Signal, onPrimary = OnSignal, background = c.paper, surface = c.panel,
+        // 主色是墨不是黄：Material 默认部件（光标、焦点线、进度条、复选框）用主色画线，
+        // 黄线在浅色纸上看不见。黄色只在 ef 部件里手动用。
+        primary = c.ink, onPrimary = c.paper, secondary = Signal, onSecondary = OnSignal,
+        background = c.paper, surface = c.panel,
         onBackground = c.ink, onSurface = c.ink, outline = c.rule, error = c.danger,
     )
     val square = CutCornerShape(0.dp)
@@ -126,18 +129,19 @@ fun EfButton(label: String, onClick: () -> Unit, go: Boolean = false, danger: Bo
 }
 ```
 
-Compose 的动画会遵守系统的"动画时长缩放"（开发者选项和无障碍里的"移除动画"），设为 0 时直接跳到终点。主要操作按下加 `LocalHapticFeedback.current.performHapticFeedback(HapticFeedbackType.LongPress)` 之类的轻触感，或 `View.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)`。
+Compose 的动画会遵守系统的"动画时长缩放"（开发者选项和无障碍里的"移除动画"），设为 0 时直接跳到终点。主要操作按下加一次轻触感：`LocalView.current.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)`（不要用 `HapticFeedbackType.LongPress`，那是长按的重触感）。
 
 全局去掉涟漪：`CompositionLocalProvider(LocalRippleConfiguration provides null)`（Material3 1.3+），或像上面一样每处 `indication = null`。
 
 ## 斜线纹与三色条
 
 ```kotlin
-fun Modifier.hatch(color: Color, step: Dp = 7.dp) = drawBehind {
+// 1.5dp 的线，垂直间距 6.5dp（沿 x 步进 6.5 × √2 ≈ 9.2dp），见 tokens.json size.hatch
+fun Modifier.hatch(color: Color, step: Dp = 9.2.dp) = drawBehind {
     clipRect {
         val s = step.toPx()
         var x = -size.height
-        while (x < size.width) { drawLine(color, Offset(x, size.height), Offset(x + size.height, 0f), 1.dp.toPx()); x += s }
+        while (x < size.width) { drawLine(color, Offset(x, size.height), Offset(x + size.height, 0f), 1.5.dp.toPx()); x += s }
     }
 }
 
