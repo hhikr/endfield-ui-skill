@@ -17,7 +17,7 @@ extension Color {
     static let ink2  = ef(0x5C5C5C, 0xA3A3A3)
     static let rule  = ef(0xD9D9D6, 0x353535)
     static let chip  = ef(0xE4E4E0, 0x2E2E2E)
-    static let trace = ef(0x161616, 0xFFFA00)   // "这里"的线：浅色是墨，深色是黄
+    static let trace = ef(0x161616, 0xFFFA00)   // 当前位置的线：浅色是墨，深色是黄
     static let danger = ef(0xB3261E, 0xFF8A7A)
     static let signal = Color(red: 1, green: 250/255, blue: 0)
     static let onSignal = Color(red: 22/255, green: 22/255, blue: 22/255)
