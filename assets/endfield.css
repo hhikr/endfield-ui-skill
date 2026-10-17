@@ -33,7 +33,7 @@
   --ef-tag-fg: var(--ef-panel);
   --ef-danger: #b3261e; /* deleting things. Nothing else. */
   --ef-tri-a: #ff00f0; /* the three-colour strip: magenta, yellow, mint */
-  --ef-tri-b: #fffa00;
+  --ef-tri-b: var(--ef-signal);
   --ef-tri-c: #00ffa2;
   --ef-mark: color-mix(in srgb, var(--ef-signal) 55%, transparent); /* highlighter */
   --ef-contour: color-mix(in srgb, var(--ef-ink) 9%, transparent);
@@ -61,7 +61,8 @@
 
   --ef-measure: 40rem; /* a reading line, about 38 Chinese characters */
   --ef-pad: clamp(1rem, 4vw, 2.5rem);
-  --ef-cut: 7px; /* the corner cut off small entrances */
+  --ef-cut-k: 1; /* every corner cut scales with this (variant: tight 0.6, wide 1.6) */
+  --ef-cut: calc(7px * var(--ef-cut-k)); /* the corner cut off small entrances */
 
   --ef-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
   --ef-snap: cubic-bezier(0.16, 1, 0.3, 1); /* arrives fast, settles */
@@ -391,8 +392,8 @@ a.ef-kv:hover > :first-child,
   padding: 0.55rem 1.5rem 0.55rem 1rem;
   border: 0;
   background: var(--fill);
-  -webkit-mask: linear-gradient(-45deg, transparent 0.5rem, #000 calc(0.5rem + 0.5px));
-  mask: linear-gradient(-45deg, transparent 0.5rem, #000 calc(0.5rem + 0.5px));
+  -webkit-mask: linear-gradient(-45deg, transparent calc(0.5rem * var(--ef-cut-k)), #000 calc(0.5rem * var(--ef-cut-k) + 0.5px));
+  mask: linear-gradient(-45deg, transparent calc(0.5rem * var(--ef-cut-k)), #000 calc(0.5rem * var(--ef-cut-k) + 0.5px));
   color: var(--ef-ink);
   font-family: var(--ef-font-ui);
   font-size: 0.9rem;
@@ -831,7 +832,8 @@ a.ef-record:is(:hover, :focus-visible) > * {
 .ef-frame .window {
   position: absolute;
   inset: 0;
-  clip-path: polygon(3.25rem 0, 100% 0, 100% calc(100% - 3.25rem), calc(100% - 3.25rem) 100%, 0 100%, 0 3.25rem);
+  --frame-cut: calc(3.25rem * var(--ef-cut-k));
+  clip-path: polygon(var(--frame-cut) 0, 100% 0, 100% calc(100% - var(--frame-cut)), calc(100% - var(--frame-cut)) 100%, 0 100%, 0 var(--frame-cut));
   background: var(--ef-panel);
   overflow: hidden;
 }
@@ -849,7 +851,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
   max-width: 78%;
   margin: 0;
   padding: 0.55rem 1.4rem 0.6rem 0.9rem;
-  background: linear-gradient(-45deg, transparent 0.6rem, var(--ef-ink) calc(0.6rem + 0.5px));
+  background: linear-gradient(-45deg, transparent calc(0.6rem * var(--ef-cut-k)), var(--ef-ink) calc(0.6rem * var(--ef-cut-k) + 0.5px));
   color: var(--ef-panel);
   font-weight: 600;
   line-height: 1.45;
@@ -918,7 +920,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
   place-items: center;
   width: 2.25rem;
   height: 2.25rem;
-  background: linear-gradient(-45deg, transparent 0.45rem, var(--ef-signal) calc(0.45rem + 0.5px));
+  background: linear-gradient(-45deg, transparent calc(0.45rem * var(--ef-cut-k)), var(--ef-signal) calc(0.45rem * var(--ef-cut-k) + 0.5px));
   color: var(--ef-on-signal);
   font-size: 1.3rem;
   letter-spacing: 0;
@@ -1033,7 +1035,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
    Add one of .cut-tl / .cut-tr / .cut-bl / .cut-br to cut away the corner that
    faces a central dial, so panels follow its curve instead of forming a grid. */
 .ef-panel {
-  --cutaway: 1.6rem;
+  --cutaway: calc(1.6rem * var(--ef-cut-k));
   position: relative;
   min-width: 0;
   padding: 1rem 1.15rem 1.15rem;
@@ -1816,7 +1818,7 @@ a.ef-record:is(:hover, :focus-visible) > * {
 }
 .ef-drawer > .body {
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(135deg, transparent 1.6rem, var(--ef-panel) calc(1.6rem + 0.5px));
+  background: linear-gradient(135deg, transparent calc(1.6rem * var(--ef-cut-k)), var(--ef-panel) calc(1.6rem * var(--ef-cut-k) + 0.5px));
 }
 .ef-drawer .grab {
   display: grid;
@@ -2117,4 +2119,104 @@ a.ef-record:is(:hover, :focus-visible) > * {
   :is(.ef-drawer, .ef-dialog)::backdrop {
     animation: none !important;
   }
+}
+
+/* ---------- 14. variants ----------
+   The same grammar with a different face, so two products built from this kit
+   do not look like one. Set the attributes on <html> (assets/variant.js reads
+   ?variant= or the single axes from the address, and data-ef-variant presets):
+     data-ef-accent   yellow (default) | lime | ice | amber
+     data-ef-paper    neutral (default) | warm | cool
+     data-ef-cut      standard (default) | tight | wide
+     data-ef-ground   contours (default) | grid | hatch | plain   (needs .ef-contours on <body>)
+     data-ef-density  standard (default) | compact | roomy
+     data-ef-motion   full (default) | calm   (calm: no entrances; responses stay)
+   Any other accent works if text in ink on it reaches 7:1 and it is not red
+   (red means deleting). Rules and presets: references/variation.md. */
+
+:root[data-ef-accent='lime'] {
+  --ef-signal: #b8ff3d;
+}
+:root[data-ef-accent='ice'] {
+  --ef-signal: #7de6ff;
+}
+:root[data-ef-accent='amber'] {
+  --ef-signal: #ffb31f;
+}
+
+:root[data-ef-paper='warm'] {
+  --ef-paper: #f3f1ea;
+  --ef-panel: #fffefa;
+  --ef-rule: #dcd8cc;
+  --ef-chip: #e7e3d8;
+}
+:root[data-ef-paper='cool'] {
+  --ef-paper: #f0f3f5;
+  --ef-panel: #ffffff;
+  --ef-rule: #d3dadf;
+  --ef-chip: #e0e6ea;
+}
+:root[data-ef-paper='warm'][data-theme='dark'] {
+  --ef-paper: #1b1a17;
+  --ef-panel: #24221e;
+  --ef-rule: #38352f;
+  --ef-chip: #302d28;
+}
+:root[data-ef-paper='cool'][data-theme='dark'] {
+  --ef-paper: #171a1c;
+  --ef-panel: #1f2326;
+  --ef-rule: #323a3f;
+  --ef-chip: #2a3034;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-ef-paper='warm']:not([data-theme]) {
+    --ef-paper: #1b1a17;
+    --ef-panel: #24221e;
+    --ef-rule: #38352f;
+    --ef-chip: #302d28;
+  }
+  :root[data-ef-paper='cool']:not([data-theme]) {
+    --ef-paper: #171a1c;
+    --ef-panel: #1f2326;
+    --ef-rule: #323a3f;
+    --ef-chip: #2a3034;
+  }
+}
+
+:root[data-ef-cut='tight'] {
+  --ef-cut-k: 0.6;
+}
+:root[data-ef-cut='wide'] {
+  --ef-cut-k: 1.6;
+}
+
+:root[data-ef-density='compact'] {
+  font-size: 93.75%;
+}
+:root[data-ef-density='roomy'] {
+  font-size: 106.25%;
+}
+
+/* Ground: what lies faintly under the page. */
+:root[data-ef-ground='plain'] .ef-contours::before {
+  display: none;
+}
+:root[data-ef-ground='grid'] .ef-contours::before {
+  background:
+    linear-gradient(var(--ef-contour) 1px, transparent 1px) 0 0 / 3rem 3rem,
+    linear-gradient(90deg, var(--ef-contour) 1px, transparent 1px) 0 0 / 3rem 3rem;
+  -webkit-mask: radial-gradient(ellipse at 85% 10%, #000, transparent 70%);
+  mask: radial-gradient(ellipse at 85% 10%, #000, transparent 70%);
+}
+:root[data-ef-ground='hatch'] .ef-contours::before {
+  background: var(--ef-hatch);
+  opacity: 0.4;
+  -webkit-mask: linear-gradient(200deg, #000, transparent 35%), linear-gradient(20deg, #000, transparent 25%);
+  mask: linear-gradient(200deg, #000, transparent 35%), linear-gradient(20deg, #000, transparent 25%);
+}
+
+/* Calm motion: pages open without entrances; pointing, pressing, opening and
+   closing still answer. For tools used all day. */
+:root[data-ef-motion='calm'] :is(.ef-in-drive, .ef-in-stroke, .ef-in-power, .ef-in-come, .ef-in-sweep) {
+  animation: none !important;
 }

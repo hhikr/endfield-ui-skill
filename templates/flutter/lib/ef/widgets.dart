@@ -46,7 +46,7 @@ class EfTag extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = EfColors.of(context);
     return DecoratedBox(
-      decoration: ShapeDecoration(color: current ? Ef.signal : c.tagBg, shape: efCut(br: Ef.cutSmall)),
+      decoration: ShapeDecoration(color: current ? c.signal : c.tagBg, shape: efCut(br: Ef.cutSmall)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(7, 2, 10, 2),
         child: Text(text, style: EfType.ui(12, weight: 600, width: 112, color: current ? Ef.onSignal : c.tagFg)),
@@ -76,7 +76,7 @@ class EfChip extends StatelessWidget {
           duration: Ef.d(context, Ef.press),
           constraints: const BoxConstraints(minHeight: 36),
           padding: const EdgeInsets.fromLTRB(12, 0, 14, 0),
-          decoration: ShapeDecoration(color: active ? Ef.signal : c.chip, shape: efCut(br: Ef.cutSmall)),
+          decoration: ShapeDecoration(color: active ? c.signal : c.chip, shape: efCut(br: Ef.cutSmall)),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Text(label, style: EfType.ui(14, weight: 600, color: fg)),
             if (count != null) ...[
@@ -113,8 +113,8 @@ class _EfButtonState extends State<EfButton> {
   Widget build(BuildContext context) {
     final c = EfColors.of(context);
     final enabled = widget.onPressed != null;
-    final wipe = widget.kind == EfButtonKind.danger ? c.danger : Ef.signal;
-    final rest = widget.kind == EfButtonKind.go ? Ef.signal : c.chip;
+    final wipe = widget.kind == EfButtonKind.danger ? c.danger : c.signal;
+    final rest = widget.kind == EfButtonKind.go ? c.signal : c.chip;
     final fg = !enabled
         ? c.ink2
         : _down
@@ -271,7 +271,7 @@ class EfFigure extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
         padding: alert ? const EdgeInsets.symmetric(horizontal: 6) : EdgeInsets.zero,
-        color: alert ? Ef.signal : null,
+        color: alert ? c.signal : null,
         child: Text(value, style: EfType.ui(36, weight: 700, width: 112, color: alert ? Ef.onSignal : c.ink, height: 1.1)),
       ),
       const SizedBox(height: 4),
@@ -296,7 +296,7 @@ class EfState extends StatelessWidget {
       painter: kind == EfStateKind.draft ? _DashedBox(c.ink2) : null,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
-        decoration: kind == EfStateKind.live ? BoxDecoration(border: Border.all(color: c.ink)) : (alert ? const BoxDecoration(color: Ef.signal) : null),
+        decoration: kind == EfStateKind.live ? BoxDecoration(border: Border.all(color: c.ink)) : (alert ? BoxDecoration(color: c.signal) : null),
         child: Text(text, style: EfType.ui(12, weight: 600, color: alert ? Ef.onSignal : c.ink)),
       ),
     );
@@ -341,7 +341,7 @@ class EfNotice extends StatelessWidget {
       decoration: BoxDecoration(color: c.panel, border: Border.all(color: c.rule)),
       child: IntrinsicHeight(
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(width: 28, color: Ef.signal, alignment: Alignment.center, child: Text('!', style: EfType.ui(15, weight: 800, color: Ef.onSignal))),
+          Container(width: 28, color: c.signal, alignment: Alignment.center, child: Text('!', style: EfType.ui(15, weight: 800, color: Ef.onSignal))),
           Expanded(child: Padding(padding: const EdgeInsets.all(10), child: Text(text, style: EfType.ui(14, color: c.ink)))),
         ]),
       ),
@@ -431,7 +431,7 @@ class EfTabBar extends StatelessWidget {
                   curve: Ef.mech,
                   height: 52,
                   margin: const EdgeInsets.symmetric(horizontal: 3),
-                  decoration: ShapeDecoration(color: i == current ? Ef.signal : Colors.transparent, shape: efCut(br: Ef.cutSmall)),
+                  decoration: ShapeDecoration(color: i == current ? c.signal : Colors.transparent, shape: efCut(br: Ef.cutSmall)),
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(items[i].en.toUpperCase(), style: EfType.eyebrow(i == current ? Ef.onSignal : c.ink2).copyWith(fontSize: 9)),
                     Text(items[i].zh, style: EfType.ui(14, weight: i == current ? 700 : 500, color: i == current ? Ef.onSignal : c.ink)),
@@ -502,7 +502,7 @@ class EfSwitch extends StatelessWidget {
           width: 48,
           height: 26,
           padding: const EdgeInsets.all(3),
-          color: value ? Ef.signal : c.chip,
+          color: value ? c.signal : c.chip,
           alignment: value ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(width: 20, height: 20, color: value ? Ef.onSignal : c.panel),
         ),
@@ -576,7 +576,7 @@ class EfProgress extends StatelessWidget {
               child: Container(
                 height: 10,
                 margin: EdgeInsets.only(right: i == n - 1 ? 0 : 2),
-                color: i < lit ? Ef.signal : c.chip,
+                color: i < lit ? c.signal : c.chip,
               ),
             ),
         ]),
@@ -623,7 +623,7 @@ class EfToast extends StatelessWidget {
         color: Ef.commandBar,
         child: IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Container(width: 6, color: Ef.signal),
+            Container(width: 6, color: EfColors.of(context).signal),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

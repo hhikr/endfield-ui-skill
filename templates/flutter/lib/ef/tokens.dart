@@ -16,6 +16,7 @@ class EfColors extends ThemeExtension<EfColors> {
     required this.tagFg,
     required this.danger,
     required this.scrim,
+    required this.signal,
   });
 
   final Color paper; // screen background
@@ -29,6 +30,7 @@ class EfColors extends ThemeExtension<EfColors> {
   final Color tagFg;
   final Color danger; // deleting, nothing else
   final Color scrim;
+  final Color signal; // the one accent: here / act on this. Fill only. Set per product with withAccent
 
   static const light = EfColors(
     paper: Color(0xFFF4F4F2),
@@ -42,6 +44,7 @@ class EfColors extends ThemeExtension<EfColors> {
     tagFg: Color(0xFFFFFFFF),
     danger: Color(0xFFB3261E),
     scrim: Color(0x80161616),
+    signal: Ef.signal,
   );
 
   static const dark = EfColors(
@@ -56,9 +59,27 @@ class EfColors extends ThemeExtension<EfColors> {
     tagFg: Color(0xFFEDEDED),
     danger: Color(0xFFFF8A7A),
     scrim: Color(0xA0000000),
+    signal: Ef.signal,
   );
 
   static EfColors of(BuildContext context) => Theme.of(context).extension<EfColors>()!;
+
+  /// The same colours with another accent (see EfAccent). On dark, the trace
+  /// line follows the accent; on light it stays ink.
+  EfColors withAccent(Color accent) => EfColors(
+        paper: paper,
+        panel: panel,
+        ink: ink,
+        ink2: ink2,
+        rule: rule,
+        chip: chip,
+        trace: trace == signal ? accent : trace,
+        tagBg: tagBg,
+        tagFg: tagFg,
+        danger: danger,
+        scrim: scrim,
+        signal: accent,
+      );
 
   @override
   EfColors copyWith() => this;
@@ -69,12 +90,13 @@ class EfColors extends ThemeExtension<EfColors> {
 
 /// Constants that do not change with the theme.
 abstract final class Ef {
-  // The one accent: here / act on this / look at this. Fill only.
+  // The default accent: here / act on this / look at this. Fill only.
+  // Widgets read EfColors.signal, so a product can pick another (EfAccent).
   static const signal = Color(0xFFFFFA00);
   static const onSignal = Color(0xFF161616);
   static const commandBar = Color(0xFF161616);
   static const triA = Color(0xFFFF00F0);
-  static const triB = Color(0xFFFFFA00);
+  static const triB = Color(0xFFFFFA00); // EfTriStrip draws the accent here
   static const triC = Color(0xFF00FFA2);
 
   static const hatchAlpha = 0.22;
@@ -116,6 +138,16 @@ abstract final class Ef {
   /// Motion is off when the system asks for reduced motion.
   static Duration d(BuildContext context, Duration value) =>
       MediaQuery.of(context).disableAnimations ? Duration.zero : value;
+}
+
+/// Accents a product can use instead of the default yellow. Any other works if
+/// ink text on it reaches 7:1 and it is not red (red means deleting); see
+/// references/variation.md. Pass one to efTheme(…, accent: EfAccent.ice).
+abstract final class EfAccent {
+  static const yellow = Color(0xFFFFFA00);
+  static const lime = Color(0xFFB8FF3D);
+  static const ice = Color(0xFF7DE6FF);
+  static const amber = Color(0xFFFFB31F);
 }
 
 /// Type. Saira's width axis is what makes labels look "Endfield"; Chinese falls
@@ -163,8 +195,8 @@ abstract final class EfType {
   static FontWeight _weight(double w) => FontWeight.values[((w / 100).round() - 1).clamp(0, 8)];
 }
 
-ThemeData efTheme(Brightness b) {
-  final c = b == Brightness.dark ? EfColors.dark : EfColors.light;
+ThemeData efTheme(Brightness b, {Color accent = Ef.signal}) {
+  final c = (b == Brightness.dark ? EfColors.dark : EfColors.light).withAccent(accent);
   return ThemeData(
     brightness: b,
     scaffoldBackgroundColor: c.paper,
@@ -177,14 +209,14 @@ ThemeData efTheme(Brightness b) {
       // light paper. Yellow is applied by hand in the ef widgets.
       primary: c.ink,
       onPrimary: c.paper,
-      secondary: Ef.signal,
+      secondary: c.signal,
       onSecondary: Ef.onSignal,
       error: c.danger,
       onError: c.panel,
       surface: c.panel,
       onSurface: c.ink,
     ),
-    textSelectionTheme: TextSelectionThemeData(cursorColor: c.ink, selectionColor: Ef.signal.withValues(alpha: 0.5)),
+    textSelectionTheme: TextSelectionThemeData(cursorColor: c.ink, selectionColor: c.signal.withValues(alpha: 0.5)),
     extensions: [c],
   );
 }

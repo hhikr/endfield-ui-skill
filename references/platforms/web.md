@@ -16,7 +16,8 @@
 3. 页面骨架：
 
    ```html
-   <html lang="zh-CN">
+   <!-- 变体写在 <html> 上，见 ../variation.md -->
+   <html lang="zh-CN" data-ef-accent="ice" data-ef-paper="cool" data-ef-cut="tight" data-ef-ground="grid">
      <head>
        <!-- 先写好主题，避免闪烁 -->
        <script>
@@ -39,7 +40,8 @@
 
    如果内容安全策略不允许内联脚本，把这两段放进外部文件。
 
-4. 从最接近的模板复制结构：阅读 `templates/reading.html`、展示 `templates/showcase.html`、控制台 `templates/console.html`、手机屏幕 `templates/app.html`。动效对照 `templates/motion.html`。页面自己的 `<style>` 只写布局（grid、间距），颜色、字、部件全部用 `ef-` 类和 `--ef-*` 变量。
+4. 变体只在 `<html>` 上设置一次：`data-ef-accent`、`data-ef-paper`、`data-ef-cut`、`data-ef-ground`、`data-ef-density`、`data-ef-motion`，或者写一个 `data-ef-variant` 预设，再在 `<head>` 里引用 `assets/variant.js`（它还能从地址读 `?variant=`，方便对比）。自定义强调色就直接覆盖 `--ef-signal`。
+5. 部件怎么写、怎么组合，参考模板：阅读 `templates/reading.html`、展示 `templates/showcase.html`、控制台 `templates/console.html`、手机屏幕 `templates/app.html`；动效对照 `templates/motion.html`。版式按自己的内容排，不照搬模板的结构和占位内容。页面自己的 `<style>` 只写布局（grid、间距），颜色、字、部件全部用 `ef-` 类和 `--ef-*` 变量。
 
 模板要用静态服务器打开（浏览器不允许从 `file://` 加载 ES 模块）：在 skill 目录运行 `python3 -m http.server`，打开 `http://localhost:8000/templates/showcase.html`。
 
