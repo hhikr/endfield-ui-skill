@@ -70,22 +70,46 @@ endfield-ui-skill/
 │   ├── specimen.html         全部网页部件的样张
 │   ├── antipatterns.html     做与不做的对照页
 │   └── flutter/              Flutter 套件（lib/ef/）和六个示例屏幕
-└── examples/                 截图，不用跑就能看
+└── examples/                 截图和动图，不用跑就能看
     ├── web/                  各网页模板的浅色、深色、手机宽度截图
-    └── app/                  Flutter 示例屏幕（390×844，浅、深），overview-*.jpg 是六屏总览
+    ├── app/                  Flutter 示例屏幕（390×844，浅、深），overview-*.jpg 是六屏总览
+    └── motion/               动效录屏 GIF：展示页、控制台、动效样张各区、深浅揭幕、手机网页
 ```
 
 agent 的工作顺序：读 `SKILL.md` → 按调子和平台打开对应的 `references/platforms/*.md` → 网页直接引用 `assets/`，Flutter 拷 `templates/flutter/lib/ef/`，其他平台照 `tokens.json` 和平台指南自己落地 → 用 `SKILL.md` 末尾的清单自查。
 
 ## 预览
 
-### 只看截图
+### 只看截图和动图
 
-`examples/web/` 和 `examples/app/` 里是全部模板的截图，GitHub 上直接点开即可。
+`examples/web/` 和 `examples/app/` 里是全部模板的截图，`examples/motion/` 里是动效录屏，GitHub 上直接点开即可。
 
 ![App screens](examples/app/overview-light.jpg)
 
-![Console](examples/web/console-light.jpg)
+**展示页打开**：三色条扫过、字标推入、马克笔划过、读数乱码后落定，随后指针视差
+
+![展示页打开](examples/motion/showcase-open.gif)
+
+**控制台打开**：看板逐行通电、圆盘分段组装，然后指向圆盘各段 —— 括住、光束连到中心、读数换成该段
+
+![控制台打开](examples/motion/console-open.gif)
+
+**深浅揭幕**：从按钮处扩散的圆
+
+![深浅揭幕](examples/motion/theme-reveal.gif)
+
+<table>
+<tr>
+<td width="50%"><b>入场动效</b>（<code>motion.html</code>“打开页面”一区，全部重放）<br><img src="examples/motion/entrances.gif" alt="入场动效"></td>
+<td width="50%"><b>回应操作</b>：按钮擦入与按下、行右移、页签伸开、墨色灌满、保存完成、分段进度<br><img src="examples/motion/responses.gif" alt="回应操作"></td>
+</tr>
+<tr>
+<td><b>进出与状态变化</b>：提示擦入、删除一行、提示条、底部面板、对话框<br><img src="examples/motion/in-and-out.gif" alt="进出与状态变化"></td>
+<td><b>手机网页</b>（<code>app.html</code>）：列表入场、底部面板、切换标签<br><img src="examples/motion/app.gif" alt="手机网页" width="300"></td>
+</tr>
+</table>
+
+GIF 只有 20 帧/秒、颜色也压过，曲线的手感以浏览器里实际跑的为准。
 
 ### 在浏览器里跑网页模板
 
