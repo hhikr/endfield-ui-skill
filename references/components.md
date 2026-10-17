@@ -374,12 +374,12 @@
 
 24 格的分段条，亮的格是黄的，读数补零。不知道进度时加 `.is-unknown`，一段黄格从左往右走，完成后换成有数的或者移除。不用转圈。骨架屏是 chip 色的块，不闪光。
 
-## 底部面板 `.ef-sheet`、对话框 `.ef-dialog`
+## 底部面板 `.ef-drawer`、对话框 `.ef-dialog`
 
 ```html
 <button data-open="actions">更多</button>
 
-<dialog class="ef-sheet" id="actions" aria-labelledby="t">
+<dialog class="ef-drawer" id="actions" aria-labelledby="t">
   <div class="body">
     <div class="grab" aria-hidden="true"></div>
     <header class="ef-pair" id="t"><span class="ef-eyebrow slash">No.023 / Actions</span><span>第二阶段的设备清单</span></header>
@@ -404,7 +404,7 @@
 </script>
 ```
 
-用原生 `<dialog>`，焦点圈在里面、Esc 能关、背后的页面不能点。面板左上切角、顶部斜线纹带和把手；对话框就是一块看板，确认在右，删除用 `.danger`。`dialog.returnValue` 是被点的那个 `data-close` 的值。
+类名是 `.ef-drawer` 而不是 sheet：`.ef-sheet` 是阅读页的白纸。用原生 `<dialog>`，焦点圈在里面、Esc 能关、背后的页面不能点。面板左上切角、顶部斜线纹带和把手；对话框就是一块看板，确认在右，删除用 `.danger`。`dialog.returnValue` 是被点的那个 `data-close` 的值。
 
 ## 提示条 `toast()`
 

@@ -98,7 +98,7 @@
 
 | 东西 | 进入 | 退出 | 网页 |
 | --- | --- | --- | --- |
-| 底部面板 | 从下推入 360 | 推回下面 240 | `dialog.ef-sheet` + `fx.js` `wireDialogs()` |
+| 底部面板 | 从下推入 360 | 推回下面 240 | `dialog.ef-drawer` + `fx.js` `wireDialogs()` |
 | 遮罩 | 淡入 200 | 淡出 160 | `::backdrop` |
 | 对话框 | 通电（从上往下展开）280 | 从下往上关上 180 | `dialog.ef-dialog` + `wireDialogs()` |
 | 提示条（toast） | 从左擦入 280，停 2000 | 向右擦掉 160 | `fx.js` `toast()` |

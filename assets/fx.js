@@ -142,7 +142,7 @@ const settled = (el) =>
     Promise.allSettled(el.getAnimations({ subtree: true }).map((a) => a.finished)).then(() => done());
   });
 
-// Sheets and dialogs on <dialog class="ef-sheet"> / <dialog class="ef-dialog">.
+// Sheets and dialogs on <dialog class="ef-drawer"> / <dialog class="ef-dialog">.
 //   <button data-open="actions">…</button>   opens the dialog with that id
 //   <button data-close>取消</button>          inside a dialog: closes it
 // Opening pushes the sheet up (360ms mech) or switches the dialog on;
@@ -160,7 +160,7 @@ export function wireDialogs(root = document) {
   root.querySelectorAll('[data-open]').forEach((b) =>
     b.addEventListener('click', () => document.getElementById(b.dataset.open)?.showModal()),
   );
-  root.querySelectorAll('dialog:is(.ef-sheet, .ef-dialog)').forEach((d) => {
+  root.querySelectorAll('dialog:is(.ef-drawer, .ef-dialog)').forEach((d) => {
     d.addEventListener('cancel', (e) => {
       e.preventDefault();
       closeDialog(d);
