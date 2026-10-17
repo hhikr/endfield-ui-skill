@@ -137,6 +137,19 @@
       .mini-records {
         width: 100%;
       }
+      /* a card is narrow: three fields, tighter gaps, the name on one line */
+      .stage:has(.mini-records) {
+        padding-inline: 0.5rem;
+      }
+      .mini-records .ef-record {
+        grid-template-columns: auto auto minmax(0, 1fr);
+        gap: 0 0.6rem;
+      }
+      .mini-records .ef-record .name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
       .mini-panel {
         width: 100%;
       }
@@ -304,8 +317,8 @@
             <h3>色条落下、整行右移</h3>
             <div class="stage">
               <ol class="ef-records mini-records">
-                <li><a class="ef-record" href="#"><span class="ef-tag">No.024</span><span class="ef-field">10.17</span><span class="name">指向这一行</span></a></li>
-                <li><a class="ef-record" href="#"><span class="ef-tag">No.023</span><span class="ef-field">10.10</span><span class="name">或者这一行</span></a></li>
+                <li><a class="ef-record" href="#"><span class="ef-tag">No.024</span><span class="ef-field">10.17</span><span class="name">指这行</span></a></li>
+                <li><a class="ef-record" href="#"><span class="ef-tag">No.023</span><span class="ef-field">10.10</span><span class="name">或这行</span></a></li>
               </ol>
             </div>
             <footer><span class="ef-field">指向 / 按下 │ 200 │ snap</span><span class="ef-eyebrow">指向它</span></footer>
