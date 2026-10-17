@@ -107,6 +107,11 @@ abstract final class Ef {
   static const tabOut = Duration(milliseconds: 400);
   static const shutter = Duration(milliseconds: 360);
   static const fill = Duration(milliseconds: 450);
+  static const sheetIn = Duration(milliseconds: 360);
+  static const sheetOut = Duration(milliseconds: 240);
+  static const dialogIn = Duration(milliseconds: 280);
+  static const dialogOut = Duration(milliseconds: 180);
+  static const toastHold = Duration(milliseconds: 2000);
 
   /// Motion is off when the system asks for reduced motion.
   static Duration d(BuildContext context, Duration value) =>

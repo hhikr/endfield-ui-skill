@@ -13,4 +13,16 @@ void main() {
       expect(find.text(title), findsOneWidget);
     }
   });
+
+  testWidgets('the list opens and closes its action sheet', (tester) async {
+    await tester.pumpWidget(const EfApp());
+    await tester.tap(find.text('记录').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('筛选'));
+    await tester.pumpAndSettle();
+    expect(find.text('复制编号'), findsOneWidget);
+    await tester.tap(find.text('取消'));
+    await tester.pumpAndSettle();
+    expect(find.text('复制编号'), findsNothing);
+  });
 }
