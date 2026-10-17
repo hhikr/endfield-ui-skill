@@ -67,7 +67,10 @@ class _ShellState extends State<Shell> {
   @override
   Widget build(BuildContext context) {
     final body = switch (_screen) {
-      'list' => ListScreen(onOpen: () => _go('detail'), onMore: () => _go('sheet')),
+      'list' => ListScreen(
+          onOpen: () => _go('detail'),
+          onMore: () => showEfSheet<void>(context, (context) => ActionsSheet(onClose: () => Navigator.pop(context))),
+        ),
       'detail' => DetailScreen(onBack: () => _go('list')),
       'settings' => SettingsScreen(onToggleTheme: widget.onToggleTheme),
       'sheet' => SheetScreen(onClose: () => _go('list')),
@@ -336,6 +339,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 // ---------------------------------------------------------------- bottom sheet
 
+/// The actions of one record. In the app it opens with showEfSheet (the
+/// "筛选" button on the list); ?screen=sheet shows it standing still for screenshots.
+class ActionsSheet extends StatelessWidget {
+  const ActionsSheet({super.key, required this.onClose});
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) => EfSheet(en: 'No.023 / Actions', title: '第二阶段的设备清单', children: [
+        const EfActionRow('打开', meta: '9,102 字'),
+        const EfActionRow('复制编号', meta: 'No.023'),
+        const EfActionRow('移到草稿'),
+        const EfActionRow('删除', danger: true),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(Ef.pad, 12, Ef.pad, 0),
+          child: EfButton('取消', expand: true, onPressed: onClose),
+        ),
+      ]);
+}
+
 class SheetScreen extends StatelessWidget {
   const SheetScreen({super.key, required this.onClose});
   final VoidCallback onClose;
@@ -346,19 +368,7 @@ class SheetScreen extends StatelessWidget {
     return Stack(children: [
       ListScreen(onOpen: () {}, onMore: () {}),
       Positioned.fill(child: GestureDetector(onTap: onClose, child: ColoredBox(color: c.scrim))),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: EfSheet(en: 'No.023 / Actions', title: '第二阶段的设备清单', children: [
-          const EfActionRow('打开', meta: '9,102 字'),
-          const EfActionRow('复制编号', meta: 'No.023'),
-          const EfActionRow('移到草稿'),
-          const EfActionRow('删除', danger: true),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(Ef.pad, 12, Ef.pad, 0),
-            child: EfButton('取消', expand: true, onPressed: onClose),
-          ),
-        ]),
-      ),
+      Align(alignment: Alignment.bottomCenter, child: ActionsSheet(onClose: onClose)),
     ]);
   }
 }

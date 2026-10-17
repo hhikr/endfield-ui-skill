@@ -1,6 +1,6 @@
 # Flutter（iOS、Android、Web、桌面）
 
-`templates/flutter/` 是一套可以直接用的 Flutter 套件加六个示例屏幕，已经用 Flutter 3.47 通过 `flutter analyze`（无问题）、`flutter test` 和 `flutter build web`，截图在 `examples/app/`。不依赖任何第三方包。
+`templates/flutter/` 是一套可以直接用的 Flutter 套件加六个示例屏幕，已经用 Flutter 3.47.7 通过 `flutter analyze`（无问题）、`flutter test` 和 `flutter build web`，截图在 `examples/app/`。不依赖任何第三方包。
 
 ## 文件
 
@@ -8,9 +8,9 @@
 | --- | --- |
 | `lib/ef/tokens.dart` | `EfColors`（浅深两套，`ThemeExtension`）、`Ef`（常量：黄、三色、间距、切角、曲线、时长、`Ef.d()` 减少动效）、`EfType`（字体样式）、`efTheme()` |
 | `lib/ef/marks.dart` | `efCut()` 切角形状、`EfTriStrip` 三色条、`EfHatch` 斜线纹、`EfContours` 等高线背景 |
-| `lib/ef/widgets.dart` | `EfEyebrow` `EfPair` `EfTag` `EfChip` `EfButton` `EfRecord` `EfPanel` `EfFigure` `EfState` `EfNotice` `EfFacts` `EfTopBar` `EfTabBar` `EfField` `EfSwitch` `EfSegmented` `EfProgress` `EfEmpty` `EfToast` `EfSheet` `EfActionRow` `EfBarTitle` |
+| `lib/ef/widgets.dart` | `EfEyebrow` `EfPair` `EfTag` `EfChip` `EfButton` `EfRecord` `EfPanel` `EfFigure` `EfState` `EfNotice` `EfFacts` `EfTopBar` `EfTabBar` `EfField` `EfSwitch` `EfSegmented` `EfProgress` `EfEmpty` `EfToast` `EfSheet` `EfActionRow` `EfBarTitle`，以及 `showEfSheet()` `showEfDialog()`（带进出动效的弹出） |
 | `lib/main.dart` | 示例：总览、列表、详情、设置、底部面板、状态（含对话框） |
-| `test/widget_test.dart` | 冒烟测试 |
+| `test/widget_test.dart` | 冒烟测试：四个标签都能打开、底部面板能开能关 |
 | `fonts/Saira.ttf` + `Saira-OFL.txt` | Saira 可变字体和许可证 |
 
 ## 跑起来
@@ -69,8 +69,8 @@ ClipPath(clipper: ShapeBorderClipper(shape: efCut(br: Ef.cutButton)), child: …
 | `Switch` | `EfSwitch`（方形） |
 | `SegmentedButton` / `ToggleButtons` | `EfSegmented` |
 | `CircularProgressIndicator` | `EfProgress`（分段条） |
-| `showModalBottomSheet` | 内容用 `EfSheet`，`backgroundColor: Colors.transparent`、`shape` 不设圆角 |
-| `AlertDialog` | `Dialog` 里放 `EfPanel`，`shape: efCut(br: Ef.cutPanel)` |
+| `showModalBottomSheet` | `showEfSheet(context, (_) => EfSheet(...))`：mech 360ms 推入、240ms 退出，不弹跳 |
+| `AlertDialog` | `showEfDialog(context, (_) => EfPanel(...))`：从上往下通电 280ms、关上 180ms |
 | `SnackBar` | `EfToast`（`SnackBar(backgroundColor: Colors.transparent, elevation: 0, content: EfToast(...))`） |
 | `FloatingActionButton` | 底部操作条里的 `EfButton(kind: go)`；一定要浮动就用切角方块 |
 
@@ -79,4 +79,5 @@ ClipPath(clipper: ShapeBorderClipper(shape: efCut(br: Ef.cutButton)), child: …
 ## 已知限制
 
 - 等高线是程序生成的近似曲线，不是 `assets/contours/` 那两张图；要完全一致就用 `flutter_svg`。
-- `EfSheet` 和对话框在示例里是直接叠在屏幕上的；正式项目里用 `showModalBottomSheet` / `showDialog` 包起来，并把转场改成 `Ef.mech` 曲线、360ms。
+- 示例里 `?screen=sheet` 和 `&dialog=1` 是把面板、对话框静止地叠在屏幕上，只为截图；App 里点列表的"筛选"走的是真正的 `showEfSheet()`。
+- 可点的部件都带了 `Semantics`（按钮、选中、开关、单选组、进度值），读屏能读出"当前"。自己写的部件也要加。
