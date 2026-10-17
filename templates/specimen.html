@@ -220,6 +220,34 @@
           <h3 class="ef-bar-title" style="margin-top: 1rem">斜线纹带标题</h3>
           <p class="note">空心大编号被指向时，墨色从左灌满（右边是灌满后）。</p>
         </section>
+
+        <section class="ef-panel cell">
+          <h2>数据表 <small>.ef-table</small></h2>
+          <div class="ef-table-wrap">
+            <table class="ef-table">
+              <thead><tr><th>节点</th><th class="num">吞吐 / 分</th><th class="num">占用</th></tr></thead>
+              <tbody>
+                <tr><td>sample-node-07</td><td class="num">1,284</td><td class="num">64%</td></tr>
+                <tr><td>sample-node-08</td><td class="num">902</td><td class="num">41%</td></tr>
+                <tr><td>sample-node-09</td><td class="num">1,530</td><td class="num"><span class="ef-state is-alert">89%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="ef-panel cell">
+          <h2>柱图 <small>.ef-bars</small></h2>
+          <ol class="ef-bars" aria-label="示例：最近 7 天的访问">
+            <li style="--v: 0.35"><span>10.11</span></li>
+            <li style="--v: 0.52"><span>10.12</span></li>
+            <li style="--v: 0.41"><span>10.13</span></li>
+            <li style="--v: 0.95" class="is-over"><span>10.14</span></li>
+            <li style="--v: 0.6"><span>10.15</span></li>
+            <li style="--v: 0.7"><span>10.16</span></li>
+            <li style="--v: 0.48" class="is-here"><span>10.17</span></li>
+          </ol>
+          <p class="note" style="margin-top: 2rem">灰柱；当前或被指向的一根是"这里"色；超过阈值的挂黄色小方块。</p>
+        </section>
       </div>
     </main>
     <script type="module">

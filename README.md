@@ -46,10 +46,11 @@ git clone https://github.com/hhikr/endfield-ui-skill ~/.agents/skills/endfield-u
 | `SKILL.md` | 气质、调子、字体、部件速查、规则、交付清单 |
 | `assets/tokens.json` | 平台无关的 token |
 | `assets/endfield.css` `fx.js` `dial.js` `contours/` | 网页套件 |
-| `templates/*.html` | 展示 / 阅读 / 控制台模板、部件样张、反例对照页 |
+| `templates/*.html` | 展示 / 阅读 / 控制台 / 手机网页模板、动效样张、部件样张、反例对照页 |
 | `templates/flutter/` | Flutter 套件和六个示例屏幕 |
 | `references/` | 调研、token、部件、界面范式、动效、规则、各平台指南 |
 | `examples/` | 网页和 App 示例截图 |
+| `agents/openai.yaml` | OpenAI Codex 用的显示信息 |
 
 ![App screens](examples/app/overview-light.jpg)
 

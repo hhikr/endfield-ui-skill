@@ -150,4 +150,22 @@ button.ef-btn::after { border: 0; }               /* 去掉微信按钮的默认
 
 - 小程序页面切换动画由宿主控制，不要模拟快门。
 - 页面内用 CSS transition（上面的擦入、色条）即可；`wx.createAnimation` 只在需要逐步序列时用。
-- 读 `wx.getSystemInfoSync()` 没有"减少动效"字段；保持所有动效短（≤ 400ms）且只响应操作，就不会打扰人。
+- 小程序读不到系统的"减少动态效果"。在设置页给一个"减少动效"开关，存进 storage，在页面根节点加一个类，样式里统一关掉：
+
+  ```js
+  // app.js
+  App({ globalData: { still: wx.getStorageSync('still') === true } });
+  // 每个页面
+  Page({ data: { still: getApp().globalData.still } });
+  ```
+
+  ```html
+  <view class="page {{still ? 'is-still' : ''}}">…</view>
+  ```
+
+  ```css
+  .is-still, .is-still view, .is-still text, .is-still button,
+  .is-still ::before, .is-still ::after { transition: none !important; animation: none !important; }
+  ```
+
+  其余时候保持所有动效短（≤ 400ms）且只响应操作。时长和曲线照 `../motion.md` 的清单。
