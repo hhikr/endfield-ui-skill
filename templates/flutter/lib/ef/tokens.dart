@@ -78,6 +78,10 @@ abstract final class Ef {
   static const triC = Color(0xFF00FFA2);
 
   static const hatchAlpha = 0.22;
+  // hatch: 1.5px lines every 6.5px, measured across the lines. A painter that
+  // steps along x needs 6.5 × √2 between line starts.
+  static const hatchLine = 1.5;
+  static const hatchStep = 9.2;
   static const contourAlpha = 0.09;
 
   // logical px
@@ -103,6 +107,11 @@ abstract final class Ef {
   static const tabOut = Duration(milliseconds: 400);
   static const shutter = Duration(milliseconds: 360);
   static const fill = Duration(milliseconds: 450);
+  static const sheetIn = Duration(milliseconds: 360);
+  static const sheetOut = Duration(milliseconds: 240);
+  static const dialogIn = Duration(milliseconds: 280);
+  static const dialogOut = Duration(milliseconds: 180);
+  static const toastHold = Duration(milliseconds: 2000);
 
   /// Motion is off when the system asks for reduced motion.
   static Duration d(BuildContext context, Duration value) =>
@@ -163,10 +172,13 @@ ThemeData efTheme(Brightness b) {
     highlightColor: Colors.transparent,
     colorScheme: ColorScheme(
       brightness: b,
-      primary: Ef.signal,
-      onPrimary: Ef.onSignal,
-      secondary: c.ink,
-      onSecondary: c.paper,
+      // Primary is ink, not yellow: stock Material parts (cursors, focus lines,
+      // progress, checkboxes) draw lines in primary, and yellow lines vanish on
+      // light paper. Yellow is applied by hand in the ef widgets.
+      primary: c.ink,
+      onPrimary: c.paper,
+      secondary: Ef.signal,
+      onSecondary: Ef.onSignal,
       error: c.danger,
       onError: c.panel,
       surface: c.panel,

@@ -57,8 +57,9 @@
 - 默认：浅灰底，次要操作。
 - `.go`：主要操作，一组按钮里最多一个。有鼠标时墨底白字、指向时擦黄；触屏（`hover: none`）上静止就是黄底墨字，按下时擦入。
 - `.small`：放进列表行、表格。
-- `.danger`：擦入的是红色。**只给删除**。撤回、隐藏、封禁、从列表移除这些可以恢复的操作，用普通按钮加确认框。
-- `:disabled`：半透明，指针变成 progress。
+- `.danger`：字是红色，擦入的也是红色。**只给删除**。撤回、隐藏、封禁、从列表移除这些可以恢复的操作，用普通按钮加确认框。
+- `:disabled`：现在不能按，半透明，指针 not-allowed。
+- `aria-busy="true"`：已经按下、正在处理（保存、发送中），铺斜线纹并暂停响应。处理完去掉这个属性。
 
 一排按钮放在 `<p class="ef-actions">` 里。
 
@@ -271,7 +272,7 @@
 </script>
 ```
 
-外圈是 N 段弧形块，每段是一个链接：当前分区是墨色块；需要处理的分区边框加粗，并挂一个黄色小方块。指向某段时：块变黄，外缘画出一道括弧，一束光从块射向中心，中心显示这一段的数字。内圈可放几条四分之三圈的仪表弧；快满（超过 85%）的那条变成 `--ef-trace` 色，标签垫黄。
+外圈是 N 段弧形块，每段是一个链接：当前分区是墨色块；需要处理的分区边框加粗，并挂一个黄色小方块。指向某段时：块变黄，外缘画出一道括弧，一束光从块射向中心，中心显示这一段的数字。内圈可放几条四分之三圈的仪表弧，平时是次要墨色；快满（超过 85%）的那条变成 `--ef-trace` 色，标签垫黄。
 
 ## 表单 `.ef-form`
 
@@ -290,3 +291,162 @@
 放在 `<body>` 上。右上角一大片、左下角一小片，墨色 9%，向边缘渐隐；手机上只留右上角。线条不闭合、成束流动，像水流。用 `assets/contours/draw-contours.mjs` 改随机种子就能生成新的一组，样式里用作遮罩，所以颜色跟随主题。
 
 不要：铺满全屏、加深、换成点阵或方格纸、画成一圈圈闭合的山丘。
+
+---
+
+# App 部件（手机网页、H5、PWA）
+
+和 Flutter 套件（`templates/flutter/`）一一对应，模板 `templates/app.html`。需要 `env(safe-area-inset-*)` 时记得在 viewport 里写 `viewport-fit=cover`。
+
+## 顶栏 `.ef-topbar` 和返回键 `.ef-back`
+
+```html
+<header class="ef-topbar">
+  <button class="ef-back" type="button" aria-label="返回">‹</button>
+  <h1 class="ef-pair"><span class="ef-eyebrow slash">Config</span><span>设置</span></h1>
+  <button class="ef-btn small" type="button">筛选</button>
+</header>
+```
+
+不填色、不居中、不加投影，下面一条细线。返回键是切角小方块，不是圆形图标按钮。右侧最多一两个文字按钮。
+
+## 底部标签栏 `.ef-tabbar`
+
+```html
+<body class="ef ef-has-tabbar">
+  …
+  <nav class="ef-tabbar can-rail" aria-label="主导航">
+    <a href="/" aria-current="page"><small>Home</small>总览</a>
+    <a href="/records/"><small>Records</small>记录</a>
+  </nav>
+</body>
+```
+
+3–5 项，每项英文眉标加中文，**必须有字**。当前项整格黄块、右下切角、加粗。`body` 加 `.ef-has-tabbar` 给内容让出底部；加 `.can-rail` 后宽于 600 时竖到左边（平板）。
+
+## 侧栏 `.ef-rail`
+
+```html
+<nav class="ef-rail" aria-label="主导航">
+  <a class="brand" href="/">ACME.WORKS</a>
+  <a href="/posts/" aria-current="page">文章</a>
+  <a href="/c/">分类</a>
+</nav>
+```
+
+阅读页的竖排导航，当前项整格黄块。窄于 1100 时自动横过来。要它贴顶，自己加 `position: sticky`（见 `templates/reading.html`）。
+
+## 搜索 `.ef-search`
+
+```html
+<label class="ef-search"><input type="search" placeholder="搜索标题、编号" aria-label="搜索" /></label>
+```
+
+白底细框，前缀 `//`，聚焦时下边变 2px trace 线。字号不小于 16px（iOS 不会放大）。
+
+## 开关 `.ef-switch`、分段 `.ef-seg`、设置行 `.ef-setting`
+
+```html
+<label class="ef-setting">
+  <span><b>公开记录</b><small>关闭后只有自己能看到。</small></span>
+  <input class="ef-switch" type="checkbox" role="switch" checked />
+</label>
+
+<div class="ef-seg" role="radiogroup" aria-label="显示密度">
+  <label><input type="radio" name="d" /><span>紧凑</span></label>
+  <label><input type="radio" name="d" checked /><span>标准</span></label>
+</div>
+```
+
+- 开关是方的：开 = 黄轨道墨方块，关 = 浅灰轨道白方块。用的是原生 checkbox，键盘和读屏都不用另外处理。
+- 分段：墨色细框，当前段墨底反白。**不用黄**：黄留给导航的"当前"和主要操作。每段至少 44 高。
+- 设置行：名称加一行说明在左，控件在右，下面细线。
+
+## 进度 `.ef-progress`、骨架 `.ef-skeleton`
+
+```html
+<div class="ef-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63" style="--p: 0.63">
+  <span class="ef-eyebrow">Syncing / 同步中</span><span class="ef-field">063%</span><i></i>
+</div>
+<div class="ef-progress is-unknown" role="progressbar" aria-label="正在连接">…<i></i></div>
+<span class="ef-skeleton line"></span>
+```
+
+24 格的分段条，亮的格是黄的，读数补零。不知道进度时加 `.is-unknown`，一段黄格从左往右走，完成后换成有数的或者移除。不用转圈。骨架屏是 chip 色的块，不闪光。
+
+## 底部面板 `.ef-drawer`、对话框 `.ef-dialog`
+
+```html
+<button data-open="actions">更多</button>
+
+<dialog class="ef-drawer" id="actions" aria-labelledby="t">
+  <div class="body">
+    <div class="grab" aria-hidden="true"></div>
+    <header class="ef-pair" id="t"><span class="ef-eyebrow slash">No.023 / Actions</span><span>第二阶段的设备清单</span></header>
+    <button class="ef-act" data-close="open"><span>打开</span><span class="ef-field">9,102 字</span></button>
+    <button class="ef-act danger" data-close="delete"><span>删除</span></button>
+    <p class="ef-actions"><button class="ef-btn" data-close>取消</button></p>
+  </div>
+</dialog>
+
+<dialog class="ef-dialog" id="confirm" aria-labelledby="c">
+  <div class="ef-panel cut-br">
+    <p class="ef-eyebrow slash">Confirm</p>
+    <h2 id="c">删除这条记录？</h2>
+    <p>No.023 会被永久删除，不能恢复。</p>
+    <p class="ef-actions"><button class="ef-btn small" data-close>取消</button><button class="ef-btn small danger" data-close="delete">删除</button></p>
+  </div>
+</dialog>
+
+<script type="module">
+  import { wireDialogs } from './assets/fx.js';
+  wireDialogs(); // data-open 打开，data-close / Esc / 点遮罩关闭，都带进出动效
+</script>
+```
+
+类名是 `.ef-drawer` 而不是 sheet：`.ef-sheet` 是阅读页的白纸。用原生 `<dialog>`，焦点圈在里面、Esc 能关、背后的页面不能点。面板左上切角、顶部斜线纹带和把手；对话框就是一块看板，确认在右，删除用 `.danger`。`dialog.returnValue` 是被点的那个 `data-close` 的值。
+
+## 提示条 `toast()`
+
+```js
+import { toast } from './assets/fx.js';
+toast('已保存。');
+```
+
+深色条、左边 6px 黄条、一句话，从左擦入，2 秒后向右擦掉，`role="status"` 会被读屏读出。错误不用它，用 `.ef-notice`。
+
+## 数据表 `.ef-table`
+
+```html
+<div class="ef-table-wrap">
+  <table class="ef-table">
+    <thead><tr><th>节点</th><th class="num">吞吐 / 分</th></tr></thead>
+    <tbody><tr><td>sample-node-07</td><td class="num">1,284</td></tr></tbody>
+  </table>
+</div>
+```
+
+表头是眉标样式加墨线，行间细线，数字右对齐、等宽数字，没有斑马纹；指向的行左边出现 trace 色条。宽表放进 `.ef-table-wrap` 横向滚动。
+
+## 柱图 `.ef-bars`
+
+```html
+<ol class="ef-bars" aria-label="最近 7 天的访问">
+  <li style="--v: 0.4"><span>10.11</span></li>
+  <li style="--v: 0.9" class="is-here is-over"><span>10.12</span></li>
+</ol>
+```
+
+灰柱；指向的或 `.is-here` 的那根变成 trace 色；超过阈值的在顶上挂一个黄色小方块（`.is-over`）。不用红绿、不用渐变。给它一个 `aria-label`，数值另外写在表格或文字里。
+
+## 进出和状态的小函数（`fx.js`）
+
+| 函数 | 做什么 |
+| --- | --- |
+| `wireDialogs()` / `closeDialog(d)` | 面板和对话框的进出动效、Esc、点遮罩 |
+| `toast(text, ms)` | 提示条 |
+| `removeRow(li)` | 一行向右擦掉，下面的行用 transform 补位 |
+| `flashDone(btn, label)` | 去掉 `aria-busy`，黄色穿过按钮一次，可选地短暂换字 |
+| `wireTheme()` | 深浅切换、记住选择、同步 `aria-pressed`、圆形揭幕 |
+
+`.ef-in-wipe`（从左擦入）和 `.ef-out-wipe`（向右擦掉）两个类也可以直接用。时长和曲线见 `motion.md`。

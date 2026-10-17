@@ -1,0 +1,237 @@
+<!doctype html>
+<!--
+  App template for the web: a phone screen (H5, PWA, a web view inside an app)
+  built only from ef- parts. The same screens as the Flutter kit in
+  templates/flutter, so a phone web page can match a native app.
+  Open at a phone width (360-430), or in a desktop browser's device mode.
+  ?screen=list|settings|states picks the tab; &sheet=1 / &dialog=1 open those.
+  Serve the folder over HTTP (browsers refuse ES modules from file://).
+  Everything named "示例" is placeholder content.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F4F4F2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)" />
+    <title>App · Endfield UI</title>
+    <script>
+      try {
+        const t = new URLSearchParams(location.search).get('theme') || localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,100..900&family=Noto+Sans+SC:wght@400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/endfield.css" />
+    <style>
+      /* page-specific layout only */
+      html {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-text-size-adjust: 100%;
+      }
+      .screen[hidden] {
+        display: none;
+      }
+      .content {
+        display: grid;
+        gap: 1.25rem;
+        padding: 1rem var(--ef-pad) 1.5rem;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .chips .ef-chip {
+        min-height: 2.25rem;
+      }
+      .group {
+        margin: 0.25rem 0 -0.75rem;
+      }
+      .ef-records .ef-record {
+        padding-inline: 0.5rem 0.25rem;
+      }
+      .wide {
+        width: 100%;
+        justify-content: center;
+        min-height: 3rem;
+      }
+      .danger-zone {
+        display: grid;
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+      }
+      .empty {
+        padding: 1.75rem 1rem;
+        border: 1px solid var(--ef-rule);
+        background: var(--ef-hatch);
+        text-align: center;
+      }
+      .empty p {
+        display: inline-block;
+        margin: 0 0 1rem;
+        padding: 0.25rem 0.6rem;
+        background: var(--ef-paper);
+        font-weight: 600;
+      }
+      .demo-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+      }
+      .demo-row .ef-btn {
+        justify-content: center;
+        min-height: 2.75rem;
+      }
+    </style>
+  </head>
+  <body class="ef ef-contours ef-has-tabbar">
+    <!-- List -->
+    <section class="screen" id="list" aria-label="记录">
+      <header class="ef-topbar">
+        <h1 class="ef-pair"><span class="ef-eyebrow slash">Records</span><span>记录</span></h1>
+        <button class="ef-btn small" type="button" data-theme-toggle>深浅</button>
+      </header>
+      <div class="content">
+        <label class="ef-search"><input type="search" placeholder="搜索标题、编号" aria-label="搜索" /></label>
+        <div class="chips" role="group" aria-label="筛选">
+          <button class="ef-chip" aria-pressed="true">全部 <span class="n">24</span></button>
+          <button class="ef-chip" aria-pressed="false">记录 <span class="n">16</span></button>
+          <button class="ef-chip" aria-pressed="false">实验 <span class="n">2</span></button>
+          <button class="ef-chip" aria-pressed="false">草稿 <span class="n">7</span></button>
+        </div>
+        <p class="ef-eyebrow slash group">2026 / October</p>
+        <ol class="ef-records" id="rows">
+          <li><a class="ef-record ef-in-come" style="--i: 0" href="#"><span class="ef-tag is-current">No.024</span><time class="ef-field">10.17</time><span class="name ef-read">示例：仓储节点的布线记录</span><span class="ef-field">6,380 字</span></a></li>
+          <li><a class="ef-record ef-in-come" style="--i: 1" href="#" data-open="actions"><span class="ef-tag">No.023</span><time class="ef-field">10.10</time><span class="name ef-read">第二阶段的设备清单与替换计划</span><span class="ef-field">9,102 字</span></a></li>
+          <li><a class="ef-record ef-in-come" style="--i: 2" href="#"><span class="ef-tag">No.022</span><time class="ef-field">10.08</time><span class="name ef-read">关于夜班巡检路线的调整</span><span class="ef-field">4,577 字</span></a></li>
+          <li><a class="ef-record ef-in-come" style="--i: 3" href="#"><span class="ef-tag">No.021</span><time class="ef-field">09.29</time><span class="name ef-read">一份写给新成员的工具说明</span><span class="ef-field">3,214 字</span></a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section class="screen" id="settings" aria-label="设置" hidden>
+      <header class="ef-topbar">
+        <button class="ef-back" type="button" aria-label="返回">‹</button>
+        <h1 class="ef-pair"><span class="ef-eyebrow slash">Config</span><span>设置</span></h1>
+      </header>
+      <form class="content ef-form" onsubmit="return false">
+        <label class="field"><span>名字</span><input value="示例读者#0001" /><small>说明写在输入框下面，不写在占位符里。</small></label>
+        <div class="field">
+          <span>显示密度</span>
+          <div class="ef-seg" role="radiogroup" aria-label="显示密度">
+            <label><input type="radio" name="density" /><span>紧凑</span></label>
+            <label><input type="radio" name="density" checked /><span>标准</span></label>
+            <label><input type="radio" name="density" /><span>宽松</span></label>
+          </div>
+        </div>
+        <div>
+          <label class="ef-setting"><span><b>公开记录</b><small>关闭后只有自己能看到。</small></span><input class="ef-switch" type="checkbox" role="switch" checked /></label>
+          <label class="ef-setting"><span><b>更新提醒</b><small>有新记录时通知我。</small></span><input class="ef-switch" type="checkbox" role="switch" /></label>
+        </div>
+        <button class="ef-btn go wide" type="button" id="save">保存</button>
+        <div class="danger-zone">
+          <p class="ef-eyebrow slash">Danger</p>
+          <button class="ef-btn danger wide" type="button" data-open="confirm">删除这个节点</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- States -->
+    <section class="screen" id="states" aria-label="状态" hidden>
+      <header class="ef-topbar">
+        <h1 class="ef-pair"><span class="ef-eyebrow slash">Status</span><span>状态</span></h1>
+      </header>
+      <div class="content">
+        <div class="ef-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63" style="--p: 0.63">
+          <span class="ef-eyebrow">Syncing / 同步中</span><span class="ef-field">063%</span><i></i>
+        </div>
+        <div class="ef-progress is-unknown" role="progressbar" aria-label="正在连接">
+          <span class="ef-eyebrow">Connecting / 连接中</span><span class="ef-field">——</span><i></i>
+        </div>
+        <p><span class="ef-state">已发布</span> <span class="ef-state is-draft">草稿</span> <span class="ef-state is-alert">待审</span></p>
+        <p class="ef-notice" data-flag="!">有 2 条记录等待审核。</p>
+        <div aria-hidden="true">
+          <span class="ef-skeleton line" style="width: 40%"></span>
+          <span class="ef-skeleton line"></span>
+          <span class="ef-skeleton line" style="width: 80%"></span>
+        </div>
+        <div class="empty">
+          <p>还没有同步记录。第一次同步完成后，每一次都会编号列在这里。</p>
+          <br />
+          <button class="ef-btn go" type="button">现在同步</button>
+        </div>
+        <ol class="ef-records" id="drop-rows">
+          <li><div class="ef-record"><span class="ef-tag">No.003</span><time class="ef-field">10.17 09:12</time><span class="name ef-read">同步完成：24 条</span><span class="ef-field">1.2 MB</span></div></li>
+          <li><div class="ef-record"><span class="ef-tag">No.002</span><time class="ef-field">10.16 21:40</time><span class="name ef-read">同步完成：23 条</span><span class="ef-field">1.1 MB</span></div></li>
+          <li><div class="ef-record"><span class="ef-tag">No.001</span><time class="ef-field">10.15 08:03</time><span class="name ef-read">第一次同步</span><span class="ef-field">0.9 MB</span></div></li>
+        </ol>
+        <div class="demo-row">
+          <button class="ef-btn" type="button" id="say">弹出提示</button>
+          <button class="ef-btn" type="button" id="drop">删除一行</button>
+        </div>
+      </div>
+    </section>
+
+    <nav class="ef-tabbar can-rail" aria-label="主导航">
+      <a href="?screen=list" data-tab="list"><small>Records</small>记录</a>
+      <a href="?screen=settings" data-tab="settings"><small>Config</small>设置</a>
+      <a href="?screen=states" data-tab="states"><small>Status</small>状态</a>
+    </nav>
+
+    <dialog class="ef-drawer" id="actions" aria-labelledby="actions-title">
+      <div class="body">
+        <div class="grab" aria-hidden="true"></div>
+        <header class="ef-pair" id="actions-title"><span class="ef-eyebrow slash">No.023 / Actions</span><span>第二阶段的设备清单</span></header>
+        <button class="ef-act" type="button" data-close="open"><span>打开</span><span class="ef-field">9,102 字</span></button>
+        <button class="ef-act" type="button" data-close="copy"><span>复制编号</span><span class="ef-field">No.023</span></button>
+        <button class="ef-act" type="button" data-close="draft"><span>移到草稿</span></button>
+        <button class="ef-act danger" type="button" data-close="delete"><span>删除</span></button>
+        <p class="ef-actions"><button class="ef-btn" type="button" data-close>取消</button></p>
+      </div>
+    </dialog>
+
+    <dialog class="ef-dialog" id="confirm" aria-labelledby="confirm-title">
+      <div class="ef-panel cut-br">
+        <p class="ef-eyebrow slash">Confirm</p>
+        <h2 id="confirm-title">删除这个节点？</h2>
+        <p>sample-node-07 会被永久删除，不能恢复。</p>
+        <p class="ef-actions">
+          <button class="ef-btn small" type="button" data-close>取消</button>
+          <button class="ef-btn small danger" type="button" data-close="delete">删除</button>
+        </p>
+      </div>
+    </dialog>
+
+    <script type="module">
+      import { wireTheme, wireDialogs, toast, removeRow, flashDone } from '../assets/fx.js';
+      wireTheme();
+      wireDialogs();
+
+      const q = new URLSearchParams(location.search);
+      const screen = ['list', 'settings', 'states'].includes(q.get('screen')) ? q.get('screen') : 'list';
+      document.querySelectorAll('.screen').forEach((s) => (s.hidden = s.id !== screen));
+      document.querySelector(`[data-tab="${screen}"]`).setAttribute('aria-current', 'page');
+      if (q.get('sheet')) document.getElementById('actions').showModal();
+      if (q.get('dialog')) document.getElementById('confirm').showModal();
+
+      document.querySelectorAll('.chips .ef-chip').forEach((c, _, all) =>
+        c.addEventListener('click', () => all.forEach((x) => x.setAttribute('aria-pressed', String(x === c)))),
+      );
+      document.querySelectorAll('.ef-record:not([data-open])').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+      document.getElementById('save').addEventListener('click', (e) => {
+        const b = e.currentTarget;
+        b.setAttribute('aria-busy', 'true');
+        setTimeout(() => flashDone(b, '已保存'), 700);
+      });
+      document.getElementById('say').addEventListener('click', () => toast('已保存。'));
+      document.getElementById('drop').addEventListener('click', () => {
+        const row = document.querySelector('#drop-rows > li');
+        if (row) removeRow(row);
+      });
+    </script>
+  </body>
+</html>

@@ -126,8 +126,9 @@ struct Hatch: View {
         Canvas { ctx, size in
             var p = Path()
             var x = -size.height
-            while x < size.width { p.move(to: .init(x: x, y: size.height)); p.addLine(to: .init(x: x + size.height, y: 0)); x += 7 }
-            ctx.stroke(p, with: .color(.ink.opacity(0.22)), lineWidth: 1)
+            // 1.5 宽的线，垂直间距 6.5（沿 x 步进 6.5 × √2 ≈ 9.2），见 tokens.json size.hatch
+            while x < size.width { p.move(to: .init(x: x, y: size.height)); p.addLine(to: .init(x: x + size.height, y: 0)); x += 9.2 }
+            ctx.stroke(p, with: .color(.ink.opacity(0.22)), lineWidth: 1.5)
         }
     }
 }

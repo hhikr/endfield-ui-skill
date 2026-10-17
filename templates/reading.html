@@ -21,33 +21,12 @@
         grid-template-columns: 12rem minmax(0, 1fr);
         min-height: calc(100dvh - 3px);
       }
+      /* the side rail is .ef-rail; here it only sticks to the top */
       .rail {
         position: sticky;
         top: 0;
         align-self: start;
-        display: flex;
-        flex-direction: column;
         height: 100dvh;
-        padding: 1.5rem 0 1rem;
-        border-right: 1px solid var(--ef-rule);
-      }
-      .rail .brand {
-        padding: 0 1.25rem 2rem;
-        font-stretch: var(--ef-wider);
-        font-weight: 800;
-        letter-spacing: 0.08em;
-      }
-      .rail a.nav {
-        padding: 0.4rem 1.25rem;
-        color: var(--ef-ink-2);
-      }
-      .rail a.nav:hover {
-        color: var(--ef-ink);
-      }
-      /* the yellow block is "where you are" */
-      .rail a.nav[aria-current] {
-        color: var(--ef-on-signal);
-        background: linear-gradient(-45deg, transparent calc(var(--ef-cut) - 0.5px), var(--ef-signal) var(--ef-cut));
       }
       .ids {
         display: flex;
@@ -101,19 +80,7 @@
         }
         .rail {
           position: static;
-          flex-direction: row;
-          flex-wrap: wrap;
-          align-items: center;
           height: auto;
-          padding: 0.75rem var(--ef-pad);
-          border-right: 0;
-          border-bottom: 1px solid var(--ef-rule);
-        }
-        .rail .brand {
-          padding: 0 1rem 0 0;
-        }
-        .rail a.nav {
-          padding: 0.3rem 0.8rem;
         }
       }
     </style>
@@ -121,13 +88,13 @@
   <body class="ef ef-contours">
     <div class="ef-tri" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="shell">
-      <nav class="rail" aria-label="主导航">
-        <span class="brand">ACME.WORKS</span>
-        <a class="nav" href="#">首页</a>
-        <a class="nav" href="#" aria-current="page">文章</a>
-        <a class="nav" href="#">分类</a>
-        <a class="nav" href="#">合订本</a>
-        <a class="nav" href="#">关于</a>
+      <nav class="ef-rail rail" aria-label="主导航">
+        <a class="brand" href="#">ACME.WORKS</a>
+        <a href="#">首页</a>
+        <a href="#" aria-current="page">文章</a>
+        <a href="#">分类</a>
+        <a href="#">合订本</a>
+        <a href="#">关于</a>
       </nav>
 
       <article class="ef-spread">

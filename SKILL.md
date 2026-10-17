@@ -1,6 +1,6 @@
 ---
 name: endfield-ui
-description: "Design and build UI with an \"Arknights: Endfield\"-flavoured industrial look (终末地风味 / 终末地风格 / 工业科技感 / Endfield-style) on any platform: websites, mobile web, iOS (SwiftUI/UIKit), Android (Compose/Views), Flutter, React Native, WeChat mini programs, desktop apps. Off-white paper and ink, one acid yellow for \"here / act / look\", cut corners on pressable things, wide geometric Latin labels paired with bold Chinese, // section prefixes, numbered record rows, hatching, faint contour lines, short mechanical motion; quiet reading mode, bold showcase mode, console/dashboard mode; light and dark. Use when asked to make a screen, app, page, dashboard or component look like Endfield / 终末地那种 UI / clean industrial sci-fi. Ships platform-neutral tokens, a CSS kit, a verified Flutter kit, platform guides, templates, research notes and example screenshots. Uses no game assets."
+description: "Build UI with an \"Arknights: Endfield\"-flavoured industrial look (终末地风味 / 终末地风格 / 工业科技感) on any platform: web, mobile web, iOS, Android, Flutter, React Native, mini programs, desktop. Off-white paper and ink, one acid yellow for here/act/look, cut corners on pressable things, wide Latin labels over bold Chinese, // prefixes, numbered record rows, hatching, short mechanical motion; reading, showcase and console modes; light and dark. Use when asked for a screen, app, page, dashboard or component that looks like Endfield or clean industrial sci-fi. Ships tokens, a CSS kit, a Flutter kit, platform guides and templates. Uses no game assets."
 ---
 
 # 终末地风味 UI（endfield-ui）
@@ -38,7 +38,7 @@ description: "Design and build UI with an \"Arknights: Endfield\"-flavoured indu
 | 平台 | 指南 | 起点 |
 | --- | --- | --- |
 | 网页（桌面） | `references/platforms/web.md` | `assets/endfield.css` + `templates/*.html` |
-| 手机网页、H5、PWA | `references/platforms/mobile-web.md` | 同上，按指南加触屏规则 |
+| 手机网页、H5、PWA | `references/platforms/mobile-web.md` | `assets/endfield.css` + `templates/app.html` |
 | Flutter（iOS / Android / Web / 桌面） | `references/platforms/flutter.md` | `templates/flutter/`（已编译验证） |
 | iOS 原生（SwiftUI / UIKit） | `references/platforms/ios.md` | 指南里的代码片段 |
 | Android 原生（Compose / Views） | `references/platforms/android.md` | 指南里的代码片段 |
@@ -61,6 +61,7 @@ description: "Design and build UI with an \"Arknights: Endfield\"-flavoured indu
 - 宽度是关键：字段 112%，小标签和字标 125%。网页写 `font-stretch`，Flutter / iOS / Android 用可变字体的 `wdth` 轴（指南里有写法）。用不了可变字体的平台（React Native、小程序等），用 fontTools 从可变字体切出固定宽度的静态字体（命令见 `references/platforms/cross-platform.md`）。
 - Saira 要打包进应用或自托管（`templates/flutter/fonts/` 里有一份，带许可证）。别的宽体几何字体也能替代（如 Exo 2、Chakra Petch；Michroma 只做标题），**不要用游戏官方字体**。
 - 数字用等宽数字（tabular figures）。英文标签全大写、字距 0.14em；中文不加字距。
+- 没有中文的产品（纯英文或其他语言）：上行仍是宽体大写眉标，下行标题用同一宽体的粗字，宽度回到 100%，不要全大写。
 
 ## 部件速查（含义与平台无关）
 
@@ -71,7 +72,7 @@ description: "Design and build UI with an \"Arknights: Endfield\"-flavoured indu
 | 字段 | 宽体小字，竖线分隔 `2026.10.17 │ 6,380 字` | 真实记录字段 |
 | 编号标签 | 墨底白字，右下切角 `No.024` | 可点的编号；黄色 = 当前 |
 | 筛选块 | 浅灰切角小块 + 计数 | 筛选；选中 = 黄 |
-| 按钮 | 切角块；按下或指向时黄色从左擦入 | 可操作；主要操作每组一个；红色**只给删除** |
+| 按钮 | 切角块；按下或指向时黄色从左擦入。主要按钮：桌面上静止是墨底、指向时擦黄；触屏上静止就是黄底 | 可操作；主要操作每组一个；红色**只给删除** |
 | 记录行 | 编号 / 日期 / 名称 / 计数，细线分隔 | 列表的一项；按下时左边落下"这里"色条、整行右移 6px |
 | 看板 | 白板、顶边一段粗墨页签、朝中心的角切掉 | 控制台的一块数据 |
 | 大数字 | 宽体粗数字 + 小标签；需要处理的垫黄 | 数据 |
@@ -103,13 +104,14 @@ description: "Design and build UI with an \"Arknights: Endfield\"-flavoured indu
 - 空状态写成一句完整的话，说明这里将来会出现什么。
 
 **动效**（详见 `references/motion.md`）
-- 短、硬、机械：出现用 snap `cubic-bezier(0.16,1,0.3,1)`，快门、擦入、灌满用 mech `cubic-bezier(0.7,0,0.2,1)`。多在 100–400ms，一个入场序列整体不超过 1 秒。
+- 短、硬、机械：出现用 snap `cubic-bezier(0.16,1,0.3,1)`，快门、擦入、灌满和所有退出用 mech `cubic-bezier(0.7,0,0.2,1)`。回应操作 100–400ms，单个入场 ≤ 650ms，一个入场序列整体不超过 1 秒；错开间隔只用 38 / 45 / 100ms 三档。
+- 每个入场都有退出（约为进入的 2/3）；出错用黄旗擦入，不抖动；处理中铺斜线纹，完成时黄色穿过按钮一次。
 - 每个动效对应一次操作或状态变化。不做持续循环的装饰动画、不做弹簧和果冻。
 - 系统"减少动态效果"打开时全部关闭。
 
 **触屏**
 - 触屏上没有"指向"：主要按钮在静止时就是黄底；按下时做擦入；点击区域至少 44pt / 48dp。
-- 当前所在用黄块（标签栏、分段、编号），同时加粗或加标记，色盲也看得出。
+- 当前所在用黄块（标签栏、侧栏导航、编号），同时加粗或加标记，色盲也看得出。分段选择是例外：当前段墨底反白，不用黄。
 
 ## 交付前的清单
 
@@ -130,20 +132,23 @@ description: "Design and build UI with an \"Arknights: Endfield\"-flavoured indu
 | --- | --- |
 | `assets/tokens.json` | 平台无关的 token：颜色、字体、字号、间距、切角、线宽、动效 |
 | `assets/endfield.css` | 网页套件：全部变量和部件，类名以 `ef-` 开头，不依赖框架 |
-| `assets/fx.js` / `assets/dial.js` | 网页：乱码后落定、深浅切换、视差 / 控制台分段圆盘 |
+| `assets/fx.js` / `assets/dial.js` | 网页：乱码后落定、深浅切换、视差、面板与对话框进出、提示条、删行、完成反馈 / 控制台分段圆盘 |
 | `assets/contours/` | 背景等高线 SVG 和生成脚本（任何平台都能当图片用） |
 | `templates/showcase.html` `reading.html` `console.html` | 三种调子的网页模板。要用静态服务器打开（例如在本目录运行 `python3 -m http.server`） |
+| `templates/app.html` | 手机网页（H5、PWA）的屏幕：顶栏、列表、设置、状态、底部面板、对话框，和 Flutter 示例对应 |
+| `templates/motion.html` | 动效样张：每个动效一格带重放、三条曲线、入场时间轴 |
 | `templates/specimen.html` | 全部网页部件的样张 |
 | `templates/antipatterns.html` | 做与不做的对照页 |
 | `templates/flutter/` | Flutter 套件和六个示例屏幕（总览、列表、详情、设置、底部面板、状态） |
 | `references/research.md` | 对官网和游戏界面的调研：看到了什么、可信度、借什么不借什么 |
 | `references/tokens.md` | 色值和对比度、深色主题、字体、字号 |
-| `references/components.md` | 每个部件的写法（网页类名）、含义和禁忌 |
+| `references/components.md` | 每个部件的写法（网页类名）、含义和禁忌，含手机网页的 App 部件、表格和柱图 |
 | `references/patterns.md` | 版式和界面范式：三种调子的页面，App 的标签栏、列表、详情、表单、面板、对话框、加载、空状态 |
-| `references/motion.md` | 动效清单和各平台写法 |
+| `references/motion.md` | 动效：原则、曲线、编排和时间轴、完整清单、进出、状态变化、各平台对应 |
 | `references/rules.md` | 做与不做，每条的理由 |
 | `references/platforms/*.md` | 各平台指南 |
-| `examples/web/` | 网页模板截图（浅、深、手机）和反例对照页 |
+| `examples/web/` | 网页模板截图（浅、深、手机）、手机网页 `app-*.jpg`、动效样张 `motion-*.jpg` 和反例对照页 |
+| `agents/openai.yaml` | 给 OpenAI Codex 的显示信息（名字、简介、颜色），其他 agent 忽略它 |
 | `examples/app/` | Flutter 示例屏幕截图（390×844，浅、深），`overview-*.jpg` 是六屏总览 |
 
 ## 来源与许可

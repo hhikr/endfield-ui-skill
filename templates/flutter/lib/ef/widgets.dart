@@ -67,20 +67,24 @@ class EfChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = EfColors.of(context);
     final fg = active ? Ef.onSignal : c.ink;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: Ef.d(context, Ef.press),
-        constraints: const BoxConstraints(minHeight: 36),
-        padding: const EdgeInsets.fromLTRB(12, 0, 14, 0),
-        decoration: ShapeDecoration(color: active ? Ef.signal : c.chip, shape: efCut(br: Ef.cutSmall)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(label, style: EfType.ui(14, weight: 600, color: fg)),
-          if (count != null) ...[
-            const SizedBox(width: 6),
-            Text('$count', style: EfType.field(fg)),
-          ],
-        ]),
+    return Semantics(
+      button: true,
+      selected: active,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: Ef.d(context, Ef.press),
+          constraints: const BoxConstraints(minHeight: 36),
+          padding: const EdgeInsets.fromLTRB(12, 0, 14, 0),
+          decoration: ShapeDecoration(color: active ? Ef.signal : c.chip, shape: efCut(br: Ef.cutSmall)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text(label, style: EfType.ui(14, weight: 600, color: fg)),
+            if (count != null) ...[
+              const SizedBox(width: 6),
+              Text('$count', style: EfType.field(fg)),
+            ],
+          ]),
+        ),
       ),
     );
   }
@@ -186,44 +190,48 @@ class _EfRecordState extends State<EfRecord> {
     final c = EfColors.of(context);
     final on = _down || widget.current;
     final dur = Ef.d(context, Ef.row);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => setState(() => _down = true),
-      onTapCancel: () => setState(() => _down = false),
-      onTapUp: (_) {
-        setState(() => _down = false);
-        widget.onTap?.call();
-      },
-      child: Container(
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: c.rule))),
-        child: Stack(children: [
-          AnimatedPositioned(
-            duration: dur,
-            curve: Ef.snap,
-            left: 0,
-            top: 0,
-            bottom: on ? 0 : null,
-            height: on ? null : 0,
-            width: Ef.traceBar,
-            child: ColoredBox(color: widget.current ? Ef.signal : c.trace),
-          ),
-          AnimatedPadding(
-            duration: dur,
-            curve: Ef.snap,
-            padding: EdgeInsets.fromLTRB(on ? 14 : 8, Ef.rowPad, 4, Ef.rowPad),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                EfTag(widget.no, current: widget.current),
-                const SizedBox(width: 10),
-                Text(widget.date, style: EfType.field(c.ink2)),
-                const Spacer(),
-                Text(widget.meta, style: EfType.field(c.ink2)),
+    return Semantics(
+      button: widget.onTap != null,
+      selected: widget.current,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => setState(() => _down = true),
+        onTapCancel: () => setState(() => _down = false),
+        onTapUp: (_) {
+          setState(() => _down = false);
+          widget.onTap?.call();
+        },
+        child: Container(
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: c.rule))),
+          child: Stack(children: [
+            AnimatedPositioned(
+              duration: dur,
+              curve: Ef.snap,
+              left: 0,
+              top: 0,
+              bottom: on ? 0 : null,
+              height: on ? null : 0,
+              width: Ef.traceBar,
+              child: ColoredBox(color: c.trace), // a line: ink on light, yellow on dark. "Current" is the yellow tag.
+            ),
+            AnimatedPadding(
+              duration: dur,
+              curve: Ef.snap,
+              padding: EdgeInsets.fromLTRB(on ? 14 : 8, Ef.rowPad, 4, Ef.rowPad),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  EfTag(widget.no, current: widget.current),
+                  const SizedBox(width: 10),
+                  Text(widget.date, style: EfType.field(c.ink2)),
+                  const Spacer(),
+                  Text(widget.meta, style: EfType.field(c.ink2)),
+                ]),
+                const SizedBox(height: 6),
+                Text(widget.name, style: EfType.text(16, weight: 500, color: c.ink, height: 1.5)),
               ]),
-              const SizedBox(height: 6),
-              Text(widget.name, style: EfType.text(16, weight: 500, color: c.ink, height: 1.5)),
-            ]),
-          ),
-        ]),
+            ),
+          ]),
+        ),
       ),
     );
   }
@@ -412,19 +420,23 @@ class EfTabBar extends StatelessWidget {
       child: Row(children: [
         for (var i = 0; i < items.length; i++)
           Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => onTap(i),
-              child: AnimatedContainer(
-                duration: Ef.d(context, Ef.wipe),
-                curve: Ef.mech,
-                height: 52,
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                decoration: ShapeDecoration(color: i == current ? Ef.signal : Colors.transparent, shape: efCut(br: Ef.cutSmall)),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(items[i].en.toUpperCase(), style: EfType.eyebrow(i == current ? Ef.onSignal : c.ink2).copyWith(fontSize: 9)),
-                  Text(items[i].zh, style: EfType.ui(14, weight: i == current ? 700 : 500, color: i == current ? Ef.onSignal : c.ink)),
-                ]),
+            child: Semantics(
+              button: true,
+              selected: i == current,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onTap(i),
+                child: AnimatedContainer(
+                  duration: Ef.d(context, Ef.wipe),
+                  curve: Ef.mech,
+                  height: 52,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: ShapeDecoration(color: i == current ? Ef.signal : Colors.transparent, shape: efCut(br: Ef.cutSmall)),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text(items[i].en.toUpperCase(), style: EfType.eyebrow(i == current ? Ef.onSignal : c.ink2).copyWith(fontSize: 9)),
+                    Text(items[i].zh, style: EfType.ui(14, weight: i == current ? 700 : 500, color: i == current ? Ef.onSignal : c.ink)),
+                  ]),
+                ),
               ),
             ),
           ),
@@ -481,6 +493,7 @@ class EfSwitch extends StatelessWidget {
     final c = EfColors.of(context);
     return Semantics(
       toggled: value,
+      button: true,
       child: GestureDetector(
         onTap: () => onChanged(!value),
         child: AnimatedContainer(
@@ -514,15 +527,20 @@ class EfSegmented extends StatelessWidget {
       child: Row(children: [
         for (var i = 0; i < options.length; i++)
           Expanded(
-            child: GestureDetector(
-              onTap: () => onChanged(i),
-              child: AnimatedContainer(
-                duration: Ef.d(context, Ef.wipe),
-                curve: Ef.mech,
-                height: 40,
-                alignment: Alignment.center,
-                color: i == current ? c.ink : Colors.transparent,
-                child: Text(options[i], style: EfType.ui(14, weight: 600, color: i == current ? c.paper : c.ink)),
+            child: Semantics(
+              button: true,
+              inMutuallyExclusiveGroup: true,
+              checked: i == current,
+              child: GestureDetector(
+                onTap: () => onChanged(i),
+                child: AnimatedContainer(
+                  duration: Ef.d(context, Ef.wipe),
+                  curve: Ef.mech,
+                  height: 44,
+                  alignment: Alignment.center,
+                  color: i == current ? c.ink : Colors.transparent,
+                  child: Text(options[i], style: EfType.ui(14, weight: 600, color: i == current ? c.paper : c.ink)),
+                ),
               ),
             ),
           ),
@@ -542,24 +560,28 @@ class EfProgress extends StatelessWidget {
     final c = EfColors.of(context);
     const n = 24;
     final lit = (value * n).floor();
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        EfEyebrow(label, color: c.ink),
-        const Spacer(),
-        Text('${(value * 100).round().toString().padLeft(3, '0')}%', style: EfType.field(c.ink)),
-      ]),
-      const SizedBox(height: 8),
-      Row(children: [
-        for (var i = 0; i < n; i++)
-          Expanded(
-            child: Container(
-              height: 10,
-              margin: EdgeInsets.only(right: i == n - 1 ? 0 : 2),
-              color: i < lit ? Ef.signal : c.chip,
+    return Semantics(
+      label: label,
+      value: '${(value * 100).round()}%',
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          EfEyebrow(label, color: c.ink),
+          const Spacer(),
+          Text('${(value * 100).round().toString().padLeft(3, '0')}%', style: EfType.field(c.ink)),
+        ]),
+        const SizedBox(height: 8),
+        Row(children: [
+          for (var i = 0; i < n; i++)
+            Expanded(
+              child: Container(
+                height: 10,
+                margin: EdgeInsets.only(right: i == n - 1 ? 0 : 2),
+                color: i < lit ? Ef.signal : c.chip,
+              ),
             ),
-          ),
+        ]),
       ]),
-    ]);
+    );
   }
 }
 
@@ -652,19 +674,22 @@ class EfActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = EfColors.of(context);
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: Ef.touch + 4),
-        padding: const EdgeInsets.symmetric(horizontal: Ef.pad),
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: c.rule))),
-        child: Row(children: [
-          Expanded(child: Text(label, style: EfType.ui(16, weight: 600, color: danger ? c.danger : c.ink))),
-          if (meta != null) Text(meta!, style: EfType.field(c.ink2)),
-          const SizedBox(width: 8),
-          Text('›', style: EfType.ui(18, color: c.ink2)),
-        ]),
+    return Semantics(
+      button: true,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: Ef.touch + 4),
+          padding: const EdgeInsets.symmetric(horizontal: Ef.pad),
+          decoration: BoxDecoration(border: Border(top: BorderSide(color: c.rule))),
+          child: Row(children: [
+            Expanded(child: Text(label, style: EfType.ui(16, weight: 600, color: danger ? c.danger : c.ink))),
+            if (meta != null) Text(meta!, style: EfType.field(c.ink2)),
+            const SizedBox(width: 8),
+            Text('›', style: EfType.ui(18, color: c.ink2)),
+          ]),
+        ),
       ),
     );
   }
@@ -692,4 +717,52 @@ class EfBarTitle extends StatelessWidget {
       ),
     ]);
   }
+}
+
+/// Opens [EfSheet] content as a real modal bottom sheet: pushed up in 360ms
+/// with the mech curve, closed in 240ms, scrim fades in 200ms, no bounce.
+/// Reduced motion: it simply appears and goes.
+Future<T?> showEfSheet<T>(BuildContext context, WidgetBuilder builder) {
+  final c = EfColors.of(context);
+  final still = MediaQuery.of(context).disableAnimations;
+  return Navigator.of(context).push<T>(PageRouteBuilder<T>(
+    opaque: false,
+    barrierDismissible: true,
+    barrierLabel: '关闭',
+    barrierColor: c.scrim,
+    transitionDuration: still ? Duration.zero : Ef.sheetIn,
+    reverseTransitionDuration: still ? Duration.zero : Ef.sheetOut,
+    pageBuilder: (context, _, __) => Align(alignment: Alignment.bottomCenter, child: builder(context)),
+    transitionsBuilder: (context, animation, _, child) => SlideTransition(
+      position: Tween(begin: const Offset(0, 1), end: Offset.zero)
+          .animate(CurvedAnimation(parent: animation, curve: Ef.mech, reverseCurve: Ef.mech.flipped)),
+      child: child,
+    ),
+  ));
+}
+
+/// Opens a dialog (put an [EfPanel] in it): it switches on from the top down
+/// in 280ms and shuts from the bottom up in 180ms, mech both ways.
+Future<T?> showEfDialog<T>(BuildContext context, WidgetBuilder builder) {
+  final c = EfColors.of(context);
+  final still = MediaQuery.of(context).disableAnimations;
+  return Navigator.of(context).push<T>(PageRouteBuilder<T>(
+    opaque: false,
+    barrierDismissible: true,
+    barrierLabel: '关闭',
+    barrierColor: c.scrim,
+    transitionDuration: still ? Duration.zero : Ef.dialogIn,
+    reverseTransitionDuration: still ? Duration.zero : Ef.dialogOut,
+    pageBuilder: (context, _, __) => Center(
+      child: Padding(padding: const EdgeInsets.all(Ef.pad), child: Material(type: MaterialType.transparency, child: builder(context))),
+    ),
+    transitionsBuilder: (context, animation, _, child) => AnimatedBuilder(
+      animation: animation,
+      child: child,
+      builder: (context, child) {
+        final t = Ef.mech.transform(animation.value);
+        return ClipRect(child: Align(alignment: Alignment.topCenter, heightFactor: t, child: child));
+      },
+    ),
+  ));
 }

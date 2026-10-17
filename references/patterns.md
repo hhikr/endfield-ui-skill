@@ -98,7 +98,7 @@
 
 # 二、手机屏幕（App、小程序、手机网页）
 
-Flutter 实现见 `templates/flutter/`，截图 `examples/app/`（390×844）。下面每条都写了含义，平台写法见各平台指南。
+Flutter 实现见 `templates/flutter/`，截图 `examples/app/`（390×844）；同一套界面的网页实现见 `templates/app.html`，截图 `examples/web/app-*.jpg`。下面每条都写了含义，平台写法见各平台指南，进出和状态变化的动效见 `motion.md`。
 
 ## 屏幕骨架
 

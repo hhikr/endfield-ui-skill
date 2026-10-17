@@ -9,53 +9,31 @@
 ```
 
 ```css
-.app-top { padding-top: env(safe-area-inset-top); }
-.app-tabbar { padding-bottom: env(safe-area-inset-bottom); }
 html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
-.app-screen { min-height: 100dvh; }
 ```
+
+`.ef-topbar` 和 `.ef-tabbar` 已经让出了上下安全区。
 
 - 不要禁止缩放（`user-scalable=no`）。
 - 输入框字号至少 16px，避免 iOS 聚焦时自动放大（`.ef-form` 在触屏上已经是 16px；自己写的输入框也要）。
 
 ## 像 App 一样的网页：底部标签栏
 
-在 H5、PWA、嵌入 App 的网页里，一级导航用底部标签栏（规则见 `../patterns.md`）：
+在 H5、PWA、嵌入 App 的网页里，一级导航用底部标签栏 `.ef-tabbar`（规则见 `../patterns.md`，写法见 `../components.md` 的"App 部件"）：
 
 ```html
-<nav class="app-tabbar" aria-label="主导航">
-  <a href="/" aria-current="page"><small>Home</small>总览</a>
-  <a href="/records/"><small>Records</small>记录</a>
-  <a href="/status/"><small>Status</small>状态</a>
-  <a href="/config/"><small>Config</small>设置</a>
-</nav>
+<body class="ef ef-has-tabbar">
+  …
+  <nav class="ef-tabbar can-rail" aria-label="主导航">
+    <a href="/" aria-current="page"><small>Home</small>总览</a>
+    <a href="/records/"><small>Records</small>记录</a>
+    <a href="/status/"><small>Status</small>状态</a>
+    <a href="/config/"><small>Config</small>设置</a>
+  </nav>
+</body>
 ```
 
-```css
-.app-tabbar {
-  position: fixed; inset: auto 0 0;
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px;
-  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
-  background: var(--ef-panel); border-top: 1px solid var(--ef-rule);
-}
-.app-tabbar a {
-  display: grid; place-items: center; min-height: 52px;
-  color: var(--ef-ink); text-decoration: none; font: 500 0.875rem/1.3 var(--ef-font-ui);
-  transition: background-color 0.28s var(--ef-mech);
-}
-.app-tabbar small {
-  font-size: 0.5625rem; font-weight: 600; font-stretch: var(--ef-wider);
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ef-ink-2);
-}
-.app-tabbar [aria-current='page'] {
-  background: var(--ef-signal); color: var(--ef-on-signal); font-weight: 700;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%);
-}
-.app-tabbar [aria-current='page'] small { color: var(--ef-on-signal); }
-body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-```
-
-顶栏、列表、详情、表单、底部面板、对话框、加载与空状态的样子见 `../patterns.md` 第二部分；Flutter 截图 `examples/app/` 就是目标效果，网页上用 `ef-` 部件拼出来即可。
+顶栏、搜索、开关、分段、进度、骨架、底部面板、对话框、提示条都在 `endfield.css` 里（`../components.md` 的"App 部件"），完整示范是 `templates/app.html`，截图 `examples/web/app-*.jpg`。和 Flutter 截图 `examples/app/` 是同一套界面。
 
 ## 触屏交互
 
@@ -74,7 +52,7 @@ body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 }
 ```
 
-图标：纸色或黄色方块里一个宽体大写字母，右下切角；不要用游戏标志。
+图标：纸色方块里一个宽体大写字母，字下垫一小块黄、右下切角（整块铺黄就成了大面积黄色）；不要用游戏标志。
 
 ## 性能
 
