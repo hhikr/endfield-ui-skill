@@ -118,19 +118,32 @@ python3 -m http.server 8766      # 或者 Python；Windows 上用 py -m http.ser
 
 ### 动效录屏
 
-不想起服务器的话，先看 `examples/motion/` 里的录屏（都是从模板实际录下来的，速度为真实速度）：
+不想起服务器的话，先看 `examples/motion/` 里的录屏。全部是从模板实际录下来的，速度为真实速度。
 
-| | |
+**逐条看动效**（录自 `templates/motion.html`，每格写着触发、时长和曲线）
+
+| 打开页面 | 回应操作 |
+| --- | --- |
+| ![打开页面](examples/motion/entrances.gif) | ![回应操作](examples/motion/responses.gif) |
+| 三色条扫过、字标推入、马克笔划过、乱码落定、通电、逐行亮起、圆盘组装 | 按钮黄色擦入和按下、列表行右移、页签伸开、墨色灌满、保存完成、分段进度 |
+
+![进出与状态变化](examples/motion/in-and-out.gif)
+
+**进出与状态变化**：提示擦入、删除一行、提示条、底部面板、对话框
+
+**放在页面里**
+
+| 展示页 | 控制台 |
 | --- | --- |
 | ![展示页入场](examples/motion/showcase-in.gif) | ![控制台入场](examples/motion/console-in.gif) |
-| **展示页入场**：三色条扫过、字标推入、马克笔划过、读数落定，然后是指针视差 | **控制台入场**：圆盘组装、看板通电、大数字落定，然后指向圆盘的段 |
-| ![回应操作](examples/motion/respond.gif) | ![深浅揭幕](examples/motion/theme-reveal.gif) |
-| **回应操作**：按钮黄色擦入、列表行色条落下并右移、看板页签伸开、空心编号灌满 | **深浅切换**：从按钮处扩散一个圆揭开新主题 |
+| 打开时的整段入场，然后是指针视差 | 圆盘组装、看板通电、大数字落定，然后指向圆盘的段 |
 
-| 底部面板 | 设置与对话框 | 状态 |
-| --- | --- | --- |
-| ![底部面板](examples/motion/app-drawer.gif) | ![设置](examples/motion/app-settings.gif) | ![状态](examples/motion/app-states.gif) |
-| 列表逐行亮起，点一行推入底部面板，取消后推回 | 开关和分段移动，保存的处理中到完成，删除确认对话框的通电和关上 | 删除一行后下面的行补位，提示条擦入再擦掉 |
+**真实 App 用起来**（录自 `templates/app.html`，手机宽度）
+
+| 列表和底部面板 | 设置与对话框 | 状态 | 深浅切换 |
+| --- | --- | --- | --- |
+| ![底部面板](examples/motion/app-drawer.gif) | ![设置](examples/motion/app-settings.gif) | ![状态](examples/motion/app-states.gif) | ![深浅揭幕](examples/motion/theme-reveal.gif) |
+| 列表逐行亮起，点一行推入底部面板，取消后推回 | 开关和分段移动，保存的处理中到完成，删除确认框的通电和关上 | 删一行后下面的行补位，提示条擦入再擦掉 | 从按钮处扩散一个圆揭开新主题 |
 
 ### 动效参考：`templates/motion.html`
 
