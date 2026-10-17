@@ -41,83 +41,126 @@ git clone https://github.com/hhikr/endfield-ui-skill ~/.agents/skills/endfield-u
 
 ## 结构
 
-agent 读 skill 的方式是：先读根目录的 `SKILL.md`，里面有气质、调子、部件速查、规则和交付清单，足够做出大部分界面；遇到具体问题时，再按 `SKILL.md` 里的指引去读 `references/` 下对应的那一篇，照着 `assets/` 和 `templates/` 里现成的代码改。所以 `SKILL.md` 是入口，其余文件按需加载。
+agent 只在被触发时读 `SKILL.md`；其余文件按需打开，不会一次全塞进上下文。
 
 ```text
 endfield-ui-skill/
-├── SKILL.md                   入口：气质、选调子、选平台、字体、部件速查、规则、交付清单、文件地图
-├── agents/openai.yaml         OpenAI Codex 界面里显示的名字、简介和颜色
-├── assets/                    可以直接用的网页套件和 token
-│   ├── tokens.json            平台无关的 token：颜色、字号、间距、斜线纹、触控尺寸、动效时长和曲线
-│   ├── endfield.css           网页部件（全部以 ef- 开头），含 App 部件、动效和减少动效的处理
-│   ├── fx.js                  样式表做不了的小动效：乱码落定、深浅揭幕、面板和对话框、提示条、删行、完成
-│   ├── dial.js                控制台的分段圆盘
-│   └── contours/              极淡的等高线底纹（SVG），和生成它的脚本
-├── references/                按需阅读的细则
-│   ├── research.md            对官网和游戏界面的调研：看到了什么，借什么不借什么
-│   ├── tokens.md              色值和对比度、深色主题、字体、字号
-│   ├── components.md          每个部件的写法、含义和禁忌
-│   ├── patterns.md            版式和界面范式：三种调子的页面、App 的各类屏幕
-│   ├── motion.md              动效：原则、曲线、编排和时间轴、完整清单、进出、状态变化
-│   ├── rules.md               做与不做，每条附理由
-│   └── platforms/             各平台指南：web、mobile-web、ios、android、flutter、miniprogram、cross-platform
-├── templates/                 可以直接打开、复制改写的模板
-│   ├── showcase.html          展示页（首页、落地页）：响亮的调子
-│   ├── reading.html           阅读页（文章、记录列表、资料）：安静的调子
-│   ├── console.html           控制台（仪表盘、后台）：中间圆盘、两侧看板
-│   ├── app.html               手机网页（H5、PWA）：列表、设置、状态三屏，底部面板和对话框
-│   ├── motion.html            动效样张：每个动效一格带重放，三条曲线，入场时间轴
-│   ├── specimen.html          全部网页部件的样张，每个都标了类名和含义
-│   ├── antipatterns.html      反例对照：左边是常见错误，右边是正确做法
-│   └── flutter/               Flutter 套件（lib/ef/）和六个示例屏幕，带冒烟测试
-└── examples/                  截图
-    ├── web/                   上面各个网页模板的亮色、暗色和手机宽度截图
-    └── app/                   Flutter 示例各屏的亮色、暗色截图和总览图
+├── SKILL.md                  入口：气质、选调子、选平台、字体、部件速查、规则、交付清单、文件地图
+├── agents/openai.yaml        Codex 界面里的名字、简介、颜色（其他 agent 忽略）
+├── references/               按需读的细节
+│   ├── research.md           对官网和游戏界面的调研：看到了什么、借什么不借什么
+│   ├── tokens.md             色值与对比度、深色主题、字体、字号
+│   ├── components.md         每个部件的写法、含义和禁忌（含手机网页部件、表格、柱图）
+│   ├── patterns.md           三种调子的页面范式，App 的标签栏、列表、详情、表单、面板、对话框
+│   ├── motion.md             动效：原则、三条曲线、编排、完整清单、进出、状态变化、减少动效
+│   ├── rules.md              做与不做，每条的理由
+│   └── platforms/            web / mobile-web / ios / android / flutter / cross-platform / miniprogram
+├── assets/                   可直接拷进项目的东西
+│   ├── tokens.json           平台无关的 token：颜色、字体、字号、间距、切角、线宽、动效
+│   ├── endfield.css          网页套件：全部变量和 ef- 部件，不依赖框架
+│   ├── fx.js                 乱码后落定、深浅切换、视差、面板与对话框进出、提示条、删行、完成反馈
+│   ├── dial.js               控制台的分段圆盘
+│   └── contours/             背景等高线 SVG 和生成脚本
+├── templates/                可运行的参考实现
+│   ├── showcase.html         调子一：展示页（字标、三色条、索引）
+│   ├── reading.html          调子二：阅读页（长文、目录、相关记录）
+│   ├── console.html          调子三：控制台（看板、圆盘、读数）
+│   ├── app.html              手机网页（H5 / PWA）：列表、设置、状态、底部面板、对话框
+│   ├── motion.html           动效样张：每个动效一格，可重放
+│   ├── specimen.html         全部网页部件的样张
+│   ├── antipatterns.html     做与不做的对照页
+│   └── flutter/              Flutter 套件（lib/ef/）和六个示例屏幕
+└── examples/                 截图，不用跑就能看
+    ├── web/                  各网页模板的浅色、深色、手机宽度截图
+    ├── app/                  Flutter 示例屏幕（390×844，浅、深），overview-*.jpg 是六屏总览
+    └── motion/               主要动效的 GIF 录屏
 ```
+
+agent 的工作顺序：读 `SKILL.md` → 按调子和平台打开对应的 `references/platforms/*.md` → 网页直接引用 `assets/`，Flutter 拷 `templates/flutter/lib/ef/`，其他平台照 `tokens.json` 和平台指南自己落地 → 用 `SKILL.md` 末尾的清单自查。
+
+## 预览
+
+### 只看截图
+
+`examples/web/` 和 `examples/app/` 里是全部模板的截图，GitHub 上直接点开即可。
 
 ![App screens](examples/app/overview-light.jpg)
 
 ![Console](examples/web/console-light.jpg)
 
-## 预览模板和动效
+### 在浏览器里跑网页模板
 
-模板用 ES 模块加载脚本，浏览器不允许从 `file://` 直接打开，需要在仓库根目录起一个静态服务器。任选一种：
+模板用了 ES module，浏览器不允许从 `file://` 加载，所以要在**仓库根目录**起一个静态服务器（不要在 `templates/` 里起，模板要引用上一级的 `assets/`）：
 
 ```sh
-npx http-server -p 8766          # 有 Node 就行
-python3 -m http.server 8766      # macOS / Linux；Windows 上装了 Python 用 py -m http.server 8766
+npx http-server -p 8766          # 有 Node 就用这个
+python3 -m http.server 8766      # 或者 Python；Windows 上用 py -m http.server 8766
 ```
 
-然后在浏览器打开 `http://localhost:8766/templates/` 下的页面。如果端口已经被别的程序占用（打开后看到的不是模板），换一个端口号即可。
+> Windows 上如果 `python` 敲下去什么都没发生，那是应用商店的占位程序，并没有装 Python，换用上面的 `npx` 或 `py`。端口被占用时（打开后看到的不是模板，比如只有 `{}`），换一个端口号。
 
-**动效**
+然后打开：
 
-| 打开 | 能看到什么 |
+| 地址 | 看什么 |
 | --- | --- |
-| `templates/motion.html` | 所有动效集中在一页。每格写着触发方式、时长和曲线；"打开页面"类的动效点"重放"再看一遍，"回应操作"类的用指针悬停或点击；顶部"全部重放"一次播完；最下面是展示页、控制台、App 首屏的入场时间轴 |
-| `templates/showcase.html` | 打开页面时的完整入场：三色条扫过、字标推入、马克笔划过、读数乱码落定、记录行逐行亮起；指针在首屏移动有轻微视差 |
-| `templates/console.html` | 圆盘逐段组装、看板逐行通电、大数字落定；指向看板时页签伸开，指向圆盘的段时锁定 |
-| `templates/app.html` | 手机上的交互动效：底部面板推入推出、对话框通电、提示条、删除一行后补位、保存按钮的处理中和完成、深浅切换的圆形揭开 |
-| `templates/specimen.html` | 按钮擦入、列表行右移、编号灌满等悬停效果（标了 hover 的格子是静止展示） |
+| `http://localhost:8766/templates/motion.html` | 动效样张，见下一节 |
+| `http://localhost:8766/templates/showcase.html` | 展示页：三色条扫过、字标推入、马克笔划过、指针视差 |
+| `http://localhost:8766/templates/console.html` | 控制台：看板通电、圆盘组装、读数乱码落定、指向圆盘锁定 |
+| `http://localhost:8766/templates/reading.html` | 阅读页 |
+| `http://localhost:8766/templates/app.html` | 手机网页。用浏览器的设备模式（F12 → 切换设备工具栏）调到 360–430 宽 |
+| `http://localhost:8766/templates/specimen.html` | 全部部件，hover 状态也摆出来了 |
+| `http://localhost:8766/templates/antipatterns.html` | 反例和正例并排 |
 
-看动效时建议：
+每页都有深浅切换按钮。`app.html` 和 `motion.html` 还认地址参数：
 
-- 用浏览器开发者工具的 Animations 面板把速度调到 25% 或 10%，能看清曲线和先后顺序。
-- 系统打开"减少动态效果"时，所有动效都不会播放，这是故意的；`motion.html` 顶部会出现提示。想看动效就先关掉这个系统设置。
-- `app.html` 要用手机宽度看（360–430px，或开发者工具的设备模式）。地址参数：`?screen=list|settings|states` 选屏，`&sheet=1` 打开底部面板，`&dialog=1` 打开对话框，`&theme=light|dark` 指定深浅。`motion.html` 也支持 `?theme=`。
-- 动效的规则和完整清单在 `references/motion.md`，数值在 `assets/tokens.json` 的 `motion`。
+- `?theme=light` / `?theme=dark`：指定深浅
+- `app.html?screen=list|settings|states`：直接打开某个标签页；加 `&sheet=1` 或 `&dialog=1` 打开底部面板或对话框
 
-**Flutter 示例**
+### 动效录屏
 
-`templates/flutter/` 只包含 `lib/`、`test/` 和字体，没有平台目录，要先生成：
+不想起服务器的话，先看 `examples/motion/` 里的录屏（都是从模板实际录下来的，速度为真实速度）：
+
+| | |
+| --- | --- |
+| ![展示页入场](examples/motion/showcase-in.gif) | ![控制台入场](examples/motion/console-in.gif) |
+| **展示页入场**：三色条扫过、字标推入、马克笔划过、读数落定，然后是指针视差 | **控制台入场**：圆盘组装、看板通电、大数字落定，然后指向圆盘的段 |
+| ![回应操作](examples/motion/respond.gif) | ![深浅揭幕](examples/motion/theme-reveal.gif) |
+| **回应操作**：按钮黄色擦入、列表行色条落下并右移、看板页签伸开、空心编号灌满 | **深浅切换**：从按钮处扩散一个圆揭开新主题 |
+
+| 底部面板 | 设置与对话框 | 状态 |
+| --- | --- | --- |
+| ![底部面板](examples/motion/app-drawer.gif) | ![设置](examples/motion/app-settings.gif) | ![状态](examples/motion/app-states.gif) |
+| 列表逐行亮起，点一行推入底部面板，取消后推回 | 开关和分段移动，保存的处理中到完成，删除确认对话框的通电和关上 | 删除一行后下面的行补位，提示条擦入再擦掉 |
+
+### 动效参考：`templates/motion.html`
+
+所有动效都在这一页，按 `references/motion.md` 的清单排列，每格下面写着“触发 │ 时长 │ 曲线”：
+
+- **三条曲线**：`snap`、`mech`、`ease` 的形状和用途
+- **打开页面**：三色条扫过、字标推入、马克笔划过、乱码后落定、通电、逐行亮起、圆盘组装 —— 每格有“重放”
+- **回应操作**：按钮黄色擦入与按下、列表行色条落下并右移、看板页签伸开、空心大编号墨色灌满、保存的处理中到完成、分段进度（“前进”一格一格跳）—— 用鼠标指向或按 Tab 聚焦来触发
+- **进出与状态变化**：提示擦入、删除一行、提示条、底部面板、对话框、深浅揭幕 —— 点各格的按钮触发
+- **入场时间轴**：一个页面的整段入场怎么错开，全程不超过 1 秒
+
+顶部“全部重放”一次把入场动效全播一遍。
+
+如果一格都不动：系统开了“减少动态效果”（Windows：设置 → 辅助功能 → 视觉效果 → 动画效果；macOS：辅助功能 → 显示 → 减弱动态效果），页面顶部会出现提示 —— 这是期望的行为，所有动效在这个设置下都会直接跳到结束。想临时看效果，可以在 Chrome 开发者工具的 Rendering 面板里把 `prefers-reduced-motion` 模拟成 `no-preference`。
+
+想看清曲线和先后顺序，可以在开发者工具的 Animations 面板里把播放速度调到 25% 或 10%。
+
+动效的具体数值（时长、曲线、错开间隔）在 `references/motion.md` 和 `assets/tokens.json` 的 `motion` 里；各平台怎么对应写在该文档的“手机上的对应”一节。
+
+### 跑 Flutter 示例
+
+`templates/flutter/` 只带了 `lib/`、`test/` 和字体，没有 `android/`、`ios/`、`web/` 这些平台目录，直接 `flutter run` 会失败，要先生成一次：
 
 ```sh
 cp -r templates/flutter my_app && cd my_app
-flutter create .               # 生成 android/ ios/ web/ 等目录，不覆盖 lib/ 和 test/
-flutter run -d chrome          # 或连上手机直接 flutter run
+flutter create .   # 生成平台目录，不覆盖已有的 lib/ 和 test/
+flutter run        # 任选一个设备；flutter run -d chrome 也行
 ```
 
-在 Web 上可以用 `?screen=home|list|detail|settings|sheet|states&theme=light|dark` 直接打开某一屏。列表页的"筛选"按钮会弹出底部面板，状态页能看到进度、提示和对话框。
+底部标签栏是总览、记录、状态、设置四项；在记录里点一行进详情，点“筛选”拉出底部面板，设置页里能切换深浅（默认跟随系统）。用 `-d chrome` 跑时同样认 `?theme=dark` 和 `?screen=home|list|detail|settings|sheet|states`（状态页再加 `&dialog=1` 打开对话框）。`flutter test` 会跑一遍 widget 测试。
 
 ## 许可
 

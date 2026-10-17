@@ -150,6 +150,7 @@ description: "Build UI with an \"Arknights: Endfield\"-flavoured industrial look
 | `examples/web/` | 网页模板截图（浅、深、手机）、手机网页 `app-*.jpg`、动效样张 `motion-*.jpg` 和反例对照页 |
 | `agents/openai.yaml` | 给 OpenAI Codex 的显示信息（名字、简介、颜色），其他 agent 忽略它 |
 | `examples/app/` | Flutter 示例屏幕截图（390×844，浅、深），`overview-*.jpg` 是六屏总览 |
+| `examples/motion/` | 主要动效的 GIF 录屏：展示页和控制台入场、回应操作、深浅揭幕、App 的底部面板、设置和状态 |
 
 ## 来源与许可
 
