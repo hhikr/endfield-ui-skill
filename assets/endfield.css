@@ -273,13 +273,14 @@
 
 .ef-tag {
   --fill: var(--ef-tag-bg);
-  padding: 0.1rem 0.8rem 0.1rem 0.5rem;
+  /* the right padding grows with the cut, so the text keeps clear of it */
+  padding: 0.1rem calc(0.45rem + var(--ef-cut)) 0.1rem 0.5rem;
   color: var(--ef-tag-fg);
 }
 
 .ef-chip {
   gap: 0.35em;
-  padding: 0.15rem 0.85rem 0.15rem 0.55rem;
+  padding: 0.15rem calc(0.5rem + var(--ef-cut)) 0.15rem 0.55rem;
 }
 
 .ef-chip .n {
@@ -1816,9 +1817,12 @@ a.ef-record:is(:hover, :focus-visible) > * {
   max-height: 85dvh;
   margin: 0;
 }
+.ef-drawer {
+  --sheet-cut: calc(1.6rem * var(--ef-cut-k));
+}
 .ef-drawer > .body {
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(135deg, transparent calc(1.6rem * var(--ef-cut-k)), var(--ef-panel) calc(1.6rem * var(--ef-cut-k) + 0.5px));
+  background: linear-gradient(135deg, transparent var(--sheet-cut), var(--ef-panel) calc(var(--sheet-cut) + 0.5px));
 }
 .ef-drawer .grab {
   display: grid;
@@ -1826,6 +1830,10 @@ a.ef-record:is(:hover, :focus-visible) > * {
   height: 18px;
   margin-left: 1.6rem;
   background: var(--ef-hatch);
+  /* the band follows the sheet's cut instead of hanging over it */
+  --band-cut: max(0px, calc(var(--sheet-cut) - 1.6rem / 1.4142));
+  -webkit-mask: linear-gradient(135deg, transparent var(--band-cut), #000 calc(var(--band-cut) + 0.5px));
+  mask: linear-gradient(135deg, transparent var(--band-cut), #000 calc(var(--band-cut) + 0.5px));
 }
 .ef-drawer .grab::after {
   content: '';
@@ -1834,7 +1842,9 @@ a.ef-record:is(:hover, :focus-visible) > * {
   background: var(--ef-ink);
 }
 .ef-drawer header {
-  padding: 0.75rem var(--ef-pad) 0.5rem;
+  /* the cut's legs are --sheet-cut × √2 long; start the eyebrow below where
+     the cut still reaches the text column, so a wide cut never touches it */
+  padding: max(0.75rem, calc(var(--sheet-cut) * 1.4142 - 18px - var(--ef-pad) + 1.1rem)) var(--ef-pad) 0.5rem;
 }
 .ef-drawer .ef-pair > :last-child {
   font-size: 1.25rem;
