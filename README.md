@@ -70,46 +70,103 @@ endfield-ui-skill/
 │   ├── specimen.html         全部网页部件的样张
 │   ├── antipatterns.html     做与不做的对照页
 │   └── flutter/              Flutter 套件（lib/ef/）和六个示例屏幕
-└── examples/                 截图和动图，不用跑就能看
+└── examples/                 截图，不用跑就能看
     ├── web/                  各网页模板的浅色、深色、手机宽度截图
     ├── app/                  Flutter 示例屏幕（390×844，浅、深），overview-*.jpg 是六屏总览
-    └── motion/               动效录屏 GIF：展示页、控制台、动效样张各区、深浅揭幕、手机网页
+    └── motion/               录屏 GIF：App 和整页操作；each/ 里每个动效各一段
 ```
 
 agent 的工作顺序：读 `SKILL.md` → 按调子和平台打开对应的 `references/platforms/*.md` → 网页直接引用 `assets/`，Flutter 拷 `templates/flutter/lib/ef/`，其他平台照 `tokens.json` 和平台指南自己落地 → 用 `SKILL.md` 末尾的清单自查。
 
 ## 预览
 
-### 只看截图和动图
+不想起服务器的话，先看下面的截图和录屏。录屏都是从模板实际跑出来的，速度就是真实速度；GIF 只有 25 帧/秒、颜色也压过，曲线的手感以浏览器里跑的为准。
 
-`examples/web/` 和 `examples/app/` 里是全部模板的截图，`examples/motion/` 里是动效录屏，GitHub 上直接点开即可。
+### 用起来什么样
+
+截图：`examples/web/`（网页模板的浅、深、手机宽度）和 `examples/app/`（Flutter 六个屏幕）。
 
 ![App screens](examples/app/overview-light.jpg)
 
-**展示页打开**：三色条扫过、字标推入、马克笔划过、读数乱码后落定，随后指针视差
+真实操作一遍的录屏（`examples/motion/`）：
 
-![展示页打开](examples/motion/showcase-open.gif)
+| 手机网页：列表与底部面板 | 设置与对话框 | 状态 |
+| --- | --- | --- |
+| ![底部面板](examples/motion/app-drawer.gif) | ![设置](examples/motion/app-settings.gif) | ![状态](examples/motion/app-states.gif) |
+| 列表逐行亮起，点一行推入底部面板，取消后推回 | 开关和分段移动，保存的处理中到完成，删除确认对话框的通电和关上 | 删除一行后下面的行补位，提示条擦入再擦掉 |
 
-**控制台打开**：看板逐行通电、圆盘分段组装，然后指向圆盘各段 —— 括住、光束连到中心、读数换成该段
+| 展示页打开 | 控制台打开 |
+| --- | --- |
+| ![展示页入场](examples/motion/showcase-in.gif) | ![控制台入场](examples/motion/console-in.gif) |
+| 三色条扫过、字标推入、马克笔划过、读数落定；底部滚动条一直走；然后是指针视差 | 圆盘组装、看板通电、大数字落定；然后指向圆盘的段：括住、光束连到中心、读数换成该段 |
 
-![控制台打开](examples/motion/console-open.gif)
+| 深浅切换 | 换页 |
+| --- | --- |
+| ![深浅揭幕](examples/motion/theme-reveal.gif) | ![换页快门](examples/motion/each/shutter.gif) |
+| 从按钮处扩散一个圆揭开新主题 | 阅读页 → 控制台 → 阅读页：同源跳转时的快门（`@view-transition`） |
 
-**深浅揭幕**：从按钮处扩散的圆
+### 每个动效
 
-![深浅揭幕](examples/motion/theme-reveal.gif)
+`references/motion.md` 动效清单里的每一项各有一段录屏（`examples/motion/each/`，从 `templates/motion.html` 对应的那一格录下）。说明格式是“触发 │ 时长（毫秒） │ 曲线”。
+
+![三条曲线](examples/motion/each/curves.gif)
+
+**三条曲线**：`snap` 迅速到位后稳住，`mech` 慢起硬停，`ease` 只给三色条和颜色变化。
+
+**打开页面**
 
 <table>
 <tr>
-<td width="50%"><b>入场动效</b>（<code>motion.html</code>“打开页面”一区，全部重放）<br><img src="examples/motion/entrances.gif" alt="入场动效"></td>
-<td width="50%"><b>回应操作</b>：按钮擦入与按下、行右移、页签伸开、墨色灌满、保存完成、分段进度<br><img src="examples/motion/responses.gif" alt="回应操作"></td>
+<td width="33%" valign="top"><b>三色条扫过</b><br><sub>一次访问的第一页 │ 600 │ ease</sub><br><img src="examples/motion/each/sweep.gif" alt="三色条扫过"></td>
+<td width="33%" valign="top"><b>字标推入</b><br><sub>展示页 │ 620，第二行晚 140 │ mech</sub><br><img src="examples/motion/each/drive.gif" alt="字标推入"></td>
+<td width="33%" valign="top"><b>马克笔划过</b><br><sub>展示页 │ 晚 420，420 │ mech</sub><br><img src="examples/motion/each/stroke.gif" alt="马克笔划过"></td>
 </tr>
 <tr>
-<td><b>进出与状态变化</b>：提示擦入、删除一行、提示条、底部面板、对话框<br><img src="examples/motion/in-and-out.gif" alt="进出与状态变化"></td>
-<td><b>手机网页</b>（<code>app.html</code>）：列表入场、底部面板、切换标签<br><img src="examples/motion/app.gif" alt="手机网页" width="300"></td>
+<td valign="top"><b>乱码后落定</b><br><sub>打开页面 │ 600，每个晚 ≤ 40 │ 线性</sub><br><img src="examples/motion/each/scramble.gif" alt="乱码后落定"></td>
+<td valign="top"><b>通电</b><br><sub>打开控制台 │ 520，每行晚 100 │ mech</sub><br><img src="examples/motion/each/power.gif" alt="通电"></td>
+<td valign="top"><b>逐行亮起</b><br><sub>切换列表内容 │ 320，每行晚 38 │ snap</sub><br><img src="examples/motion/each/come.gif" alt="逐行亮起"></td>
+</tr>
+<tr>
+<td valign="top"><b>圆盘组装</b><br><sub>打开控制台 │ 360，每段晚 45 │ snap</sub><br><img src="examples/motion/each/assemble.gif" alt="圆盘组装"></td>
+<td></td>
+<td></td>
 </tr>
 </table>
 
-GIF 只有 20 帧/秒、颜色也压过，曲线的手感以浏览器里实际跑的为准。
+**回应操作**
+
+<table>
+<tr>
+<td width="33%" valign="top"><b>黄色擦入、亮边扫过、按下</b><br><sub>指向 / 聚焦 │ 280 │ mech；按下 100</sub><br><img src="examples/motion/each/button.gif" alt="按钮"></td>
+<td width="33%" valign="top"><b>色条落下、整行右移</b><br><sub>指向 / 按下 │ 200，右移 250 │ snap</sub><br><img src="examples/motion/each/row.gif" alt="列表行"></td>
+<td width="33%" valign="top"><b>页签伸开</b><br><sub>指向看板 │ 400 │ mech</sub><br><img src="examples/motion/each/tab.gif" alt="页签伸开"></td>
+</tr>
+<tr>
+<td valign="top"><b>墨色灌满</b>（数字同时乱码落定）<br><sub>指向空心大编号 │ 450 │ mech</sub><br><img src="examples/motion/each/fill.gif" alt="墨色灌满"></td>
+<td valign="top"><b>保存：处理中，然后完成</b><br><sub>aria-busy → 完成一次擦过 600 │ mech</sub><br><img src="examples/motion/each/save.gif" alt="保存"></td>
+<td valign="top"><b>分段进度</b><br><sub>按格跳，不平滑；未知进度循环，完成即停</sub><br><img src="examples/motion/each/progress.gif" alt="分段进度"></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><b>锁定、黄底灌满</b>（控制台）<br><sub>指向圆盘某段：括住、光束连到中心、读数换成该段 300 │ mech；指向看板里的大数字：黄底灌满 220 │ mech</sub><br><img src="examples/motion/each/console-hover.gif" alt="锁定与黄底灌满" width="720"></td>
+</tr>
+</table>
+
+**进出与状态变化**
+
+<table>
+<tr>
+<td width="33%" valign="top"><b>提示擦入</b><br><sub>出错 / 需要注意 │ 280 │ mech；不抖动</sub><br><img src="examples/motion/each/notice.gif" alt="提示擦入"></td>
+<td width="33%" valign="top"><b>删除一行</b><br><sub>向右擦掉 200 │ mech；下面的行上移 200 │ snap</sub><br><img src="examples/motion/each/remove-row.gif" alt="删除一行"></td>
+<td width="33%" valign="top"><b>提示条</b><br><sub>从左擦入 280，停 2 秒，向右擦掉 160 │ mech</sub><br><img src="examples/motion/each/toast.gif" alt="提示条"></td>
+</tr>
+<tr>
+<td valign="top"><b>底部面板</b><br><sub>推入 360，退出 240，遮罩淡入 200 │ mech；不弹跳</sub><br><img src="examples/motion/each/drawer.gif" alt="底部面板"></td>
+<td valign="top"><b>对话框</b><br><sub>通电 280，关上 180 │ mech</sub><br><img src="examples/motion/each/dialog.gif" alt="对话框"></td>
+<td valign="top"><b>深浅揭幕</b>、<b>换页快门</b><br><sub>见上面“用起来什么样”里的两段录屏</sub></td>
+</tr>
+</table>
+
+清单里剩下的**指针视差**和**滚动条**在上面“展示页打开”那段录屏里。
 
 ### 在浏览器里跑网页模板
 
@@ -153,16 +210,21 @@ python3 -m http.server 8766      # 或者 Python；Windows 上用 py -m http.ser
 
 如果一格都不动：系统开了“减少动态效果”（Windows：设置 → 辅助功能 → 视觉效果 → 动画效果；macOS：辅助功能 → 显示 → 减弱动态效果），页面顶部会出现提示 —— 这是期望的行为，所有动效在这个设置下都会直接跳到结束。想临时看效果，可以在 Chrome 开发者工具的 Rendering 面板里把 `prefers-reduced-motion` 模拟成 `no-preference`。
 
+想看清曲线和先后顺序，可以在开发者工具的 Animations 面板里把播放速度调到 25% 或 10%。
+
 动效的具体数值（时长、曲线、错开间隔）在 `references/motion.md` 和 `assets/tokens.json` 的 `motion` 里；各平台怎么对应写在该文档的“手机上的对应”一节。
 
 ### 跑 Flutter 示例
 
+`templates/flutter/` 只带了 `lib/`、`test/` 和字体，没有 `android/`、`ios/`、`web/` 这些平台目录，直接 `flutter run` 会失败，要先生成一次：
+
 ```sh
-cd templates/flutter
+cp -r templates/flutter my_app && cd my_app
+flutter create .   # 生成平台目录，不覆盖已有的 lib/ 和 test/
 flutter run        # 任选一个设备；flutter run -d chrome 也行
 ```
 
-底部标签栏是总览、记录、状态、设置四项；在记录里点一行进详情，点“筛选”拉出底部面板，设置页里能切换深浅（默认跟随系统）。用 `-d chrome` 跑时同样认 `?theme=dark` 和 `?screen=list|detail|sheet|states|settings`。`flutter test` 会跑一遍 widget 测试。
+底部标签栏是总览、记录、状态、设置四项；在记录里点一行进详情，点“筛选”拉出底部面板，设置页里能切换深浅（默认跟随系统）。用 `-d chrome` 跑时同样认 `?theme=dark` 和 `?screen=home|list|detail|settings|sheet|states`（状态页再加 `&dialog=1` 打开对话框）。`flutter test` 会跑一遍 widget 测试。
 
 ## 许可
 
