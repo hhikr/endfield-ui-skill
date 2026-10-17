@@ -33,10 +33,10 @@ class EfTriStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         height: height,
-        child: const Row(children: [
-          Expanded(child: ColoredBox(color: Ef.triA, child: SizedBox.expand())),
-          Expanded(child: ColoredBox(color: Ef.triB, child: SizedBox.expand())),
-          Expanded(child: ColoredBox(color: Ef.triC, child: SizedBox.expand())),
+        child: Row(children: [
+          const Expanded(child: ColoredBox(color: Ef.triA, child: SizedBox.expand())),
+          Expanded(child: ColoredBox(color: EfColors.of(context).signal, child: const SizedBox.expand())),
+          const Expanded(child: ColoredBox(color: Ef.triC, child: SizedBox.expand())),
         ]),
       );
 }

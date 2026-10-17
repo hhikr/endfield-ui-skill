@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:endfield_example/ef/tokens.dart';
 import 'package:endfield_example/main.dart';
 
 void main() {
@@ -24,5 +26,13 @@ void main() {
     await tester.tap(find.text('取消'));
     await tester.pumpAndSettle();
     expect(find.text('复制编号'), findsNothing);
+  });
+
+  test('another accent reaches fills, and the dark trace line', () {
+    final light = efTheme(Brightness.light, accent: EfAccent.ice).extension<EfColors>()!;
+    final dark = efTheme(Brightness.dark, accent: EfAccent.ice).extension<EfColors>()!;
+    expect(light.signal, EfAccent.ice);
+    expect(light.trace, EfColors.light.ink);
+    expect(dark.trace, EfAccent.ice);
   });
 }

@@ -24,7 +24,7 @@ flutter run                              # 或 flutter run -d chrome
 
 Web 上可以用地址参数直接打开某一屏：`?screen=home|list|detail|settings|sheet|states&theme=light|dark`，状态屏加 `&dialog=1` 打开对话框。
 
-放进已有项目：复制 `lib/ef/` 和 `fonts/`，在 `pubspec.yaml` 里声明字体，`MaterialApp` 用 `theme: efTheme(Brightness.light), darkTheme: efTheme(Brightness.dark)`。
+放进已有项目：复制 `lib/ef/` 和 `fonts/`，在 `pubspec.yaml` 里声明字体，`MaterialApp` 用 `theme: efTheme(Brightness.light), darkTheme: efTheme(Brightness.dark)`。换强调色时两处都传同一个颜色：`efTheme(Brightness.light, accent: EfAccent.ice)`（`EfAccent` 里有 yellow、lime、ice、amber，也可以传自己的颜色，规则见 `../variation.md`）。部件都从 `EfColors.of(context).signal` 取强调色，深色主题的 trace 线也会跟着换。
 
 ## 关键写法
 

@@ -1,5 +1,6 @@
 // Sample app: the Endfield kit on phone screens. Pick a screen and theme on web
-// with ?screen=home|list|detail|settings|sheet|states&theme=light|dark (&dialog=1 on states).
+// with ?screen=home|list|detail|settings|sheet|states&theme=light|dark (&dialog=1 on states)
+// and another accent with &accent=yellow|lime|ice|amber.
 import 'package:flutter/material.dart';
 
 import 'ef/marks.dart';
@@ -23,6 +24,12 @@ class _EfAppState extends State<EfApp> {
     'light' => ThemeMode.light,
     _ => ThemeMode.system,
   };
+  final Color _accent = switch (Uri.base.queryParameters['accent']) {
+    'lime' => EfAccent.lime,
+    'ice' => EfAccent.ice,
+    'amber' => EfAccent.amber,
+    _ => EfAccent.yellow,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +37,8 @@ class _EfAppState extends State<EfApp> {
     return MaterialApp(
       title: 'Endfield UI',
       debugShowCheckedModeBanner: false,
-      theme: efTheme(Brightness.light),
-      darkTheme: efTheme(Brightness.dark),
+      theme: efTheme(Brightness.light, accent: _accent),
+      darkTheme: efTheme(Brightness.dark, accent: _accent),
       themeMode: _mode,
       home: Shell(
         start: start < 0 ? 0 : start,
@@ -117,7 +124,7 @@ class HomeScreen extends StatelessWidget {
         color: Ef.commandBar,
         padding: EdgeInsets.fromLTRB(Ef.pad, top + 10, Ef.pad, 10),
         child: Row(children: [
-          Container(width: 8, height: 8, color: Ef.signal),
+          Container(width: 8, height: 8, color: EfColors.of(context).signal),
           const SizedBox(width: 8),
           Text('ACME.WORKS', style: EfType.ui(13, weight: 700, width: 125, color: const Color(0xFFEDEDED))),
           const Spacer(),
@@ -250,7 +257,7 @@ class DetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text.rich(
               TextSpan(style: p, children: [
-                TextSpan(text: '一句话说明这是什么', style: TextStyle(backgroundColor: Ef.signal.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.22 : 0.55))),
+                TextSpan(text: '一句话说明这是什么', style: TextStyle(backgroundColor: EfColors.of(context).signal.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.22 : 0.55))),
                 const TextSpan(text: '：这里记录了二号节点重新布线的全过程，包括走线顺序、标签规则和最后的检查表。'),
               ]),
             ),

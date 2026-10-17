@@ -4,7 +4,7 @@
 
 ## 颜色
 
-在 Asset Catalog 里建颜色集，每个设 Any / Dark 两个外观，数值取 `assets/tokens.json`：`Paper` `Panel` `Ink` `Ink2` `Rule` `Chip` `Trace` `TagBg` `TagFg` `Danger`；`Signal` `#FFFA00` 和 `OnSignal` `#161616` 两套一样。或者用代码：
+在 Asset Catalog 里建颜色集，每个设 Any / Dark 两个外观，数值取 `assets/tokens.json`：`Paper` `Panel` `Ink` `Ink2` `Rule` `Chip` `Trace` `TagBg` `TagFg` `Danger`；`Signal` `#FFFA00`（或这个产品选定的强调色，见 `../variation.md`）和 `OnSignal` `#161616` 两套一样。或者用代码：
 
 ```swift
 extension Color {

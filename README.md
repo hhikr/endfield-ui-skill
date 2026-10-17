@@ -2,7 +2,9 @@
 
 An agent skill for building UI with an *Arknights: Endfield*-flavoured industrial look — on the web, mobile web, iOS, Android, Flutter, React Native, WeChat mini programs and desktop apps. Uses no game assets.
 
-一个让 agent 做出"终末地风味"界面的 skill：浅色纸面与墨色、唯一的强调黄 `#FFFA00`、切角表示可按、宽体大写英文配粗体中文、`//` 眉标、编号记录行、斜线纹、极淡等高线、短而机械的动效。覆盖网页、手机网页、iOS、Android、Flutter、React Native、小程序和桌面应用。
+一个让 agent 做出"终末地风味"界面的 skill：浅色纸面与墨色、唯一的强调色（默认是黄 `#FFFA00`）、切角表示可按、宽体大写英文配粗体中文、`//` 眉标、编号记录行、斜线纹、极淡等高线、短而机械的动效。覆盖网页、手机网页、iOS、Android、Flutter、React Native、小程序和桌面应用。
+
+语法固定，长相按产品定：强调色、纸色、切角、底纹、密度、动效六个维度可以换，另有四组预设，避免每个用它的产品都长得一样（见 `references/variation.md`）。
 
 ## 安装
 
@@ -45,7 +47,7 @@ agent 只在被触发时读 `SKILL.md`；其余文件按需打开，不会一次
 
 ```text
 endfield-ui-skill/
-├── SKILL.md                  入口：气质、选调子、选平台、字体、部件速查、规则、交付清单、文件地图
+├── SKILL.md                  入口：气质、选调子、定变体、选平台、字体、部件速查、规则、交付清单、文件地图
 ├── agents/openai.yaml        Codex 界面里的名字、简介、颜色（其他 agent 忽略）
 ├── references/               按需读的细节
 │   ├── research.md           对官网和游戏界面的调研：看到了什么、借什么不借什么
@@ -53,13 +55,15 @@ endfield-ui-skill/
 │   ├── components.md         每个部件的写法、含义和禁忌（含手机网页部件、表格、柱图）
 │   ├── patterns.md           三种调子的页面范式，App 的标签栏、列表、详情、表单、面板、对话框
 │   ├── motion.md             动效：原则、三条曲线、编排、完整清单、进出、状态变化、减少动效
+│   ├── variation.md          变体：不能变的语法、六个可变维度、四组预设、不照抄模板、新部件怎么推
 │   ├── rules.md              做与不做，每条的理由
 │   └── platforms/            web / mobile-web / ios / android / flutter / cross-platform / miniprogram
 ├── assets/                   可直接拷进项目的东西
-│   ├── tokens.json           平台无关的 token：颜色、字体、字号、间距、切角、线宽、动效
+│   ├── tokens.json           平台无关的 token：颜色、字体、字号、间距、切角、线宽、动效、变体
 │   ├── endfield.css          网页套件：全部变量和 ef- 部件，不依赖框架
 │   ├── fx.js                 乱码后落定、深浅切换、视差、面板与对话框进出、提示条、删行、完成反馈
 │   ├── dial.js               控制台的分段圆盘
+│   ├── variant.js            开页前按地址或 data-ef-* 设好变体
 │   └── contours/             背景等高线 SVG 和生成脚本
 ├── templates/                可运行的参考实现
 │   ├── showcase.html         调子一：展示页（字标、三色条、索引）
@@ -76,11 +80,11 @@ endfield-ui-skill/
     └── motion/               录屏 GIF：App 和整页操作；each/ 里每个动效各一段
 ```
 
-agent 的工作顺序：读 `SKILL.md` → 按调子和平台打开对应的 `references/platforms/*.md` → 网页直接引用 `assets/`，Flutter 拷 `templates/flutter/lib/ef/`，其他平台照 `tokens.json` 和平台指南自己落地 → 用 `SKILL.md` 末尾的清单自查。
+agent 的工作顺序：读 `SKILL.md` → 读 `references/variation.md` 定变体和主视觉 → 按调子和平台打开对应的 `references/platforms/*.md` → 网页直接引用 `assets/`，Flutter 拷 `templates/flutter/lib/ef/`，其他平台照 `tokens.json` 和平台指南自己落地 → 用 `SKILL.md` 末尾的清单自查。
 
 ## 预览
 
-不想起服务器的话，先看下面的截图和录屏。录屏都是从模板实际跑出来的，速度就是真实速度；GIF 只有 25 帧/秒、颜色也压过，曲线的手感以浏览器里跑的为准。
+不想起服务器的话，先看下面的截图和录屏。录屏都是从模板实际跑出来的，速度就是真实速度；GIF 的帧率较低（20–30 帧/秒），颜色也压缩过，曲线的手感以浏览器里跑的为准。
 
 ### 用起来什么样
 
@@ -104,6 +108,16 @@ agent 的工作顺序：读 `SKILL.md` → 按调子和平台打开对应的 `re
 | --- | --- |
 | ![深浅揭幕](examples/motion/theme-reveal.gif) | ![换页快门](examples/motion/each/shutter.gif) |
 | 从按钮处扩散一个圆揭开新主题 | 阅读页 → 控制台 → 阅读页：同源跳转时的快门（`@view-transition`） |
+
+### 同一套语法，四种长相
+
+同一个页面，从左到右是四组预设：`standard` 标准、`coldstore` 冷库（冰蓝、冷灰纸、小切角、网格底纹、去掉入场动效）、`site` 工地（琥珀、米色纸、大切角、斜线纹底纹）、`nightshift` 夜班（荧光绿、默认深色、无底纹、紧凑）。编号、切角、宽体字段、细线这些语法没变，强调色、纸色、切角大小、底纹和密度变了。
+
+![四组预设：手机网页](examples/web/variants-app.jpg)
+
+![四组预设：展示页](examples/web/variants-showcase.jpg)
+
+六个维度怎么选、自定义强调色要满足什么对比度、怎么写变体卡，见 `references/variation.md`。
 
 ### 每个动效
 
@@ -191,7 +205,12 @@ python3 -m http.server 8766      # 或者 Python；Windows 上用 py -m http.ser
 | `http://localhost:8766/templates/specimen.html` | 全部部件，hover 状态也摆出来了 |
 | `http://localhost:8766/templates/antipatterns.html` | 反例和正例并排 |
 
-每页都有深浅切换按钮。`app.html` 和 `motion.html` 还认地址参数：
+每页都有深浅切换按钮。所有模板都认这些地址参数：
+
+- `?variant=standard|coldstore|site|nightshift`：套用一组预设
+- `?accent=yellow|lime|ice|amber`、`&paper=neutral|warm|cool`、`&cut=tight|standard|wide`、`&ground=contours|grid|hatch|plain`、`&density=compact|standard|roomy`、`&motion=full|calm`：单独换某一项，可以和 `variant` 一起用
+
+`app.html` 和 `motion.html` 还认：
 
 - `?theme=light` / `?theme=dark`：指定深浅
 - `app.html?screen=list|settings|states`：直接打开某个标签页；加 `&sheet=1` 或 `&dialog=1` 打开底部面板或对话框
@@ -224,7 +243,7 @@ flutter create .   # 生成平台目录，不覆盖已有的 lib/ 和 test/
 flutter run        # 任选一个设备；flutter run -d chrome 也行
 ```
 
-底部标签栏是总览、记录、状态、设置四项；在记录里点一行进详情，点“筛选”拉出底部面板，设置页里能切换深浅（默认跟随系统）。用 `-d chrome` 跑时同样认 `?theme=dark` 和 `?screen=home|list|detail|settings|sheet|states`（状态页再加 `&dialog=1` 打开对话框）。`flutter test` 会跑一遍 widget 测试。
+底部标签栏是总览、记录、状态、设置四项；在记录里点一行进详情，点“筛选”拉出底部面板，设置页里能切换深浅（默认跟随系统）。用 `-d chrome` 跑时同样认 `?theme=dark` 和 `?screen=home|list|detail|settings|sheet|states`（状态页再加 `&dialog=1` 打开对话框），以及 `&accent=lime|ice|amber` 换强调色。在自己的项目里换强调色，把 `EfAccent` 里的一种（或自己的颜色）传给 `efTheme(…, accent:)`。`flutter test` 会跑一遍 widget 测试。
 
 ## 许可
 

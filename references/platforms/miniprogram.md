@@ -144,7 +144,7 @@ button.ef-btn::after { border: 0; }               /* 去掉微信按钮的默认
 .field { color: var(--ink-2); font-size: 26rpx; font-variant-numeric: tabular-nums; }
 ```
 
-其余部件（眉标、看板、开关、分段、进度、空状态、底部面板、对话框、提示条）照 `../patterns.md` 第二部分和 `examples/app/` 的截图做：都是矩形、细线、切角和黄块，用 `view` 加上面的变量就能拼出来。系统 `switch`、`slider`、`picker` 的外观改动有限，用 `color="#FFFA00"` 至少把强调色换掉，或者自己画。
+其余部件（眉标、看板、开关、分段、进度、空状态、底部面板、对话框、提示条）照 `../patterns.md` 第二部分和 `examples/app/` 的截图做：都是矩形、细线、切角和黄块，用 `view` 加上面的变量就能拼出来。系统 `switch`、`slider`、`picker` 的外观改动有限，用 `color="#FFFA00"`（或你选定的强调色）至少把强调色换掉，或者自己画。
 
 ## 动效
 
