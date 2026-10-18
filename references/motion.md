@@ -10,7 +10,7 @@
 4. **不做持续循环的装饰动画。** 例外只有两个：承载内容的滚动条（悬停或聚焦即停），和不知道进度的加载条（完成即停）。
 5. **系统要求减少动态效果时全部关闭**（网页 `prefers-reduced-motion: reduce`，iOS `accessibilityReduceMotion`，Android「移除动画」/ `ANIMATOR_DURATION_SCALE` 为 0，Flutter `MediaQuery.disableAnimations`），直接显示最终状态。表示数据的东西（阅读进度条、加载进度）仍然更新。
 6. 只动 `transform`、`opacity`、`clip-path`、`background-size`、`stroke-dashoffset`，不动宽高、边距、`left/top` 这类布局属性。要"让出位置"时用 FLIP：先记下位置，改布局，再用 transform 从旧位置动回来（`fx.js` 的 `removeRow()` 就是这样）。
-7. 不要：弹跳、弹簧、果冻、发光脉冲、视差滚动背景、滚动触发的逐段淡入、抖动表示出错、Material 涟漪（换成擦入）、iOS 默认弹性回弹以外的额外弹跳。
+7. 不要：弹跳、弹簧、果冻、文字逐个缩放弹出或描边再填实（文字要么直接出现，要么用擦入），发光脉冲、视差滚动背景、滚动触发的逐段淡入、抖动表示出错、Material 涟漪（换成擦入）、iOS 默认弹性回弹以外的额外弹跳。
 
 ## 三条曲线
 
