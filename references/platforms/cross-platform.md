@@ -48,7 +48,7 @@ export const useEf = () => (useColorScheme() === 'dark' ? ef.dark : ef.light);
 
 - 直接用网页套件（`platforms/web.md`）。
 - **窗口标题栏**：用自定义标题栏做成深色命令栏（`#161616`，两套主题都深色）：Electron `titleBarStyle: 'hidden'` + `titleBarOverlay: { color: '#161616', symbolColor: '#EDEDED', height: 40 }`；Tauri `decorations: false` 并给拖拽区加 `data-tauri-drag-region`。命令栏左边徽记和应用名，中间分区，当前分区一小块黄。
-- **布局**：桌面窗口宽，用控制台调子的看板布局或阅读调子的侧栏布局；最小窗口宽度设到 960 左右，避免挤成手机版。
+- **布局**：桌面窗口宽，用控制台类型的看板布局或阅读类型的侧栏布局；最小窗口宽度设到 960 左右，避免挤成手机版。
 - **原生菜单、托盘、对话框**用系统样式，不要强改。
 
 ## 其他（Qt、WinUI、SwiftUI on macOS、游戏引擎 UI 等）
@@ -57,7 +57,7 @@ export const useEf = () => (useColorScheme() === 'dark' ? ef.dark : ef.light);
 
 1. 圆角全部 0、阴影全部去掉、强调色只有一种（默认 `#FFFA00`，或这个产品在变体卡里定的那种）。
 2. 拉丁字用宽体（Saira 静态实例），中文用系统黑体。
-3. 可按的块切掉右下角；当前项整格黄块。
+3. 可点击的块切掉右下角；当前项整格黄块。
 4. 按下（或悬停）时黄色从左擦入，曲线 `cubic-bezier(0.7, 0, 0.2, 1)`，100–280ms。
 5. 细线分区、`//` 眉标、中英成对标题、真实字段。
 6. 跟随系统的深浅和减少动效设置。

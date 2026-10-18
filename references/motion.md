@@ -6,7 +6,7 @@
 
 1. **短、硬、机械。** 出现的东西用 `snap`（迅速到位后稳住）；快门、擦入、灌满、页签伸开和**所有退出**用 `mech`（慢起、硬停，像闸门）。
 2. **时长分三档**：回应一次操作 100–400ms；打开页面时的单个入场 ≤ 650ms；一整段入场序列 ≤ 1000ms。
-3. **每个动效对应一次操作或状态变化**：指向、聚焦、点击、换页、打开页面、数据到了、出错了、保存好了。没有"为了好看一直在动"的东西。
+3. **每个动效对应一次操作或状态变化**：悬停、聚焦、点击、换页、打开页面、数据到了、出错了、保存好了。没有"为了好看一直在动"的东西。
 4. **不做持续循环的装饰动画。** 例外只有两个：承载内容的滚动条（悬停或聚焦即停），和不知道进度的加载条（完成即停）。
 5. **系统要求减少动态效果时全部关闭**（网页 `prefers-reduced-motion: reduce`，iOS `accessibilityReduceMotion`，Android「移除动画」/ `ANIMATOR_DURATION_SCALE` 为 0，Flutter `MediaQuery.disableAnimations`），直接显示最终状态。表示数据的东西（阅读进度条、加载进度）仍然更新。
 6. 只动 `transform`、`opacity`、`clip-path`、`background-size`、`stroke-dashoffset`，不动宽高、边距、`left/top` 这类布局属性。要"让出位置"时用 FLIP：先记下位置，改布局，再用 transform 从旧位置动回来（`fx.js` 的 `removeRow()` 就是这样）。
@@ -69,24 +69,26 @@
 
 ## 动效清单
 
+下面的动效名（通电、快门、灌满、乱码后落定……）是内部叫法，方便你对照代码。给人看的说明、界面文字里用 `glossary.md` 里"对人怎么说"那一列。
+
 | 动效 | 触发 | 时长 | 曲线 | 动的属性 | 网页 | token |
 | --- | --- | --- | --- | --- | --- | --- |
 | 三色条扫过 | 一次访问的第一页 | 600 | ease | transform | `.ef-tri.ef-in-sweep` | `sweep` |
 | 字标推入 | 打开展示页 | 620（第二行晚 140） | mech | clip-path, transform | `.ef-in-drive` | `drive` |
 | 马克笔划过 | 打开展示页 | 420，晚 420 | mech | background-size | `.ef-in-stroke` | `stroke` |
 | 乱码后落定（打开） | 打开页面 | 600 | linear | 文字 | `data-fx-load` | `scrambleLoad` |
-| 乱码后落定（指向） | 指向所在的块 | 360 | linear | 文字 | `data-fx-host` + `data-fx` | `scramble` |
+| 乱码后落定（悬停） | 悬停在所在的块上 | 360 | linear | 文字 | `data-fx-host` + `data-fx` | `scramble` |
 | 通电 | 打开控制台 | 520，每行晚 100 | mech | clip-path, opacity | `.ef-in-power` + `--i` | `power` |
 | 逐行亮起 | 切换列表内容 | 320，每行晚 38 | snap | clip-path, transform | `.ef-in-come` + `--i` | `come` |
 | 圆盘组装 | 打开控制台 | 360，每段晚 45 | snap | transform, opacity | `dial.js` 自带 | `assemble` |
-| 黄色擦入 | 指向、聚焦按钮（触屏：按下） | 280（按下 100） | mech | transform | `.ef-btn` | `wipe` / `press` |
-| 亮边扫过 | 指向按钮 | 300 | mech | transform | `.ef-btn::after` | `edge` |
+| 黄色擦入 | 悬停、聚焦按钮（触屏：按下） | 280（按下 100） | mech | transform | `.ef-btn` | `wipe` / `press` |
+| 亮边扫过 | 悬停按钮 | 300 | mech | transform | `.ef-btn::after` | `edge` |
 | 按下 | 点击按钮 | 100 | — | transform（下沉 1px、缩 1.5%） | `.ef-btn:active` | `press` |
-| 色条落下、整行右移 | 指向 / 按下列表行 | 200（右移 250） | snap | transform | `.ef-record`、`.ef-rows` | `row` |
-| 页签伸开 | 指向看板 | 400 | mech | transform | `.ef-panel` | `tab` |
-| 墨色灌满 | 指向空心大编号 | 450 | mech | background-size | `.ef-hollow-no` | `fill` |
-| 黄底灌满 | 指向看板里的大数字 | 220 | mech | background-size | `.ef-figs` | `figFill` |
-| 锁定 | 指向圆盘某段 | 300 | mech | stroke-dashoffset | `dial.js` 自带 | `lock` |
+| 色条落下、整行右移 | 悬停 / 按下列表行 | 200（右移 250） | snap | transform | `.ef-record`、`.ef-rows` | `row` |
+| 页签伸开 | 悬停看板 | 400 | mech | transform | `.ef-panel` | `tab` |
+| 墨色灌满 | 悬停空心大编号 | 450 | mech | background-size | `.ef-hollow-no` | `fill` |
+| 黄底灌满 | 悬停看板里的大数字 | 220 | mech | background-size | `.ef-figs` | `figFill` |
+| 锁定 | 悬停圆盘某段 | 300 | mech | stroke-dashoffset | `dial.js` 自带 | `lock` |
 | 换页快门 | 同源页面跳转 | 360 | mech | clip-path | `@view-transition`，`endfield.css` 自带 | `shutter` |
 | 当前块滑动 | 换页 | 360 | mech | 位置 | 给"当前"导航项设 `view-transition-name` | `shutter` |
 | 指针视差 | 指针在展示页首屏移动 | 跟手 | — | transform（≤ 12px） | `fx.js`：`wireParallax()` | — |
@@ -129,8 +131,8 @@
 
 | 网页 | 手机 |
 | --- | --- |
-| 指向按钮时黄色擦入 | 按下时擦入（100ms），抬起后退回（280ms mech） |
-| 指向列表行：色条落下、右移 | 按下时同样，抬起即回；不要涟漪 |
+| 悬停按钮时黄色擦入 | 按下时擦入（100ms），抬起后退回（280ms mech） |
+| 悬停列表行：色条落下、右移 | 按下时同样，抬起即回；不要涟漪 |
 | 换页快门 | 推入新屏：新屏被一扇斜切快门从右推入 360ms mech；返回反向。iOS 保留系统侧滑返回手势 |
 | 页签伸开 | 标签栏黄块移动到新位置 280ms mech |
 | 乱码后落定 | 打开屏幕时大数字滚动落定 360–700ms，只做一次 |
